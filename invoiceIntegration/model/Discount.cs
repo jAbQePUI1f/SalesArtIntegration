@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace invoiceIntegration.model
+{
+    public class Discount
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public decimal rate { get; set; }
+        public decimal discountTotal { get; set; }
+        public int discountLineOrder { get; set; }
+    }
+}
