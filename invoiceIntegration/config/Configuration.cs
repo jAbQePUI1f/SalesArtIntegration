@@ -82,16 +82,13 @@ namespace invoiceIntegration.config
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["XMLTransfer"]);
         }
-
         public static string getCypheCode()
         {
             return ConfigurationManager.AppSettings["YetkiKodu"];
         }
-
         public static string getUrl()
         {
             return ConfigurationManager.AppSettings["URL"];
         }
-        
     }
 }
