@@ -1418,7 +1418,6 @@ namespace invoiceIntegration
                 btnSendToLogo.Enabled = false;
                 dataGridInvoice.Rows.Clear();
                 cmbDispatch.SelectedIndex = 0;
-                var asd = invoiceType;
             }
             else
             {
@@ -1483,7 +1482,7 @@ namespace invoiceIntegration
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedInvoiceStatus status = xmlExport(selectedInvoices);
-                helper.ShowMessages(status);
+                //helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 //SendResponse(status);
                 dataGridInvoice.Rows.Clear();
