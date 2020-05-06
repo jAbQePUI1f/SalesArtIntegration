@@ -3,11 +3,14 @@ using invoiceIntegration.model;
 using invoiceIntegration.model.waybill;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace invoiceIntegration.helper
 {
@@ -157,5 +160,74 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan İrsaliye Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
+
+
+        public  void AddNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
+        {
+            XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
+            tempNode.InnerText = InnerText;
+            Node.AppendChild(tempNode);
+        }
+
+        public  void AddCDataNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
+        {
+            XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
+            XmlCDataSection cdata = Document.CreateCDataSection(InnerText);
+            tempNode.AppendChild(cdata);
+            Node.AppendChild(tempNode);
+        }
+
+
+        //public static int GetConv1(string unitname, string productcode)
+        //{
+        //    int conv1 = 1;
+        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
+        //    Connection.Open();
+        //    SqlCommand cmdConv1 = Connection.CreateCommand();
+        //    cmdConv1.CommandType = CommandType.Text;
+
+
+        //    cmdConv1.CommandText = "SELECT IT.CONVFACT1 FROM LG_" + Settings.DBFirmNo + "_ITMUNITA IT INNER JOIN LG_" + Settings.DBFirmNo + "_UNITSETL UNIT ON UNIT.LOGICALREF=IT.UNITLINEREF INNER JOIN LG_" + Settings.DBFirmNo + "_ITEMS STOK ON IT.ITEMREF=STOK.LOGICALREF WHERE UNIT.NAME='" + unitname + "' AND STOK.CODE='" + productcode + "'";
+
+        //    conv1 = Convert.ToInt32(cmdConv1.ExecuteScalar());
+        //    Connection.Close();
+        //    return conv1;
+        //}
+
+
+
+        //public static int GetConv2(string unitname, string productcode)
+        //{
+        //    int conv2 = 1;
+        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
+        //    Connection.Open();
+        //    Logger.WriteLineHistory("GetConv2:");
+        //    SqlCommand cmdConv2 = Connection.CreateCommand();
+        //    cmdConv2.CommandType = CommandType.Text;
+
+
+        //    cmdConv2.CommandText = "SELECT IT.CONVFACT2 FROM LG_" + Settings.DBFirmNo + "_ITMUNITA IT INNER JOIN LG_" + Settings.DBFirmNo + "_UNITSETL UNIT ON UNIT.LOGICALREF=IT.UNITLINEREF INNER JOIN LG_" + Settings.DBFirmNo + "_ITEMS STOK ON IT.ITEMREF=STOK.LOGICALREF WHERE UNIT.NAME='" + unitname + "' AND STOK.CODE='" + productcode + "'";
+
+        //    conv2 = Convert.ToInt32(cmdConv2.ExecuteScalar());
+        //    Connection.Close();
+        //    return conv2;
+        //}
+
+        //public static int GetCurrencyType(string curcode)
+        //{
+        //    int curtype = 1;
+        //    Logger.WriteLineHistory("GetConv1:");
+        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
+        //    Connection.Open();
+        //    SqlCommand cmdcurtype = Connection.CreateCommand();
+        //    cmdcurtype.CommandType = CommandType.Text;
+
+
+        //    cmdcurtype.CommandText = "SELECT CURTYPE FROM L_CURRENCYLIST   WHERE  CURCODE='" + curcode + "'";
+
+        //    curtype = Convert.ToInt32(cmdcurtype.ExecuteScalar());
+        //    Connection.Close();
+        //    return curtype;
+        //}
     }
 }

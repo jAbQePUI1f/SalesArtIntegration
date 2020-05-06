@@ -12,6 +12,7 @@ using System.Data;
 using System.IO;
 using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
+using System.Xml;
 
 namespace invoiceIntegration
 {
@@ -67,6 +68,145 @@ namespace invoiceIntegration
                 btnXML.Visible = true;
             }
         }
+
+        void createXML(LogoInvoice invoice)
+        {
+            XmlDocument output = null;
+            XmlNode outputInvoiceDbop = null;
+            XmlNode outputInvoiceSales = null;
+            XmlNode outputTransactions = null;
+            XmlNode outputDispatches = null;
+            XmlNode outputDispatch = null;
+            XmlNode outputTransaction = null;
+
+            string date = "";
+
+            output = new XmlDocument();
+            outputInvoiceSales = null;
+
+            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
+            output.InsertBefore(xmlDeclaration, output.DocumentElement);
+
+            //8 satış , 3 Satış iade  
+            if (invoice.type == 8 || invoice.type == 3)
+            {
+                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", "");
+            }
+            else
+            {
+                //alış faturalarında 
+                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", "");
+            }
+            output.AppendChild(outputInvoiceSales);
+
+            outputInvoiceDbop = output.CreateNode(XmlNodeType.Element, "INVOICE", "");
+            XmlAttribute newAttr = output.CreateAttribute("DBOP");
+            newAttr.Value = "INS";
+            outputInvoiceDbop.Attributes.Append(newAttr);
+            outputInvoiceSales.AppendChild(outputInvoiceDbop);
+
+            if(invoice.type == 8)
+                helper.AddNode(output, outputInvoiceDbop, "TYPE", "1");  //satış fatularında
+
+            if (invoice.type == 3)
+                 helper.AddNode(output, outputInvoiceDbop, "TYPE", "3");  //iade fatruralarında
+
+            if (useShortDate)
+            {
+                date =(invoice.date.ToShortDateString());
+            }
+            else
+            {
+                date = (invoice.date.ToString("dd-MM-yyyy"));
+            }
+
+            helper.AddNode(output, outputInvoiceDbop, "DATE", date);
+
+            helper.AddNode(output, outputInvoiceDbop, "NUMBER", invoice.number);
+            helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.documentNumber);
+            helper.AddNode(output, outputInvoiceDbop, "ARP_CODE", invoice.customerCode);
+            //zorunlu değil
+            helper.AddNode(output, outputInvoiceDbop, "DIVISION", invoice.distributorBranchCode);
+            helper.AddNode(output, outputInvoiceDbop, "DEPARTMENT", helper.getDepartment());
+
+            if (useCypheCode)
+            {
+                helper.AddNode(output, outputInvoiceDbop, "AUTH_CODE", cypheCode);
+            }
+
+            helper.AddNode(output, outputInvoiceDbop, "AUXIL_CODE", invoice.salesmanCode);
+            helper.AddNode(output, outputInvoiceDbop, "SOURCE_WH", invoice.wareHouseCode);
+            helper.AddNode(output, outputInvoiceDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
+            //
+            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", reader.getEInvoiceByCustomerCode(invoice.customerCode).ToString());
+            helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", reader.getProfileIDByCustomerCode(invoice.customerCode).ToString());
+
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString());  // indirim toplamı
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString());  // toplam tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_GROSS", invoice.grossTotal.ToString()); // brüt tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_NET", invoice.netTotal.ToString());  // Kdv hariç tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_VAT", invoice.vatTotal.ToString());  // Toplam Kdv
+            helper.AddNode(output, outputInvoiceDbop, "PAYMENT_CODE", invoice.paymentCode);  // ödeme planı
+            helper.AddNode(output, outputInvoiceDbop, "SALESMAN_CODE", invoice.salesmanCode);  // salesman 
+
+            outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
+            outputInvoiceDbop.AppendChild(outputTransactions);
+
+            for (int i = 0; i < invoice.details.Count; i++)
+            {
+
+                outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
+                outputTransactions.AppendChild(outputTransaction);
+
+                if (invoice.details[i].type == 2)
+                {
+                    double discountRate = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(invoice.details[i].discountTotal)) / Convert.ToDouble(invoice.details[i].grossTotal)), 2)); 
+                    //1discounts 
+                    if (discountRate > 0 && discountRate < 100)
+                    {
+                        outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
+                        outputTransactions.AppendChild(outputTransaction);
+                        helper.AddNode(output, outputTransaction, "DETAIL_LEVEL", "0");
+                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                        helper.AddNode(output, outputTransaction, "QUANTITY", "0");
+                        helper.AddNode(output, outputTransaction, "BILLED", "0");
+                        helper.AddNode(output, outputTransaction, "TOTAL", Convert.ToDouble(invoice.details[i].discountTotal).ToString().Replace(",", "."));
+                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", discountRate.ToString().Replace(",", "."));
+                        helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        if (invoice.type == 3)  // iade faturaları için
+                        {
+                            helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                        }
+                    }
+                } else
+                {
+                    helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                    helper.AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                    helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                    helper.AddNode(output, outputTransaction, "PRICE", invoice.details[i].price.ToString());
+                    helper.AddNode(output, outputTransaction, "TOTAL", invoice.details[i].total.ToString());
+                    helper.AddNode(output, outputTransaction, "BILLED", "0");
+                    helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString());
+                    helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                    helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                    //efaturalarda istiyor olabilri
+                    helper.AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
+
+                    if (invoice.type == 3)  // iade faturaları için
+                    {
+                        helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                    }
+                } 
+            }
+
+            string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
+
+            string saveFilePath = filePath+"\\" + fileName ;
+            output.Save(saveFilePath);
+
+        }
+
         public List<LogoInvoice> GetSelectedInvoices()
         {
             List<LogoInvoice> invoices = new List<LogoInvoice>();
@@ -1009,7 +1149,7 @@ namespace invoiceIntegration
 
             return integratedWaybills;
         }
-        public IntegratedInvoiceStatus xmlExport(List<LogoInvoice> invoices)
+        public IntegratedInvoiceStatus xmlExportWithLObjects(List<LogoInvoice> invoices)
         {
             string remoteInvoiceNumber = "";
             string message = "";
@@ -1287,6 +1427,35 @@ namespace invoiceIntegration
 
             return integratedInvoices;
         }
+        public IntegratedInvoiceStatus xmlExport(List<LogoInvoice> invoices)
+        {
+            string remoteInvoiceNumber = "";
+            string message = "";
+            string remoteInvoiceStatus = "";
+
+            List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
+             
+
+            try
+            {
+                foreach (var invoice in invoices)
+                {
+                    createXML(invoice);
+                    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, invoice.number, true);
+                    receivedInvoices.Add(recievedInvoice);
+                }
+            }
+            catch (Exception ex)
+            {
+                IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(ex.Message.ToString(), "", "", false);
+                receivedInvoices.Add(recievedInvoice);
+            }
+
+            integratedInvoices.integratedInvoices = receivedInvoices;
+            integratedInvoices.distributorId = distributorId;
+
+            return integratedInvoices;
+        }
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
@@ -1481,10 +1650,11 @@ namespace invoiceIntegration
                 List<LogoInvoice> selectedInvoices = GetSelectedInvoices();
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
+                //IntegratedInvoiceStatus status = xmlExportWithLObjects(selectedInvoices);
                 IntegratedInvoiceStatus status = xmlExport(selectedInvoices);
-                //helper.ShowMessages(status);
+                helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-                //SendResponse(status);
+                SendResponse(status);
                 dataGridInvoice.Rows.Clear();
                 Cursor.Current = Cursors.Default;
             }
