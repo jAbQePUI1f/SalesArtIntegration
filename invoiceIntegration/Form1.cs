@@ -710,7 +710,7 @@ namespace invoiceIntegration
                                     dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
                                 }
 
-                                dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.documentNumber;
+                                dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
                                 dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
                                 dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
                                 dispatches_lines[0].FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
