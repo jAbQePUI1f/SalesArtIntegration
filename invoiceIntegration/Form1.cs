@@ -104,12 +104,9 @@ namespace invoiceIntegration
             newAttr.Value = "INS";
             outputInvoiceDbop.Attributes.Append(newAttr);
             outputInvoiceSales.AppendChild(outputInvoiceDbop);
-
-            if(invoice.type == 8)
-                helper.AddNode(output, outputInvoiceDbop, "TYPE", "1");  //satış fatularında
-
-            if (invoice.type == 3)
-                 helper.AddNode(output, outputInvoiceDbop, "TYPE", "3");  //iade fatruralarında
+            
+            
+            helper.AddNode(output, outputInvoiceDbop, "TYPE", invoice.type.ToString()); 
 
             if (useShortDate)
             {
