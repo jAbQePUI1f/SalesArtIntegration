@@ -1252,7 +1252,7 @@ namespace invoiceIntegration
                             dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
                         }
 
-                        dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.documentNumber;
+                        dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
                         dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
                         dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
                         dispatches_lines[0].FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
@@ -1501,9 +1501,9 @@ namespace invoiceIntegration
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 //IntegratedInvoiceStatus status = sendMultipleDespatch(selectedInvoices);//sendMultipleInvoice(selectedInvoices);
                 IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
+                SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-                SendResponse(status);
                 dataGridInvoice.Rows.Clear();
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = false;
@@ -1616,9 +1616,9 @@ namespace invoiceIntegration
                 helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedWaybillStatus status = sendMultipleDespatch(selectedWaybills);//sendMultipleInvoice(selectedInvoices);
                 //IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
+                SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
-                SendResponse(status);
                 dataGridInvoice.Rows.Clear();
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = false;
@@ -1652,9 +1652,9 @@ namespace invoiceIntegration
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 //IntegratedInvoiceStatus status = xmlExportWithLObjects(selectedInvoices);
                 IntegratedInvoiceStatus status = xmlExport(selectedInvoices);
+                SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-                SendResponse(status);
                 dataGridInvoice.Rows.Clear();
                 Cursor.Current = Cursors.Default;
             }
