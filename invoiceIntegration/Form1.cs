@@ -35,6 +35,7 @@ namespace invoiceIntegration
         bool useShortDate = Configuration.getUseShortDate();
         bool useShipCode = Configuration.getUseShipCode();
         bool XMLTransferInfo = Configuration.getXMLTransferInfo();
+        bool XMLTransferForOrder = Configuration.getXMLTransferForOrder(); 
         int distributorId = Configuration.getDistributorId();
         bool useDispatch = Configuration.getUseDispatch();
         string url = Configuration.getUrl();
@@ -69,7 +70,7 @@ namespace invoiceIntegration
             }
         }
 
-        void createXML(LogoInvoice invoice)
+        void createXMLforInvoice(LogoInvoice invoice)
         {
             XmlDocument output = null;
             XmlNode outputInvoiceDbop = null;
@@ -106,7 +107,8 @@ namespace invoiceIntegration
             outputInvoiceSales.AppendChild(outputInvoiceDbop);
             
             
-            helper.AddNode(output, outputInvoiceDbop, "TYPE", invoice.type.ToString()); 
+            helper.AddNode(output, outputInvoiceDbop, "TYPE", invoice.type.ToString());
+            helper.AddNode(output, outputInvoiceDbop, "NUMBER", invoice.number);
 
             if (useShortDate)
             {
@@ -114,37 +116,85 @@ namespace invoiceIntegration
             }
             else
             {
-                date = (invoice.date.ToString("dd-MM-yyyy"));
+                date = (invoice.date.ToString("dd.MM.yyyy"));
             }
 
             helper.AddNode(output, outputInvoiceDbop, "DATE", date);
-
-            helper.AddNode(output, outputInvoiceDbop, "NUMBER", invoice.number);
+            helper.AddNode(output, outputInvoiceDbop, "TIME", helper.Hour(invoice.date).ToString());
             helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.documentNumber);
+            helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.documentDate.ToString("dd.MM.yyyy"));
+
+            if (useCypheCode)
+                helper.AddNode(output, outputInvoiceDbop, "AUTH_CODE", cypheCode);
+
             helper.AddNode(output, outputInvoiceDbop, "ARP_CODE", invoice.customerCode);
+
+            if (useShipCode)
+            {
+                helper.AddNode(output, outputInvoiceDbop, "SHIPLOC_CODE", invoice.customerBranchCode);
+                helper.AddNode(output, outputInvoiceDbop, "SHIPLOC_DEF", invoice.customerBranchName);
+            }
+
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString().Replace(",","."));  // indirim toplamı
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString().Replace(",", "."));  // toplam tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
+            helper.AddNode(output, outputInvoiceDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
+            helper.AddNode(output, outputInvoiceDbop, "NOTES1", invoice.note);  
+
             //zorunlu değil
             helper.AddNode(output, outputInvoiceDbop, "DIVISION", invoice.distributorBranchCode);
             helper.AddNode(output, outputInvoiceDbop, "DEPARTMENT", helper.getDepartment());
-
-            if (useCypheCode)
-            {
-                helper.AddNode(output, outputInvoiceDbop, "AUTH_CODE", cypheCode);
-            }
-
             helper.AddNode(output, outputInvoiceDbop, "AUXIL_CODE", invoice.salesmanCode);
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_WH", invoice.wareHouseCode);
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
             //
-            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", reader.getEInvoiceByCustomerCode(invoice.customerCode).ToString());
-            helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", reader.getProfileIDByCustomerCode(invoice.customerCode).ToString());
 
-            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString());  // indirim toplamı
-            helper.AddNode(output, outputInvoiceDbop, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString());  // toplam tutar
-            helper.AddNode(output, outputInvoiceDbop, "TOTAL_GROSS", invoice.grossTotal.ToString()); // brüt tutar
-            helper.AddNode(output, outputInvoiceDbop, "TOTAL_NET", invoice.netTotal.ToString());  // Kdv hariç tutar
-            helper.AddNode(output, outputInvoiceDbop, "TOTAL_VAT", invoice.vatTotal.ToString());  // Toplam Kdv
+            helper.AddNode(output, outputInvoiceDbop, "PAYMENT_CODE", invoice.paymentCode);
+            //helper.AddNode(output, outputInvoiceDbop, "EINVOICE", reader.getEInvoiceByCustomerCode(invoice.customerCode).ToString());
+            //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", reader.getProfileIDByCustomerCode(invoice.customerCode).ToString());
+            
             helper.AddNode(output, outputInvoiceDbop, "PAYMENT_CODE", invoice.paymentCode);  // ödeme planı
             helper.AddNode(output, outputInvoiceDbop, "SALESMAN_CODE", invoice.salesmanCode);  // salesman 
+
+            #region dispatch
+             
+            outputDispatches = output.CreateNode(XmlNodeType.Element, "DISPATCHES", "");
+            outputInvoiceDbop.AppendChild(outputDispatches);
+            outputDispatch = output.CreateNode(XmlNodeType.Element, "DISPATCH", "");
+            outputDispatches.AppendChild(outputDispatch);
+
+            helper.AddNode(output, outputDispatch, "TYPE", invoice.type.ToString());
+            helper.AddNode(output, outputDispatch, "NUMBER", invoice.number);
+
+            if (useShortDate)
+            {
+                date = (invoice.date.ToShortDateString());
+            }
+            else
+            {
+                date = (invoice.date.ToString("dd.MM.yyyy"));
+            }
+            helper.AddNode(output, outputDispatch, "DATE", date);
+            helper.AddNode(output, outputDispatch, "TIME", helper.Hour(invoice.date).ToString());
+            helper.AddNode(output, outputDispatch, "DOC_NUMBER", invoice.documentNumber);
+            helper.AddNode(output, outputDispatch, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
+
+            if (useCypheCode)
+                helper.AddNode(output, outputDispatch, "AUTH_CODE", cypheCode);
+
+            helper.AddNode(output, outputDispatch, "ARP_CODE", invoice.customerCode);
+
+            helper.AddNode(output, outputDispatch, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString().Replace(",", "."));  // indirim toplamı
+            helper.AddNode(output, outputDispatch, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString().Replace(",", "."));  // toplam tutar
+            helper.AddNode(output, outputDispatch, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
+            helper.AddNode(output, outputDispatch, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
+            helper.AddNode(output, outputDispatch, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
+            helper.AddNode(output, outputDispatch, "NOTES1", invoice.note); 
+            helper.AddNode(output, outputDispatch, "ORIG_NUMBER", invoice.number); 
+            helper.AddNode(output, outputDispatch, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy")); 
+            helper.AddNode(output, outputDispatch, "DOC_TIME", helper.Hour(invoice.documentDate).ToString());
+            #endregion
 
             outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
             outputInvoiceDbop.AppendChild(outputTransactions);
@@ -161,15 +211,13 @@ namespace invoiceIntegration
                     //1discounts 
                     if (discountRate > 0 && discountRate < 100)
                     {
-                        outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
-                        outputTransactions.AppendChild(outputTransaction);
-                        helper.AddNode(output, outputTransaction, "DETAIL_LEVEL", "0");
                         helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
                         helper.AddNode(output, outputTransaction, "QUANTITY", "0");
-                        helper.AddNode(output, outputTransaction, "BILLED", "0");
+                        helper.AddNode(output, outputTransaction, "BILLED", "1");
                         helper.AddNode(output, outputTransaction, "TOTAL", Convert.ToDouble(invoice.details[i].discountTotal).ToString().Replace(",", "."));
                         helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", discountRate.ToString().Replace(",", "."));
                         helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        helper.AddNode(output, outputTransaction, "DETAIL_LEVEL", "0");
                         if (invoice.type == 3)  // iade faturaları için
                         {
                             helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
@@ -182,7 +230,7 @@ namespace invoiceIntegration
                     helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
                     helper.AddNode(output, outputTransaction, "PRICE", invoice.details[i].price.ToString());
                     helper.AddNode(output, outputTransaction, "TOTAL", invoice.details[i].total.ToString());
-                    helper.AddNode(output, outputTransaction, "BILLED", "0");
+                    helper.AddNode(output, outputTransaction, "BILLED", "1");
                     helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
                     helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString());
                     helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
@@ -200,6 +248,118 @@ namespace invoiceIntegration
             string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
 
             string saveFilePath = filePath+"\\" + fileName ;
+            output.Save(saveFilePath);
+
+        }
+
+        void createXMLforOrder(LogoInvoice invoice)
+        {
+            XmlDocument output = null;
+            XmlNode outputOrderDbop = null;
+            XmlNode outputOrderSales = null;
+            XmlNode outputTransactions = null;
+            XmlNode outputTransaction = null;
+
+            string date = "";
+
+            output = new XmlDocument();
+            outputOrderSales = null;
+
+            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
+            output.InsertBefore(xmlDeclaration, output.DocumentElement);
+
+            //8 satış , 3 Satış iade  
+            if (invoice.type == 8 || invoice.type == 3)
+            {
+                outputOrderSales = output.CreateNode(XmlNodeType.Element, "SALES_ORDERS", "");
+            }
+            else
+            {
+                outputOrderSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_ORDERS", "");
+            }
+            output.AppendChild(outputOrderSales);
+
+            outputOrderDbop = output.CreateNode(XmlNodeType.Element, "ORDER_SLIP", "");
+            XmlAttribute newAttr = output.CreateAttribute("DBOP");
+            newAttr.Value = "INS";
+            outputOrderDbop.Attributes.Append(newAttr);
+            outputOrderSales.AppendChild(outputOrderDbop);
+            
+            helper.AddNode(output, outputOrderDbop, "NUMBER", invoice.number);
+
+            if (useShortDate)
+            {
+                date = (invoice.date.ToShortDateString());
+            }
+            else
+            {
+                date = (invoice.date.ToString("dd.MM.yyyy"));
+            }
+
+            helper.AddNode(output, outputOrderDbop, "DATE", date);
+            helper.AddNode(output, outputOrderDbop, "TIME", helper.Hour(invoice.date).ToString());
+            helper.AddNode(output, outputOrderDbop, "AUXIL_CODE", invoice.salesmanCode);
+            helper.AddNode(output, outputOrderDbop, "ARP_CODE", invoice.customerCode);
+            helper.AddNode(output, outputOrderDbop, "SOURCE_WH", invoice.wareHouseCode);
+            helper.AddNode(output, outputOrderDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
+            //helper.AddNode(output, outputOrderDbop, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString().Replace(",", "."));  // indirim toplamı
+            helper.AddNode(output, outputOrderDbop, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString().Replace(",", "."));  // toplam tutar
+            helper.AddNode(output, outputOrderDbop, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
+            helper.AddNode(output, outputOrderDbop, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
+            helper.AddNode(output, outputOrderDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
+            helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
+            helper.AddNode(output, outputOrderDbop, "NOTES1", " "+invoice.note);
+
+            if (invoice.type == 8 || invoice.type == 3)
+                helper.AddNode(output, outputOrderDbop, "SALESMAN_CODE", invoice.salesmanCode); 
+
+            if (useCypheCode)
+                helper.AddNode(output, outputOrderDbop, "AUTH_CODE", cypheCode);
+               
+            outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
+            outputOrderDbop.AppendChild(outputTransactions);
+
+            for (int i = 0; i < invoice.details.Count; i++)
+            {
+
+                outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
+                outputTransactions.AppendChild(outputTransaction);
+
+                if (invoice.details[i].type == 2)
+                {
+                    double discountRate = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(invoice.details[i].discountTotal)) / Convert.ToDouble(invoice.details[i].grossTotal)), 2));
+                    //1discounts 
+                    if (discountRate > 0 && discountRate < 100)
+                    {
+                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                        helper.AddNode(output, outputTransaction, "QUANTITY", "0");
+                        helper.AddNode(output, outputTransaction, "TOTAL", Convert.ToDouble(invoice.details[i].discountTotal).ToString().Replace(",", "."));
+                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", discountRate.ToString().Replace(",", "."));
+                    }
+                }
+                else
+                {
+                    helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                    helper.AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                    helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                    helper.AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString());
+                    helper.AddNode(output, outputTransaction, "TOTAL", invoice.details[i].total.ToString());
+                    helper.AddNode(output, outputTransaction, "TOTAL_NET", invoice.details[i].netTotal.ToString());
+                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
+                    helper.AddNode(output, outputTransaction, "VAT_AMOUNT", invoice.details[i].vatAmount.ToString().Replace(",", "."));
+                    helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                    helper.AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
+                    helper.AddNode(output, outputTransaction, "SOURCE_WH", invoice.wareHouseCode);
+                    helper.AddNode(output, outputTransaction, "SOURCE_COST_GRP", invoice.wareHouseCode);
+
+                    if (invoice.type == 8 || invoice.type == 3)
+                        helper.AddNode(output, outputTransaction, "SALESMAN_CODE", invoice.salesmanCode);
+                }
+            }
+
+            string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
+
+            string saveFilePath = filePath + "\\" + fileName;
             output.Save(saveFilePath);
 
         }
@@ -661,6 +821,7 @@ namespace invoiceIntegration
                             if (useShipCode)
                             {
                                 newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
+                                newInvoice.DataFields.FieldByName("SHIPLOC_DEF").Value = invoice.customerBranchName;
                             }
 
                             if (useCypheCode)
@@ -1437,7 +1598,11 @@ namespace invoiceIntegration
             {
                 foreach (var invoice in invoices)
                 {
-                    createXML(invoice);
+                    if (XMLTransferForOrder)
+                        createXMLforOrder(invoice);
+                    else
+                        createXMLforInvoice(invoice);
+                    
                     IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, invoice.number, true);
                     receivedInvoices.Add(recievedInvoice);
                 }

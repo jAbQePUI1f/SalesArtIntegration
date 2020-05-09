@@ -82,6 +82,11 @@ namespace invoiceIntegration.config
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["XMLTransfer"]);
         }
+        public static bool getXMLTransferForOrder()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["XMLTransferForOrder"]);
+        }
+        
         public static string getCypheCode()
         {
             return ConfigurationManager.AppSettings["YetkiKodu"];
