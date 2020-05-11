@@ -149,8 +149,7 @@ namespace invoiceIntegration
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_WH", invoice.wareHouseCode);
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
             //
-
-            helper.AddNode(output, outputInvoiceDbop, "PAYMENT_CODE", invoice.paymentCode);
+            
             //helper.AddNode(output, outputInvoiceDbop, "EINVOICE", reader.getEInvoiceByCustomerCode(invoice.customerCode).ToString());
             //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", reader.getProfileIDByCustomerCode(invoice.customerCode).ToString());
             
@@ -234,6 +233,7 @@ namespace invoiceIntegration
                     helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
                     helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString());
                     helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                    helper.AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
                     helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
                     //efaturalarda istiyor olabilri
                     helper.AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
