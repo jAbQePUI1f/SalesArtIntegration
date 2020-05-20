@@ -147,12 +147,8 @@ namespace invoiceIntegration
             helper.AddNode(output, outputInvoiceDbop, "AUXIL_CODE", invoice.salesmanCode);
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_WH", invoice.wareHouseCode);
             helper.AddNode(output, outputInvoiceDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
-            //
-            
-            //helper.AddNode(output, outputInvoiceDbop, "EINVOICE", reader.getEInvoiceByCustomerCode(invoice.customerCode).ToString());
-            //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", reader.getProfileIDByCustomerCode(invoice.customerCode).ToString());
-            
-            //helper.AddNode(output, outputInvoiceDbop, "PAYMENT_CODE", invoice.paymentCode);  // ödeme planı
+            // 
+             
             helper.AddNode(output, outputInvoiceDbop, "SALESMAN_CODE", invoice.salesmanCode);  // salesman 
 
             #region dispatch
@@ -230,7 +226,7 @@ namespace invoiceIntegration
                     helper.AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal,2).ToString().Replace(",", "."));
                     helper.AddNode(output, outputTransaction, "BILLED", "1");
                     helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString());
+                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
                     helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
                     helper.AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
                     helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
@@ -240,9 +236,13 @@ namespace invoiceIntegration
                     if (invoice.type == 3)  // iade faturaları için
                     {
                         helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
-                    }
+                    } 
+                    
                 } 
-            }
+            } 
+
+            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", invoice.isElectronicInvoiceCustomer ? "1" : "0" );
+            //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", invoice.isElectronicInvoiceCustomer ? "1" : "0");
 
             string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
 
@@ -394,6 +394,8 @@ namespace invoiceIntegration
                     invoice.wareHouseCode = selectedInvoice.wareHouseCode;
                     invoice.customerCode = selectedInvoice.customerCode;
                     invoice.customerName = selectedInvoice.customerName;
+                    invoice.isElectronicInvoiceCustomer = selectedInvoice.isElectronicInvoiceCustomer;
+                    invoice.isElectronicWaybillCustomer = selectedInvoice.isElectronicInvoiceCustomer;
                     invoice.date = selectedInvoice.date;
                     invoice.documentDate = selectedInvoice.documentDate;
                     invoice.deliveryDate = selectedInvoice.deliveryDate;
