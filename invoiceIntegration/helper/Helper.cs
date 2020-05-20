@@ -160,15 +160,13 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan İrsaliye Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
-
-
+        
         public  void AddNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
         {
             XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
             tempNode.InnerText = InnerText;
             Node.AppendChild(tempNode);
         }
-
         public  void AddCDataNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
         {
             XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
@@ -176,7 +174,6 @@ namespace invoiceIntegration.helper
             tempNode.AppendChild(cdata);
             Node.AppendChild(tempNode);
         }
-
 
         //public static int GetConv1(string unitname, string productcode)
         //{
