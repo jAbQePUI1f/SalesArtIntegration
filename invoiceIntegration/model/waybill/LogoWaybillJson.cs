@@ -19,6 +19,7 @@ namespace invoiceIntegration.model.waybill
         public string customerName { get; set; }
         public string customerBranchCode { get; set; }
         public string customerBranchName { get; set; }
+        public bool ebillCustomer { get; set; }
         public DateTime documentDate { get; set; }
         public DateTime deliveryDate { get; set; }
         public decimal discountTotal { get; set; }  // yapılan toplam indirim tutarı
