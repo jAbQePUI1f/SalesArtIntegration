@@ -241,7 +241,7 @@ namespace invoiceIntegration
                 } 
             } 
 
-            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", invoice.isElectronicInvoiceCustomer ? "1" : "0" );
+            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", invoice.ebillCustomer ? "1" : "0" );
             //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", invoice.isElectronicInvoiceCustomer ? "1" : "0");
 
             string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
@@ -354,9 +354,9 @@ namespace invoiceIntegration
                         helper.AddNode(output, outputTransaction, "GL_CODE1", "153.10.20.J01");
                     }
                     helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                    helper.AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString());
-                    helper.AddNode(output, outputTransaction, "TOTAL", invoice.details[i].total.ToString());
-                    helper.AddNode(output, outputTransaction, "TOTAL_NET", invoice.details[i].netTotal.ToString());
+                    helper.AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
+                    helper.AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].total, 2).ToString().Replace(",", "."));
+                    helper.AddNode(output, outputTransaction, "TOTAL_NET", invoice.details[i].netTotal.ToString().Replace(",", "."));
                     helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
                     helper.AddNode(output, outputTransaction, "VAT_AMOUNT", invoice.details[i].vatAmount.ToString().Replace(",", "."));
                     helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
@@ -394,8 +394,7 @@ namespace invoiceIntegration
                     invoice.wareHouseCode = selectedInvoice.wareHouseCode;
                     invoice.customerCode = selectedInvoice.customerCode;
                     invoice.customerName = selectedInvoice.customerName;
-                    invoice.isElectronicInvoiceCustomer = selectedInvoice.isElectronicInvoiceCustomer;
-                    invoice.isElectronicWaybillCustomer = selectedInvoice.isElectronicInvoiceCustomer;
+                    invoice.ebillCustomer = selectedInvoice.ebillCustomer;
                     invoice.date = selectedInvoice.date;
                     invoice.documentDate = selectedInvoice.documentDate;
                     invoice.deliveryDate = selectedInvoice.deliveryDate;
