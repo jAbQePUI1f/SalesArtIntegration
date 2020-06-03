@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.helper;
+using invoiceIntegration.model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using UnityObjects;
 
 namespace invoiceIntegration.repository
@@ -403,6 +405,54 @@ namespace invoiceIntegration.repository
                 Console.WriteLine(e);
             }
             return productCode;
+        }
+
+        public string createInvoice(LogoInvoiceJson invoice)
+        {
+            string guid = "";
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = conString;
+            SqlCommand cmd = new SqlCommand("SP_InsertInvoice_Peros", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+            cmd.Parameters.AddWithValue("@PROFILE_ID", "0");   // 0:Ticari Fatura 1:Temel Fatura
+            cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == BillingTypeEnum.BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN) ? 1 : 0).ToString() );  //0:Normal 1:İade
+            cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
+            cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
+            cmd.Parameters.AddWithValue("@PAYMENT_DUE_DATE", invoice.date);  // vade tarihi
+            cmd.Parameters.AddWithValue("@TAX_EXCLUSIVE_AMOUNT", invoice.grossTotal);  // toplam tutarı kdv siz
+            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", invoice.discountTotal);  // indirim tutarı
+            cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", Convert.ToDecimal(0.00));  // 0 gelecek hep ?? 
+            cmd.Parameters.AddWithValue("@TAX_AMOUNT1", invoice.vatTotal);  // vergi tutarı
+            cmd.Parameters.AddWithValue("@PAYABLE_AMOUNT", invoice.netTotal);  // vergi dahil toplam tutar
+            cmd.Parameters.AddWithValue("@DOCUMENT_CURRENCY_CODE", "0");  // 0: TL  , 1: Dolar
+            cmd.Parameters.AddWithValue("@NOTE1", invoice.note);
+            cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", invoice.note);  // bedelsiz fatura notu(fatura notuun aynısı olablilr)
+            cmd.Parameters.AddWithValue("@KASAHIZKOD", "");  // Bos gönderileiblir.
+            cmd.Parameters.AddWithValue("@KASAHIZMET", SqlDbType.TinyInt).SqlValue = 0;  // (0 gelecek -- 0:Carimiz 1:Cari Personelimiz 2:Bankamız 3:Hizmetimiz 4:Kasamız 5:Giderimiz 6:Muhasebe Hesabımız 7:Personelimiz 8:Demirbaşımız 9:İthalat Dosyamız 10:Finansal Sözleşmemiz 11:Kredi Sözleşmemiz 12:Dönemsel Hizmetimiz 13:Kredi Kartımız
+            cmd.Parameters.AddWithValue("@CINSI", SqlDbType.TinyInt).SqlValue = 6;  // satış faturası için 6  --> 	0:Nakit 1:Müşteri Çeki 2:Müşteri Senedi 3:Firma Çeki 4:Firma Senedi 5:Dekont 6:Toptan Fatura 7:Perakende Faturası 8:Hizmet Faturası 9:Serbest Meslek Makbuzu 10:Vade Farkı Faturası 11:Kur Farkı Faturası 12:Fason Faturası 13:Dış Ticaret Faturası 14:Demirbaş Faturası 15:Değer Farkı Faturası 16:Cari Açılış 17:Müşteri Havale Sözü 18:Müşteri Ödeme Sözü 19:Müşteri Kredi Kartı 20:Firma Havale Emri 21:Firma Ödeme Emri 22:Firma Kredi Kartı 23:Vade Farkı Sıfırlama 24:Hal Faturası 25:Müstahsil Fatura 26:Stok Gider Pusulası 27:Gider Makbuzu 28:İthalat Masraf Faturası 29:Gümrük Beyannamesi 30:Finansal Kiralama Sözleşmesi 31:Finansal Kira Faturası 32:FUTURE_2 33:Avans Makbuzu 34:Müstahsil Değer Farkı Faturası 35:Kabzımal Faturası 36:Hediye Çeki Faturası 37:Müşteri Teminat Mektubu 38:Firma Teminat Mektubu 39:Depozito Çeki 40:Depozito Senedi 41:Firma Reel Kredi Kartı
+            cmd.Parameters.AddWithValue("@CHECK_UUID",SqlDbType.Bit).SqlValue = 1 ;  // fatura numarası içeeride daha önce kaydedilmiş mi kontro ledilsin mi ? 1 ise evet
+            cmd.Parameters.AddWithValue("@SATIRNO", 0);  // 0 olacak , cünkü her bir fsturanın tek bir header'ı olacak
+            cmd.Parameters.AddWithValue("@EVRAKTIP", (invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_SERVICE) ? 63 : 0);  //  0:Alış Faturası , 63:Satış Faturası 
+
+
+            try
+            {
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                guid = cmd.Parameters[0].Value.ToString(); 
+            }
+            catch (Exception ex )
+            {
+                MessageBox.Show("Database Hatası", ex.Message , MessageBoxButtons.OK);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return guid;
         }
     }
 }
