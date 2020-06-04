@@ -475,14 +475,14 @@ namespace invoiceIntegration.repository
                 }
                 catch (Exception ex )
                 {
-                    MessageBox.Show("Fatura Kaydetme Hatası", "Tip:" + ex.GetType().ToString() + ",  Hata Mesajı:" + ex.Message, MessageBoxButtons.OK);
+                    MessageBox.Show("Tip:" + ex.GetType().ToString() + ",  Hata Mesajı:" + ex.Message, "Fatura Kaydetme Hatası", MessageBoxButtons.OK);
                     try
                     {
                         transaction.Rollback();
                     }
                     catch (Exception ex2)
                     {
-                        MessageBox.Show("Rolll Back Hatası", "Tip:" + ex2.GetType().ToString() + ",  Hata Mesajı:" + ex2.Message, MessageBoxButtons.OK);
+                        MessageBox.Show( "Tip:" + ex2.GetType().ToString() + ",  Hata Mesajı:" + ex2.Message, "Rolll Back Hatası", MessageBoxButtons.OK);
                     }
                 }
                 finally
