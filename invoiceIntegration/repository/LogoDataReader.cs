@@ -424,11 +424,12 @@ namespace invoiceIntegration.repository
 
                 try
                 {
+                    string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "SP_InsertInvoice_Peros";
 
                     cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                    cmd.Parameters.AddWithValue("@PROFILE_ID", "0");   // 0:Ticari Fatura 1:Temel Fatura
+                    cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);   // 0:Ticari Fatura 1:Temel Fatura
                     cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == BillingTypeEnum.BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
                     cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
                     cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
@@ -447,10 +448,14 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@CHECK_UUID", SqlDbType.Bit).SqlValue = 1;  // fatura numarası içeeride daha önce kaydedilmiş mi kontro ledilsin mi ? 1 ise evet
                     cmd.Parameters.AddWithValue("@SATIRNO", 0);  // 0 olacak , cünkü her bir fsturanın tek bir header'ı olacak
                     cmd.Parameters.AddWithValue("@EVRAKTIP", (invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_SERVICE) ? 63 : 0);  //  0:Alış Faturası , 63:Satış Faturası 
-
-                    cmd.ExecuteNonQuery();
-                    remoteRef = cmd.ExecuteScalar().ToString();
                     
+                    SqlParameter sqlParam = new SqlParameter("@id", SqlDbType.UniqueIdentifier);
+                    sqlParam.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(sqlParam);
+                    cmd.ExecuteNonQuery();
+                      
+                    remoteRef = sqlParam.Value.ToString();
+
                     cmd.CommandText = "SP_InsertInvoiceDetail_Peros";
                     
                     foreach (var detail in invoice.details)
@@ -461,17 +466,18 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
                         cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);  // stok kodu
+                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", getProductCodeFromProviderCode(detail.code));  // stok kodu
                         cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;  // miktar
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.price;  // birim fiyat 
                         cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", detail.discountTotal);  // indirim tutarı 
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
+                        cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);
 
                         cmd.ExecuteNonQuery(); 
                     }
-                    transaction.Commit();
+                     transaction.Commit();
                 }
                 catch (Exception ex )
                 {
@@ -492,6 +498,113 @@ namespace invoiceIntegration.repository
                 }
             } 
             return remoteRef;
-        } 
+        }
+        
+        public string getProductCodeFromProviderCode(string code)
+        {
+            string productCode = "";
+
+            try
+            {
+                String Qry = "SELECT sto_kod ";
+                Qry += " FROM STOKLAR WITH (NOLOCK) ";
+                Qry += " WHERE sto_uretici_kodu = '" + code + "'";
+                 
+                SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+
+                conn.Open();
+
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                if (dr.Read())
+                {
+                    productCode = dr["sto_kod"].ToString();
+                }
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(code + " Kod'lu Ürünün Bilgileri Mikrodan Alınamadı.  Bu Ürünün Tanımlı Olduğundan Emin Olunuz..  Hata:" + e.Message, "Ürün Kodu Hatası", MessageBoxButtons.OK);
+            }
+            return productCode;
+        }
+
+        public int getProfileIDFromCustomerCodeMikro(string code)
+        {
+            int profileID = 0 ;
+
+            try
+            {
+                String Qry = "SELECT cari_efatura_fl ";
+                Qry += " FROM CARI_HESAPLAR WITH (NOLOCK) ";
+                Qry += " WHERE cari_kod = '" + code + "'";
+                 
+
+
+               SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+
+                conn.Open();
+
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                if (dr.Read())
+                {
+                    profileID = Convert.ToInt32(dr["cari_efatura_fl"]);
+                }
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(code + " Kod'lu Müşterinin Bilgileri Mikrodan Alınamadı.  Bu müşterinin Tanımlı Olduğundan Emin Olunuz..  Hata:" + e.Message , "Cari Kart Hatası", MessageBoxButtons.OK);
+            }
+            return profileID;
+        }
+
+        public string checkInvoiceNumber(string invoiceNumber, string customerCode)
+        {
+            string invoiceGuid = "";
+
+            try
+            {
+                string profileId = getProfileIDFromCustomerCodeMikro(customerCode).ToString();
+
+                String Qry = "SELECT top 1 cha_Guid ";
+                Qry += " FROM CARI_HESAP_HAREKETLERI WITH (NOLOCK) ";
+                Qry += " WHERE cha_evrakno_seri = " ;
+                Qry += " (case when '" + profileId + "' = '1' then 'KZL'  else 'KZA' end) and cha_evrakno_sira = cast(substring( '"+ invoiceNumber +"', 7, 8) as int) ";
+                  
+                SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+
+                conn.Open();
+
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                if (dr.Read())
+                {
+                    invoiceGuid = (dr["cha_Guid"]).ToString();
+                }
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Beklenmeyen Bir Hata Oluştu", MessageBoxButtons.OK);
+            }
+            return invoiceGuid;
+        }
     }
 }

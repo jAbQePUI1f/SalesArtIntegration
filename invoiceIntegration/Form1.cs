@@ -1666,18 +1666,20 @@ namespace invoiceIntegration
             {
                 foreach (var invoice in invoices)
                 {  
-                    //remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(invoice.number);
+                    remoteInvoiceNumber = reader.checkInvoiceNumber(invoice.number, invoice.customerCode);
                     if (remoteInvoiceNumber != "")
                     {
-                        IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, true);
+                        IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, false);
                         receivedInvoices.Add(recievedInvoice);
                     }
                     else
                     {
                         string guid = reader.createInvoice(invoice);
-                        MessageBox.Show("guid", guid);
-                        IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, invoice.number, true);
-                        receivedInvoices.Add(recievedInvoice);
+                        if (guid != "" && guid.Length > 0)
+                        {
+                            IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, guid, true);
+                            receivedInvoices.Add(recievedInvoice);
+                        }
                     }
                        
                 }
@@ -1689,7 +1691,6 @@ namespace invoiceIntegration
             }
             finally
             {
-                isLoggedIn = false;
                 message = "";
 
             }
@@ -1752,7 +1753,7 @@ namespace invoiceIntegration
                     status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
                     status = sendMultipleInvoice(selectedInvoices);
-                //SendResponse(status);
+                SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
