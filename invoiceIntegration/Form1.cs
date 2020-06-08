@@ -38,6 +38,7 @@ namespace invoiceIntegration
         bool XMLTransferForOrder = Configuration.getXMLTransferForOrder(); 
         int distributorId = Configuration.getDistributorId();
         bool useDispatch = Configuration.getUseDispatch();
+        bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string url = Configuration.getUrl();
          
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
@@ -67,6 +68,12 @@ namespace invoiceIntegration
                 btnCheckLogoConnection.Visible = false;
                 btnSendToLogo.Visible = false;
                 btnXML.Visible = true;
+            }
+
+            if(integrationForMikroERP)
+            {
+                btnSendToLogo.Text = "Faturaları Mikroya Aktar";
+                isLoggedIn = true;
             }
         }
 
@@ -541,6 +548,23 @@ namespace invoiceIntegration
             }
             return waybills;
         }
+
+        public List<LogoInvoiceJson> GetSelectedInvoicesForMikro()
+        {
+            List<LogoInvoiceJson> invoices = new List<LogoInvoiceJson>();
+
+            foreach (DataGridViewRow row in dataGridInvoice.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
+                {
+                    string number = row.Cells["number"].Value.ToString();
+                    LogoInvoiceJson selectedInvoice = jsonInvoices.data.Where(inv => inv.number == number).FirstOrDefault();
+                      
+                    invoices.Add(selectedInvoice);
+                }
+            }
+            return invoices;
+        }
         void Test()
         {
 
@@ -767,7 +791,6 @@ namespace invoiceIntegration
         }
         public IntegratedInvoiceStatus sendMultipleInvoice(List<LogoInvoice> invoices)
         {
-            //1-Invoice listesi boş mu kontrol edilmeli 
             string remoteInvoiceNumber = "";
             string message = "";
             string remoteInvoiceStatus = "";
@@ -1631,6 +1654,52 @@ namespace invoiceIntegration
 
             return integratedInvoices;
         }
+        public IntegratedInvoiceStatus sendMultipleInvoicesForMikro(List<LogoInvoiceJson> invoices)
+        {
+            string remoteInvoiceNumber = "";
+            string message = "";
+            string remoteInvoiceStatus = "";
+
+            List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
+
+            try
+            {
+                foreach (var invoice in invoices)
+                {  
+                    remoteInvoiceNumber = reader.checkInvoiceNumber(invoice.number, invoice.customerCode);
+                    if (remoteInvoiceNumber != "")
+                    {
+                        IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, false);
+                        receivedInvoices.Add(recievedInvoice);
+                    }
+                    else
+                    {
+                        string guid = reader.createInvoice(invoice);
+                        if (guid != "" && guid.Length > 0)
+                        {
+                            IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, guid, true);
+                            receivedInvoices.Add(recievedInvoice);
+                        }
+                    }
+                       
+                }
+            }
+            catch (Exception ex)
+            {
+                IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(ex.Message.ToString(), "", remoteInvoiceNumber, false);
+                receivedInvoices.Add(recievedInvoice);
+            }
+            finally
+            {
+                message = "";
+
+            }
+
+            integratedInvoices.integratedInvoices = receivedInvoices;
+            integratedInvoices.distributorId = distributorId;
+
+            return integratedInvoices;
+        }
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
@@ -1662,6 +1731,7 @@ namespace invoiceIntegration
         private void btnSendToLogo_Click(object sender, EventArgs e)
         { 
             int selectedInvoiceCount = 0;
+            IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
             foreach (DataGridViewRow row in dataGridInvoice.Rows)
             {
                 if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
@@ -1671,11 +1741,18 @@ namespace invoiceIntegration
             }
             if (selectedInvoiceCount > 0)
             {
-                List<LogoInvoice> selectedInvoices = GetSelectedInvoices();
+                List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
+                List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
+                if (integrationForMikroERP)
+                    selectedInvoicesForMikro = GetSelectedInvoicesForMikro();
+                else
+                    selectedInvoices = GetSelectedInvoices();
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-                //IntegratedInvoiceStatus status = sendMultipleDespatch(selectedInvoices);//sendMultipleInvoice(selectedInvoices);
-                IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
+                if(integrationForMikroERP)
+                    status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
+                else
+                    status = sendMultipleInvoice(selectedInvoices);
                 SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");

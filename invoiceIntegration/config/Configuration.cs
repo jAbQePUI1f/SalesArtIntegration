@@ -95,5 +95,10 @@ namespace invoiceIntegration.config
         {
             return ConfigurationManager.AppSettings["URL"];
         }
+
+        public static bool getIntegrationForMikroERP()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["integrationForMikroERP"]);
+        }
     }
 }
