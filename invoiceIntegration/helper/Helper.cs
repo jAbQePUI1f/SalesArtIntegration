@@ -44,6 +44,9 @@ namespace invoiceIntegration.helper
         {
             return Configuration.getDepartment();
         }
+
+        bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
+
         public string getInvoiceType(int type)
         {
             string invoiceType = "";
@@ -127,12 +130,13 @@ namespace invoiceIntegration.helper
                 if (item.successfullyIntegrated)
                 {
                     LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteInvoiceNumber, "AKTARIM BAŞARILI", item.errorMessage);
-                    basarili += " Fatura Numarası   : " + item.remoteInvoiceNumber;
+                    basarili += " Fatura Numarası   : " ;
+                    basarili += integrationForMikroERP ? item.invoiceNumber : item.remoteInvoiceNumber;
                 }
                 else
                 {
                     LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteInvoiceNumber, "AKTARIM BAŞARISIZ..!!!", item.errorMessage);
-                    basarisiz += item.invoiceNumber + " numaralı fatura için : " + item.errorMessage;
+                    basarisiz += item.invoiceNumber + " numaralı fatura için : " + item.errorMessage; 
                 }
             }
             string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;
