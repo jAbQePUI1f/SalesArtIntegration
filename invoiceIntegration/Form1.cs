@@ -208,17 +208,13 @@ namespace invoiceIntegration
 
                 if (invoice.details[i].type == 2)
                 {
-                    double discountRate = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(invoice.details[i].discountTotal)) / Convert.ToDouble(invoice.details[i].grossTotal)), 2)); 
-                    //1discounts 
-                    if (discountRate > 0 && discountRate < 100)
+                     //1discounts 
+                    if (invoice.details[i].rate > Convert.ToDecimal(0) && invoice.details[i].rate < Convert.ToDecimal(100))
                     {
                         helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                        helper.AddNode(output, outputTransaction, "QUANTITY", "0");
-                        helper.AddNode(output, outputTransaction, "BILLED", "1");
-                        helper.AddNode(output, outputTransaction, "TOTAL", Convert.ToDouble(invoice.details[i].discountTotal).ToString().Replace(",", "."));
-                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", discountRate.ToString().Replace(",", "."));
+                        helper.AddNode(output, outputTransaction, "BILLED", "1"); 
+                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
                         helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                        helper.AddNode(output, outputTransaction, "DETAIL_LEVEL", "0");
                         if (invoice.type == 3)  // iade faturaları için
                         {
                             helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
@@ -336,14 +332,11 @@ namespace invoiceIntegration
 
                 if (invoice.details[i].type == 2)
                 {
-                    double discountRate = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(invoice.details[i].discountTotal)) / Convert.ToDouble(invoice.details[i].grossTotal)), 2));
-                    //1discounts 
-                    if (discountRate > 0 && discountRate < 100)
+                     //1discounts 
+                    if (invoice.details[i].rate > Convert.ToDecimal(0) && invoice.details[i].rate < Convert.ToDecimal(100))
                     {
-                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                        helper.AddNode(output, outputTransaction, "QUANTITY", "0");
-                        helper.AddNode(output, outputTransaction, "TOTAL", Convert.ToDouble(invoice.details[i].discountTotal).ToString().Replace(",", "."));
-                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", discountRate.ToString().Replace(",", "."));
+                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString()); 
+                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
                     }
                 }
                 else
@@ -935,14 +928,9 @@ namespace invoiceIntegration
                                     InvoiceDetail detail = invoice.details[i];
                                     if (detail.type == 2)
                                     {
-                                        newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-                                        //newInvoiceLines[i].FieldByName("MASTER_CODE").Value = "";
-                                        //newInvoiceLines[i].FieldByName("DETAIL_LEVEL").Value = 1;
-                                        newInvoiceLines[i].FieldByName("QUANTITY").Value = 0;
-                                        newInvoiceLines[i].FieldByName("TOTAL").Value = Convert.ToDouble(detail.discountTotal); 
-                                        newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal)),2));
-                                        newInvoiceLines[i].FieldByName("BASE_AMOUNT").Value = Convert.ToDouble(invoice.netTotal);
-                                        //newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
+                                        newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;  
+                                        //newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal)),2));
+                                        newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2)); 
 
                                     }
                                     else
@@ -1180,69 +1168,64 @@ namespace invoiceIntegration
                                 if (newWaybillLines.AppendLine())
                                 {
                                     WaybillDetail detail = despatch.details[i];
-                                    if (detail.type == 2)
-                                    {
-                                        newWaybillLines[i].FieldByName("TYPE").Value = detail.type;
-                                        //newInvoiceLines[i].FieldByName("MASTER_CODE").Value = "";
-                                        //newInvoiceLines[i].FieldByName("DETAIL_LEVEL").Value = 1;
-                                        newWaybillLines[i].FieldByName("QUANTITY").Value = 0;
-                                        newWaybillLines[i].FieldByName("TOTAL").Value = Convert.ToDouble(detail.discountTotal);
-                                        newWaybillLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal));
-                                        newWaybillLines[i].FieldByName("BASE_AMOUNT").Value = Convert.ToDouble(despatch.netTotal);
-                                        //newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
+                                if (detail.type == 2)
+                                {
+                                    newWaybillLines[i].FieldByName("TYPE").Value = detail.type;
+                                    newWaybillLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
+                                    //newWaybillLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal));
 
+                                }
+                                else
+                                {
+                                    newWaybillLines[i].FieldByName("TYPE").Value = detail.type;
+
+                                    if (isProducerCode) // bazı distlerde üürn kodları producerCode a yazılı ,
+                                    {
+                                        newWaybillLines[i].FieldByName("MASTER_CODE").Value = reader.getProductCodeByProducerCode(detail.code);
                                     }
                                     else
                                     {
-                                        newWaybillLines[i].FieldByName("TYPE").Value = detail.type;
-
-                                        if (isProducerCode) // bazı distlerde üürn kodları producerCode a yazılı ,
-                                        {
-                                            newWaybillLines[i].FieldByName("MASTER_CODE").Value = reader.getProductCodeByProducerCode(detail.code);
-                                        }
-                                        else
-                                        {
-                                            newWaybillLines[i].FieldByName("MASTER_CODE").Value = detail.code;
-                                        }
-
-                                        newWaybillLines[i].FieldByName("SOURCEINDEX").Value = despatch.wareHouseCode;
-                                        newWaybillLines[i].FieldByName("SOURCECOSTGRP").Value = despatch.wareHouseCode;
-                                        newWaybillLines[i].FieldByName("QUANTITY").Value = detail.quantity;
-                                        newWaybillLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
-                                        newWaybillLines[i].FieldByName("TOTAL").Value = detail.total;
-                                        newWaybillLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                        //newInvoiceLines[i].FieldByName("UNIT_CODE").Value = "AD";
-                                        newWaybillLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
-                                        newWaybillLines[i].FieldByName("PAYMENT_CODE").Value = despatch.paymentCode;
-
-                                        //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
-                                        //newInvoiceLines[i].FieldByName("UNIT_CONV2").Value = 12;  // koli carpanı
-                                        newWaybillLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
-                                        newWaybillLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatAmount;
-                                        newWaybillLines[i].FieldByName("VAT_BASE").Value = Convert.ToDouble(detail.price) * detail.quantity;
-                                        newWaybillLines[i].FieldByName("TOTAL_NET").Value = Convert.ToDouble(detail.price) * detail.quantity;
-                                        newWaybillLines[i].FieldByName("SALEMANCODE").Value = despatch.salesmanCode;
-                                        newWaybillLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
-                                        newWaybillLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
-                                        //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
-                                        //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
-                                        newWaybillLines[i].FieldByName("BARCODE").Value = detail.barcode;
-
-                                        if (despatch.type == 3 || despatch.type == 8 || despatch.type == 9) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
-                                        {
-
-                                            newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 2;
-                                        }
-                                        else
-                                        {
-                                            newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 1;
-                                        }
-
-                                        if (despatch.type == 3)  // iade faturaları 
-                                        {
-                                            newWaybillLines[i].FieldByName("RET_COST_TYPE").Value = 1;
-                                        }
+                                        newWaybillLines[i].FieldByName("MASTER_CODE").Value = detail.code;
                                     }
+
+                                    newWaybillLines[i].FieldByName("SOURCEINDEX").Value = despatch.wareHouseCode;
+                                    newWaybillLines[i].FieldByName("SOURCECOSTGRP").Value = despatch.wareHouseCode;
+                                    newWaybillLines[i].FieldByName("QUANTITY").Value = detail.quantity;
+                                    newWaybillLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
+                                    newWaybillLines[i].FieldByName("TOTAL").Value = detail.total;
+                                    newWaybillLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
+                                                                                               //newInvoiceLines[i].FieldByName("UNIT_CODE").Value = "AD";
+                                    newWaybillLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+                                    newWaybillLines[i].FieldByName("PAYMENT_CODE").Value = despatch.paymentCode;
+
+                                    //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
+                                    //newInvoiceLines[i].FieldByName("UNIT_CONV2").Value = 12;  // koli carpanı
+                                    newWaybillLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
+                                    newWaybillLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatAmount;
+                                    newWaybillLines[i].FieldByName("VAT_BASE").Value = Convert.ToDouble(detail.price) * detail.quantity;
+                                    newWaybillLines[i].FieldByName("TOTAL_NET").Value = Convert.ToDouble(detail.price) * detail.quantity;
+                                    newWaybillLines[i].FieldByName("SALEMANCODE").Value = despatch.salesmanCode;
+                                    newWaybillLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
+                                    newWaybillLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
+                                    //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
+                                    //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
+                                    newWaybillLines[i].FieldByName("BARCODE").Value = detail.barcode;
+
+                                    if (despatch.type == 3 || despatch.type == 8 || despatch.type == 9) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
+                                    {
+
+                                        newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 2;
+                                    }
+                                    else
+                                    {
+                                        newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 1;
+                                    }
+
+                                    if (despatch.type == 3)  // iade faturaları 
+                                    {
+                                        newWaybillLines[i].FieldByName("RET_COST_TYPE").Value = 1;
+                                    }
+                                }
                                 }
                             }
                             
@@ -1478,13 +1461,7 @@ namespace invoiceIntegration
                             if (detail.type == 2)  // indirim
                             {
                                 newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-                                //newInvoiceLines[i].FieldByName("MASTER_CODE").Value = "";
-                                //newInvoiceLines[i].FieldByName("DETAIL_LEVEL").Value = 1;
-                                newInvoiceLines[i].FieldByName("QUANTITY").Value = 0;
-                                newInvoiceLines[i].FieldByName("TOTAL").Value = Convert.ToDouble(detail.discountTotal);
-                                newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal)), 2));
-                                newInvoiceLines[i].FieldByName("BASE_AMOUNT").Value = Convert.ToDouble(invoice.netTotal);
-                                //newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
+                                newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
 
                             }
                             else
