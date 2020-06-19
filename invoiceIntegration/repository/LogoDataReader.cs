@@ -429,6 +429,7 @@ namespace invoiceIntegration.repository
                     cmd.CommandText = "SP_InsertInvoice_Peros";
 
                     cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                    cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
                     cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);   // 0:Ticari Fatura 1:Temel Fatura
                     cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == BillingTypeEnum.BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
                     cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
