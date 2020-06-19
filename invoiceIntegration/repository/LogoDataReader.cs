@@ -581,7 +581,7 @@ namespace invoiceIntegration.repository
                 String Qry = "SELECT top 1 cha_Guid ";
                 Qry += " FROM CARI_HESAP_HAREKETLERI WITH (NOLOCK) ";
                 Qry += " WHERE cha_evrakno_seri = " ;
-                Qry += " (case when '" + profileId + "' = '1' then 'KZL'  else 'KZA' end) and cha_evrakno_sira = cast(substring( '"+ invoiceNumber +"', 7, 8) as int) ";
+                Qry += " (case when '" + profileId + "' = '1' then 'KZL'  else 'KZA' end) and cha_diger_belge_adi =  '" + invoiceNumber +"' ";
                   
                 SqlConnection conn = new SqlConnection(conString);
                 SqlCommand sqlCmd = new SqlCommand();
