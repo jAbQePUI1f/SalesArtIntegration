@@ -313,7 +313,9 @@ namespace invoiceIntegration
             helper.AddNode(output, outputOrderDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
             helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
             helper.AddNode(output, outputOrderDbop, "NOTES1", " "+invoice.note); 
-            
+            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", "1"); 
+
+
 
             if (invoice.type == 8 || invoice.type == 3)
                 helper.AddNode(output, outputOrderDbop, "SALESMAN_CODE", invoice.salesmanCode); 
