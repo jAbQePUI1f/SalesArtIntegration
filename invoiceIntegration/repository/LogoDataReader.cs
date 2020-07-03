@@ -470,11 +470,47 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", getProductCodeFromProviderCode(detail.code));  // stok kodu
                         cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;  // miktar
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.price;  // birim fiyat 
-                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", detail.discountTotal);  // indirim tutarı 
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
                         cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);
+
+                        if(detail.discounts != null && detail.discounts.Count > 0)
+                        {
+                            for (int i = 0; i < detail.discounts.Count; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", detail.discounts[i].discountTotal);
+                                        break;
+                                    case 1:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT2", detail.discounts[i].discountTotal);
+                                        break;
+                                    case 2:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT3", detail.discounts[i].discountTotal);
+                                        break;
+                                    case 3:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT4", detail.discounts[i].discountTotal);
+                                        break;
+                                    case 4:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT5", detail.discounts[i].discountTotal);
+                                        break;
+                                    case 5:
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", detail.discounts[i].discountTotal);
+                                        break;
+                                } 
+                            }
+                        }
+                        else  // indirim yok ise , indirim satırına 0 yazıldı , procedure bu alanları bekliyor , doldurmalıyız.
+                        {
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", SqlDbType.Decimal).SqlValue = 0;
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT2", SqlDbType.Decimal).SqlValue = 0;
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT3", SqlDbType.Decimal).SqlValue = 0;
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT4", SqlDbType.Decimal).SqlValue = 0;
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT5", SqlDbType.Decimal).SqlValue = 0;
+                            cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", SqlDbType.Decimal).SqlValue = 0;
+                        }
 
                         cmd.ExecuteNonQuery(); 
                     }
