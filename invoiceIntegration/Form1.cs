@@ -39,6 +39,7 @@ namespace invoiceIntegration
         int distributorId = Configuration.getDistributorId();
         bool useDispatch = Configuration.getUseDispatch();
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
+        string shipAgentCode = Configuration.getShipAgentCode();
         string url = Configuration.getUrl();
          
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
@@ -131,6 +132,7 @@ namespace invoiceIntegration
             helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.documentNumber);
             helper.AddNode(output, outputInvoiceDbop, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
             helper.AddNode(output, outputInvoiceDbop, "ARP_CODE", invoice.customerCode);
+            helper.AddNode(output, outputInvoiceDbop, "SHIPPING_AGENT", shipAgentCode);
 
             if (useCypheCode)
                 helper.AddNode(output, outputInvoiceDbop, "AUTH_CODE", cypheCode);
@@ -180,6 +182,10 @@ namespace invoiceIntegration
             helper.AddNode(output, outputDispatch, "TIME", helper.Hour(invoice.date).ToString());
             helper.AddNode(output, outputDispatch, "DOC_NUMBER", invoice.number);
             helper.AddNode(output, outputDispatch, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
+            helper.AddNode(output, outputDispatch, "SHIPPING_AGENT", shipAgentCode); 
+            helper.AddNode(output, outputDispatch, "SHIP_DATE", invoice.date.AddDays(2).ToString("dd.MM.yyyy")); 
+            helper.AddNode(output, outputDispatch, "SHIP_TIME", helper.Hour(invoice.date.AddDays(2)).ToString());
+            helper.AddNode(output, outputDispatch, "DISP_STATUS", "1");
 
             if (useCypheCode)
                 helper.AddNode(output, outputDispatch, "AUTH_CODE", cypheCode);
@@ -313,7 +319,7 @@ namespace invoiceIntegration
             helper.AddNode(output, outputOrderDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
             helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
             helper.AddNode(output, outputOrderDbop, "NOTES1", " "+invoice.note); 
-            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", "1"); 
+            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", shipAgentCode); 
 
 
 
@@ -875,6 +881,8 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
                             newInvoice.DataFields.FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
                             newInvoice.DataFields.FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
+                            newInvoice.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
+
 
 
                             Lines dispatches_lines = newInvoice.DataFields.FieldByName("DISPATCHES").Lines;
@@ -906,6 +914,12 @@ namespace invoiceIntegration
                                 dispatches_lines[0].FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                                 dispatches_lines[0].FieldByName("DIVISION").Value = invoice.distributorBranchCode;
                                 dispatches_lines[0].FieldByName("INVOICED").Value = 1;
+                                dispatches_lines[0].FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
+                                dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
+                                dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
+                                dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
+
+
                                 //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
 
                                 dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
@@ -1143,8 +1157,13 @@ namespace invoiceIntegration
                             newDespatch.DataFields.FieldByName("SOURCE_WH").Value = despatch.wareHouseCode;
                             newDespatch.DataFields.FieldByName("SOURCE_COST_GRP").Value = despatch.wareHouseCode;
                             newDespatch.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-                        
-                            if (useCypheCode)
+                            newDespatch.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
+                            newDespatch.DataFields.FieldByName("SHIP_DATE").Value = despatch.date.AddDays(2).ToString("dd.MM.yyyy");
+                            newDespatch.DataFields.FieldByName("SHIP_TIME").Value = helper.Hour(despatch.date.AddDays(2)).ToString();
+                            newDespatch.DataFields.FieldByName("DISP_STATUS").Value = 1;
+
+
+                        if (useCypheCode)
                             {
                                 newDespatch.DataFields.FieldByName("AUTH_CODE").Value = cypheCode;
                             }
@@ -1381,7 +1400,8 @@ namespace invoiceIntegration
                     newInvoice.DataFields.FieldByName("ARP_CODE").Value = invoice.customerCode;
                     newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                     newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
-                    newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
+                    newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment(); 
+                    newInvoice.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
 
                     if (useShipCode)
                     {
@@ -1438,6 +1458,11 @@ namespace invoiceIntegration
                         dispatches_lines[0].FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                         dispatches_lines[0].FieldByName("DIVISION").Value = invoice.distributorBranchCode;
                         dispatches_lines[0].FieldByName("INVOICED").Value = 1;
+                        dispatches_lines[0].FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
+                        dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
+                        dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
+                        dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
+
                         //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
 
                         dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;

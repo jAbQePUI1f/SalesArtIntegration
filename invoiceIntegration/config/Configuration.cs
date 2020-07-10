@@ -100,5 +100,10 @@ namespace invoiceIntegration.config
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["integrationForMikroERP"]);
         }
+
+        public static string getShipAgentCode()
+        {
+            return ConfigurationManager.AppSettings["shipAgentCode"];
+        }
     }
 }
