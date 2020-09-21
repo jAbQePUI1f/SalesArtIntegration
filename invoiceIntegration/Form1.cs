@@ -219,8 +219,9 @@ namespace invoiceIntegration
                     {
                         helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
                         helper.AddNode(output, outputTransaction, "BILLED", "1"); 
-                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
+                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
                         helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
                         if (invoice.type == 3)  // iade faturaları için
                         {
                             helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
@@ -345,6 +346,7 @@ namespace invoiceIntegration
                     {
                         helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString()); 
                         helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
+                        helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
                     }
                 }
                 else
@@ -447,6 +449,7 @@ namespace invoiceIntegration
                             invDetailDiscountDetail.discountTotal = discount.discountTotal;
                             invDetailDiscountDetail.price = invDetail.price;
                             invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
+                            invDetailDiscountDetail.name = discount.name;
 
                             invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
                         }
@@ -529,6 +532,7 @@ namespace invoiceIntegration
                             waybillDetailDiscountDetail.discountTotal = discount.discountTotal;
                             waybillDetailDiscountDetail.price = waybillDetail.price;
                             waybillDetailDiscountDetail.grossTotal = waybillDetail.grossTotal;
+                            waybillDetailDiscountDetail.name = discount.name;
 
                             waybillDetailDiscountDetails.Add(waybillDetailDiscountDetail);
                         }
@@ -945,8 +949,9 @@ namespace invoiceIntegration
                                     if (detail.type == 2)
                                     {
                                         newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;  
-                                        //newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal)),2));
-                                        newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2)); 
+                                        newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2));
+                                        newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
+                                        
 
                                     }
                                     else
@@ -994,7 +999,6 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
                                         newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
                                         newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                        //newInvoiceLines[i].FieldByName("UNIT_CODE").Value = "AD";
                                         newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
                                         newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
 
@@ -1193,6 +1197,7 @@ namespace invoiceIntegration
                                 {
                                     newWaybillLines[i].FieldByName("TYPE").Value = detail.type;
                                     newWaybillLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
+                                    newWaybillLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                     //newWaybillLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal));
 
                                 }
@@ -1489,6 +1494,7 @@ namespace invoiceIntegration
                             {
                                 newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
                                 newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
+                                newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
 
                             }
                             else
