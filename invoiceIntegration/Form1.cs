@@ -610,7 +610,7 @@ namespace invoiceIntegration
         void CheckLogin()
         {
             Cursor.Current = Cursors.WaitCursor;
-            //isLoggedIn = unity.Login(logoUserName, logoPassword, int.Parse(companyCode), int.Parse(season));
+            isLoggedIn = unity.Login(logoUserName, logoPassword, int.Parse(companyCode), int.Parse(season));
             if (isLoggedIn)
             {
                 lblLogoConnectionInfo.BackColor = System.Drawing.Color.Green;
@@ -949,7 +949,6 @@ namespace invoiceIntegration
                                     if (detail.type == 2)
                                     {
                                         newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;  
-                                        //newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(Convert.ToDecimal((100 * Convert.ToDouble(detail.discountTotal)) / Convert.ToDouble(detail.grossTotal)),2));
                                         newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2));
                                         newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                         
@@ -1000,7 +999,6 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
                                         newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
                                         newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                        //newInvoiceLines[i].FieldByName("UNIT_CODE").Value = "AD";
                                         newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
                                         newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
 
@@ -1715,7 +1713,6 @@ namespace invoiceIntegration
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
-            isLoggedIn = true;
             CheckLogin();
             helper.LogFile("Login Kontolü Bitti", "-", "-", "-", "-");
         }
