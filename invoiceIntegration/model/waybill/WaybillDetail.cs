@@ -10,6 +10,7 @@ namespace invoiceIntegration.model.waybill
     {
         public int type { get; set; }  // 0 malzeme , 1 promosyon , 2 indirim , 3 masraf , 4 hizmet
         public string code { get; set; }
+        public string name { get; set; }
         //public string wareHouseCode { get; set; }
         public int quantity { get; set; }
         public decimal price { get; set; }
