@@ -105,5 +105,10 @@ namespace invoiceIntegration.config
         {
             return ConfigurationManager.AppSettings["shipAgentCode"];
         }
+
+        public static string getCampaignLineNo()
+        {
+            return ConfigurationManager.AppSettings["campaignLineNo"];
+        }
     }
 }
