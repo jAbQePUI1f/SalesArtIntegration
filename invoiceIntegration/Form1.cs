@@ -41,7 +41,8 @@ namespace invoiceIntegration
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
         string url = Configuration.getUrl();
-         
+        string campaignLineNo = Configuration.getCampaignLineNo();
+
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
 
@@ -951,7 +952,17 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;  
                                         newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2));
                                         newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
-                                        
+
+                                        if (campaignLineNo.Length > 0)
+                                        {
+                                            Lines newCampaignInfoLine = newInvoiceLines[i].FieldByName("CAMPAIGN_INFOS").Lines;
+                                            if (newCampaignInfoLine.AppendLine())
+                                            {
+                                                newCampaignInfoLine[newCampaignInfoLine.Count - 1].FieldByName("CAMPCODE1").Value = detail.name;
+                                                newCampaignInfoLine[newCampaignInfoLine.Count - 1].FieldByName("CAMP_LN_NO").Value = campaignLineNo;
+
+                                            }
+                                        }
 
                                     }
                                     else
