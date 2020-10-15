@@ -223,6 +223,8 @@ namespace invoiceIntegration
                         helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
                         helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
                         helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
+                        helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                        helper.AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
                         if (invoice.type == 3)  // iade faturaları için
                         {
                             helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
@@ -952,6 +954,8 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;  
                                         newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate,2));
                                         newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
+                                        newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
+                                        newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
 
                                         if (campaignLineNo.Length > 0)
                                         {
