@@ -117,7 +117,16 @@ namespace invoiceIntegration
             
             
             helper.AddNode(output, outputInvoiceDbop, "TYPE", invoice.type.ToString());
-            helper.AddNode(output, outputInvoiceDbop, "NUMBER", invoice.number);
+
+            if (useDefaultNumber)
+            {
+                helper.AddNode(output, outputInvoiceDbop, "NUMBER", "~");
+            }
+            else
+            {
+                helper.AddNode(output, outputInvoiceDbop, "NUMBER", invoice.number); 
+            }
+            
 
             if (useShortDate)
             {
