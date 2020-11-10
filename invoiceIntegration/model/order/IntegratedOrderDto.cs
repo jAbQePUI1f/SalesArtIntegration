@@ -8,17 +8,17 @@ namespace invoiceIntegration.model
 {
     public class IntegratedOrderDto
     {
-        public string errorMessage { get; set; }
-        public string invoiceNumber { get; set; }
-        public string remoteOrderNumber { get; set; }
-        public bool successfullyIntegrated { get; set; }
+        public string message { get; set; }
+        public string remoteOrderId { get; set; }
+        public long orderId { get; set; }
+        public bool synced { get; set; }
 
-        public IntegratedOrderDto(string _errorMessage, string _orderNumber, string _remoteOrderNumber, bool _successfullyIntegrated)
+        public IntegratedOrderDto(string _message, string _remoteOrderId, long _orderId, bool _synced)
         {
-            errorMessage = _errorMessage;
-            invoiceNumber = _orderNumber;
-            remoteOrderNumber = _remoteOrderNumber;
-            successfullyIntegrated = _successfullyIntegrated;
+            message = _message;
+            remoteOrderId = _remoteOrderId;
+            orderId = _orderId;
+            synced = _synced;
         }
     }
 }

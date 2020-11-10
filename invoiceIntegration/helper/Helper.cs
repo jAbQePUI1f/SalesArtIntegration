@@ -170,16 +170,16 @@ namespace invoiceIntegration.helper
             string basarisiz = "";
             foreach (var item in integratedOrders.integratedOrders)
             {
-                if (item.successfullyIntegrated)
+                if (item.synced)
                 {
-                    LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteOrderNumber, "AKTARIM BAŞARILI", item.errorMessage);
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId, "AKTARIM BAŞARILI", item.message);
                     basarili += " Sipariş Numarası   : ";
-                    basarili += integrationForMikroERP ? item.invoiceNumber : item.remoteOrderNumber;
+                    basarili += integrationForMikroERP ? item.orderId.ToString() : item.remoteOrderId;
                 }
                 else
                 {
-                    LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteOrderNumber, "AKTARIM BAŞARISIZ..!!!", item.errorMessage);
-                    basarisiz += item.invoiceNumber + " numaralı sipariş için : " + item.errorMessage;
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId, "AKTARIM BAŞARISIZ..!!!", item.message);
+                    basarisiz += item.orderId + " numaralı sipariş için : " + item.message;
                 }
             }
             string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;

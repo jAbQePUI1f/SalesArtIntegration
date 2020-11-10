@@ -625,7 +625,9 @@ namespace invoiceIntegration
                         ordDetail.productBarcode = selectedOrderDetail.productBarcode;
                         ordDetail.lineOrder = selectedOrderDetail.lineOrder;
                         ordDetail.grossTotal = selectedOrderDetail.grossTotal;
-                         
+                        ordDetail.vatRate = selectedOrderDetail.vatRate;
+                        ordDetail.unitCode = selectedOrderDetail.unitCode;
+
                         orderDetails.Add(ordDetail);
                          
                     }
@@ -855,8 +857,8 @@ namespace invoiceIntegration
 
             var settings = new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Include,
-                MissingMemberHandling = MissingMemberHandling.Error
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
             };
 
             jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
@@ -1631,13 +1633,13 @@ namespace invoiceIntegration
 
                                 newOrderLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
                                 newOrderLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatTotal;
-                                newOrderLines[i].FieldByName("SALEMANCODE").Value = order.salesman.code;
-                                newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
-                                newOrderLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
-                                newOrderLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
+                                //newOrderLines[i].FieldByName("SALEMANCODE").Value = order.salesman.code;
+                                //newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
+                                //newOrderLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
+                                //newOrderLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
                                 //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
                                 //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
-                                newOrderLines[i].FieldByName("BARCODE").Value = detail.productBarcode;
+                                //newOrderLines[i].FieldByName("BARCODE").Value = detail.productBarcode;
 
                                 newOrderLines[i].FieldByName("PRCLISTTYPE").Value = 2;
                                  
@@ -1660,7 +1662,7 @@ namespace invoiceIntegration
 
                             remoteNumber = newOrder.DataFields.FieldByName("NUMBER").Value;
 
-                            IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, order.receiptNumber, remoteNumber, true);
+                            IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message,remoteNumber, order.orderId, true);
                             receivedOrders.Add(recievedOrder);
                         }
                         else
@@ -1668,7 +1670,7 @@ namespace invoiceIntegration
                             if (newOrder.ErrorCode != 0)
                             {
                                 message = "DBError(" + newOrder.ErrorCode.ToString() + ")-" + newOrder.ErrorDesc + newOrder.DBErrorDesc;
-                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, order.receiptNumber, remoteNumber, false);
+                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, remoteNumber,order.orderId, false);
                                 receivedOrders.Add(recievedOrder);
                             }
                             else if (newOrder.ValidateErrors.Count > 0)
@@ -1678,7 +1680,7 @@ namespace invoiceIntegration
                                     message += err[i].Error;
                                 }
 
-                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, order.receiptNumber, remoteNumber, false);
+                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message,  remoteNumber, order.orderId, false);
                                 receivedOrders.Add(recievedOrder);
                             }
                         }
@@ -1693,7 +1695,7 @@ namespace invoiceIntegration
             }
             catch (Exception ex)
             {
-                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(ex.Message.ToString(), "", remoteNumber, false);
+                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(ex.Message.ToString(), remoteNumber, 0 , false);
                 receivedOrders.Add(recievedOrder);
             }
             finally
