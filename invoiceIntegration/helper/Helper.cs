@@ -164,7 +164,28 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan İrsaliye Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
-        
+        public void ShowMessages(IntegratedOrderStatus integratedOrders)
+        {
+            string basarili = "";
+            string basarisiz = "";
+            foreach (var item in integratedOrders.integratedOrders)
+            {
+                if (item.successfullyIntegrated)
+                {
+                    LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteOrderNumber, "AKTARIM BAŞARILI", item.errorMessage);
+                    basarili += " Sipariş Numarası   : ";
+                    basarili += integrationForMikroERP ? item.invoiceNumber : item.remoteOrderNumber;
+                }
+                else
+                {
+                    LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteOrderNumber, "AKTARIM BAŞARISIZ..!!!", item.errorMessage);
+                    basarisiz += item.invoiceNumber + " numaralı sipariş için : " + item.errorMessage;
+                }
+            }
+            string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;
+            if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan Sipariş Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
+            { Clipboard.SetText(msj); }
+        }
         public  void AddNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
         {
             XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
