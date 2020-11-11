@@ -48,6 +48,7 @@ namespace invoiceIntegration
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
         IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
+        IntegratedOrderStatusForMessage integratedOrderStatusForMessage = new IntegratedOrderStatusForMessage();
 
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
@@ -606,6 +607,7 @@ namespace invoiceIntegration
                     order.salesmanNote = selectedOrder.salesmanNote;
                     order.salesman = selectedOrder.salesman;
                     order.customerBranch = selectedOrder.customerBranch;
+                    order.orderId = selectedOrder.orderId;
 
                     List<OrderDetail> orderDetails = new List<OrderDetail>();
                     foreach (var selectedOrderDetail in selectedOrder.details)
@@ -1532,6 +1534,7 @@ namespace invoiceIntegration
             string remoteNumber = "";
             string message = "";
             string remoteOrderStatus = "";
+            long remoteOrderId = 0;
 
             List<IntegratedOrderDto> receivedOrders = new List<IntegratedOrderDto>(); 
 
@@ -1622,8 +1625,8 @@ namespace invoiceIntegration
 
                                 newOrderLines[i].FieldByName("TYPE").Value = 0; 
                                 newOrderLines[i].FieldByName("MASTER_CODE").Value = detail.productCode;
-                                newOrderLines[i].FieldByName("SOURCEINDEX").Value = order.warehouse.code;
-                                newOrderLines[i].FieldByName("SOURCECOSTGRP").Value = order.warehouse.code;
+                                // newOrderLines[i].FieldByName("SOURCEINDEX").Value = order.warehouse.code;
+                               //  newOrderLines[i].FieldByName("SOURCECOSTGRP").Value = order.warehouse.code;
                                 newOrderLines[i].FieldByName("QUANTITY").Value = detail.quantity;
                                 newOrderLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.orderItemPrice);
                                 newOrderLines[i].FieldByName("TOTAL").Value = detail.grossTotal;
@@ -1658,19 +1661,23 @@ namespace invoiceIntegration
                         if (newOrder.Post())
                         {
                             var integratedOrderRef = newOrder.DataFields.FieldByName("INTERNAL_REFERENCE").Value;
-                            newOrder.Read(integratedOrderRef);
 
-                            remoteNumber = newOrder.DataFields.FieldByName("NUMBER").Value;
+                            //newOrder.Read(integratedOrderRef);
 
-                            IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message,remoteNumber, order.orderId, true);
+                           //remoteNumber = newOrder.DataFields.FieldByName("NUMBER").Value;
+
+                            IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, integratedOrderRef, order.orderId, true);
                             receivedOrders.Add(recievedOrder);
+
+                            //IntegratedOrderForMessageDto integratedOrderForMessage = new IntegratedOrderForMessageDto(message,remoteNumber,order.orderId,true);
+                            
                         }
                         else
                         {
                             if (newOrder.ErrorCode != 0)
                             {
                                 message = "DBError(" + newOrder.ErrorCode.ToString() + ")-" + newOrder.ErrorDesc + newOrder.DBErrorDesc;
-                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, remoteNumber,order.orderId, false);
+                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, remoteOrderId, order.orderId, false);
                                 receivedOrders.Add(recievedOrder);
                             }
                             else if (newOrder.ValidateErrors.Count > 0)
@@ -1680,7 +1687,7 @@ namespace invoiceIntegration
                                     message += err[i].Error;
                                 }
 
-                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message,  remoteNumber, order.orderId, false);
+                                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, remoteOrderId, order.orderId, false);
                                 receivedOrders.Add(recievedOrder);
                             }
                         }
@@ -1695,7 +1702,7 @@ namespace invoiceIntegration
             }
             catch (Exception ex)
             {
-                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(ex.Message.ToString(), remoteNumber, 0 , false);
+                IntegratedOrderDto recievedOrder = new IntegratedOrderDto(ex.Message.ToString(), remoteOrderId, 0 , false);
                 receivedOrders.Add(recievedOrder);
             }
             finally
@@ -1707,7 +1714,7 @@ namespace invoiceIntegration
 
             }
 
-            integratedOrders.integratedOrders = receivedOrders;
+            integratedOrders.orders = receivedOrders;
             integratedOrders.distributorId = distributorId;
 
             return integratedOrders;
@@ -2322,6 +2329,9 @@ namespace invoiceIntegration
                 helper.ShowMessages(status);
                 helper.LogFile("Sipariş Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
+                btnSendToLogo.Enabled = false;
+                btnCheckLogoConnection.Enabled = false;
+                lblLogoConnectionInfo.Text = "";
                 Cursor.Current = Cursors.Default;
             }
             else MessageBox.Show("Sipariş Seçmelisiniz..", "Sipariş Seçim", MessageBoxButtons.OK);

@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace invoiceIntegration.model.order
 {
-    public class IntegratedOrderDto
+    public class IntegratedOrderForMessageDto
     {
         public string message { get; set; }
-        public long remoteOrderId { get; set; }
+        public string remoteOrderNumber { get; set; }
         public long orderId { get; set; }
         public bool synced { get; set; }
 
-        public IntegratedOrderDto(string _message, long _remoteOrderId, long _orderId, bool _synced)
+        public IntegratedOrderForMessageDto(string _message, string _remoteOrderNumber, long _orderId, bool _synced)
         {
             message = _message;
-            remoteOrderId = _remoteOrderId;
+            remoteOrderNumber = _remoteOrderNumber;
             orderId = _orderId;
             synced = _synced;
         }

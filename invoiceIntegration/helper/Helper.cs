@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
+using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using System;
 using System.Collections.Generic;
@@ -168,17 +169,17 @@ namespace invoiceIntegration.helper
         {
             string basarili = "";
             string basarisiz = "";
-            foreach (var item in integratedOrders.integratedOrders)
+            foreach (var item in integratedOrders.orders)
             {
                 if (item.synced)
                 {
-                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId, "AKTARIM BAŞARILI", item.message);
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId.ToString(), "AKTARIM BAŞARILI", item.message);
                     basarili += " Sipariş Numarası   : ";
-                    basarili += integrationForMikroERP ? item.orderId.ToString() : item.remoteOrderId;
+                    basarili += integrationForMikroERP ? item.orderId.ToString() : item.remoteOrderId.ToString();
                 }
                 else
                 {
-                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId, "AKTARIM BAŞARISIZ..!!!", item.message);
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId.ToString(), "AKTARIM BAŞARISIZ..!!!", item.message);
                     basarisiz += item.orderId + " numaralı sipariş için : " + item.message;
                 }
             }

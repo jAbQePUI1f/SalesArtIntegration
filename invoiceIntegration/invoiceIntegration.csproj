@@ -113,7 +113,9 @@
     <Compile Include="model\LogoInvoice.cs" />
     <Compile Include="model\Message.cs" />
     <Compile Include="model\order\BaseOrderDto.cs" />
+    <Compile Include="model\order\IntegratedOrderForMessageDto.cs" />
     <Compile Include="model\order\IntegratedOrderDto.cs" />
+    <Compile Include="model\order\IntegratedOrderStatusForMessage.cs" />
     <Compile Include="model\order\IntegratedOrderStatus.cs" />
     <Compile Include="model\order\OrderPostResponse.cs" />
     <Compile Include="model\order\Message.cs" />
