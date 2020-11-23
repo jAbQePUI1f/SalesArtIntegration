@@ -1597,13 +1597,16 @@ namespace invoiceIntegration
                         newOrder.DataFields.FieldByName("ORDER_STATUS").Value = 1;
                         //newOrder.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
 
+                        string asdfg = order.customer.code.Substring(2, 2);
 
-                        //if (useCypheCode)
-                        //{
-                        //    newOrder.DataFields.FieldByName("AUTH_CODE").Value = cypheCode;
-                        //}
+                        if (useCypheCode)
+                        {
+                            newOrder.DataFields.FieldByName("AUTH_CODE").Value = order.customer.code.Substring(2,2);
+                        }
 
+                        newOrder.DataFields.FieldByName("AUXIL_CODE").Value = order.customer.code.Substring(4, 2);
 
+                        
                         //newInvoice.DataFields.FieldByName("POST_FLAGS").Value = 241;
                         newOrder.DataFields.FieldByName("DIVISION").Value = order.customerBranch.code;
 
