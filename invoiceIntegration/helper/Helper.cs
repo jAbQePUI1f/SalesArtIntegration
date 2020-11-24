@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
+using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using System;
 using System.Collections.Generic;
@@ -164,7 +165,28 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan İrsaliye Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
-        
+        public void ShowMessages(IntegratedOrderStatus integratedOrders)
+        {
+            string basarili = "";
+            string basarisiz = "";
+            foreach (var item in integratedOrders.orders)
+            {
+                if (item.synced)
+                {
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId.ToString(), "AKTARIM BAŞARILI", item.message);
+                    basarili += " Sipariş Numarası   : ";
+                    basarili += integrationForMikroERP ? item.orderId.ToString() : item.remoteOrderId.ToString();
+                }
+                else
+                {
+                    LogFile("Aktarım Bilgisi", item.orderId.ToString(), item.remoteOrderId.ToString(), "AKTARIM BAŞARISIZ..!!!", item.message);
+                    basarisiz += item.orderId + " numaralı sipariş için : " + item.message;
+                }
+            }
+            string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;
+            if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan Sipariş Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
+            { Clipboard.SetText(msj); }
+        }
         public  void AddNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
         {
             XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");

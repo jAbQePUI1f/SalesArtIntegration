@@ -39,13 +39,6 @@
             this.btnCheckLogoConnection = new System.Windows.Forms.Button();
             this.lblLogoConnectionInfo = new System.Windows.Forms.Label();
             this.dataGridInvoice = new System.Windows.Forms.DataGridView();
-            this.btnLastLog = new System.Windows.Forms.Button();
-            this.chkDispatch = new System.Windows.Forms.CheckBox();
-            this.lblDispatch = new System.Windows.Forms.Label();
-            this.cmbDispatch = new System.Windows.Forms.ComboBox();
-            this.btnWaybill = new System.Windows.Forms.Button();
-            this.btnXML = new System.Windows.Forms.Button();
-            this.chkSelectAll = new System.Windows.Forms.CheckBox();
             this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -56,6 +49,14 @@
             this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnLastLog = new System.Windows.Forms.Button();
+            this.chkDispatch = new System.Windows.Forms.CheckBox();
+            this.lblDispatch = new System.Windows.Forms.Label();
+            this.cmbDispatch = new System.Windows.Forms.ComboBox();
+            this.btnWaybill = new System.Windows.Forms.Button();
+            this.btnXML = new System.Windows.Forms.Button();
+            this.chkSelectAll = new System.Windows.Forms.CheckBox();
+            this.btnSendOrderToLogo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.SuspendLayout();
             // 
@@ -108,9 +109,9 @@
             // 
             this.btnSendToLogo.Enabled = false;
             this.btnSendToLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnSendToLogo.Location = new System.Drawing.Point(1001, 67);
+            this.btnSendToLogo.Location = new System.Drawing.Point(1045, 67);
             this.btnSendToLogo.Name = "btnSendToLogo";
-            this.btnSendToLogo.Size = new System.Drawing.Size(153, 43);
+            this.btnSendToLogo.Size = new System.Drawing.Size(109, 43);
             this.btnSendToLogo.TabIndex = 5;
             this.btnSendToLogo.Text = "Faturaları Logoya Aktar";
             this.btnSendToLogo.UseVisualStyleBackColor = true;
@@ -189,91 +190,6 @@
             this.dataGridInvoice.Size = new System.Drawing.Size(1145, 593);
             this.dataGridInvoice.TabIndex = 12;
             // 
-            // btnLastLog
-            // 
-            this.btnLastLog.Location = new System.Drawing.Point(1082, 39);
-            this.btnLastLog.Name = "btnLastLog";
-            this.btnLastLog.Size = new System.Drawing.Size(72, 22);
-            this.btnLastLog.TabIndex = 13;
-            this.btnLastLog.Text = "Loglar";
-            this.btnLastLog.UseVisualStyleBackColor = true;
-            this.btnLastLog.Click += new System.EventHandler(this.btnLastLog_Click);
-            // 
-            // chkDispatch
-            // 
-            this.chkDispatch.AutoSize = true;
-            this.chkDispatch.Location = new System.Drawing.Point(168, 8);
-            this.chkDispatch.Name = "chkDispatch";
-            this.chkDispatch.Size = new System.Drawing.Size(86, 17);
-            this.chkDispatch.TabIndex = 19;
-            this.chkDispatch.Text = "İrsaliye Aktar";
-            this.chkDispatch.UseVisualStyleBackColor = true;
-            this.chkDispatch.Visible = false;
-            this.chkDispatch.CheckedChanged += new System.EventHandler(this.chkDispatch_CheckedChanged);
-            // 
-            // lblDispatch
-            // 
-            this.lblDispatch.AutoSize = true;
-            this.lblDispatch.Location = new System.Drawing.Point(165, 28);
-            this.lblDispatch.Name = "lblDispatch";
-            this.lblDispatch.Size = new System.Drawing.Size(110, 13);
-            this.lblDispatch.TabIndex = 18;
-            this.lblDispatch.Text = "İrsaliye Tipini Seçiniz :";
-            this.lblDispatch.Visible = false;
-            // 
-            // cmbDispatch
-            // 
-            this.cmbDispatch.FormattingEnabled = true;
-            this.cmbDispatch.Items.AddRange(new object[] {
-            "Satış İrsaliyesi",
-            "Hasarlı Satış İade İrsaliyesi",
-            "Sağlam Satış İade İrsaliyesi",
-            "Alım İrsaliyesi",
-            "Hasarılı Alım İade İrsaliyesi",
-            "Sağlam Alım İade İrsaliyesi"});
-            this.cmbDispatch.Location = new System.Drawing.Point(168, 42);
-            this.cmbDispatch.Name = "cmbDispatch";
-            this.cmbDispatch.Size = new System.Drawing.Size(149, 21);
-            this.cmbDispatch.TabIndex = 17;
-            this.cmbDispatch.Visible = false;
-            this.cmbDispatch.SelectedIndexChanged += new System.EventHandler(this.cmbDispatch_SelectedIndexChanged);
-            // 
-            // btnWaybill
-            // 
-            this.btnWaybill.Enabled = false;
-            this.btnWaybill.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnWaybill.Location = new System.Drawing.Point(842, 67);
-            this.btnWaybill.Name = "btnWaybill";
-            this.btnWaybill.Size = new System.Drawing.Size(153, 43);
-            this.btnWaybill.TabIndex = 20;
-            this.btnWaybill.Text = "İrsaliyeleri Aktar";
-            this.btnWaybill.UseVisualStyleBackColor = true;
-            this.btnWaybill.Visible = false;
-            this.btnWaybill.Click += new System.EventHandler(this.btnWaybill_Click);
-            // 
-            // btnXML
-            // 
-            this.btnXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnXML.Location = new System.Drawing.Point(683, 67);
-            this.btnXML.Name = "btnXML";
-            this.btnXML.Size = new System.Drawing.Size(153, 43);
-            this.btnXML.TabIndex = 21;
-            this.btnXML.Text = "Faturaları XML Kaydet";
-            this.btnXML.UseVisualStyleBackColor = true;
-            this.btnXML.Visible = false;
-            this.btnXML.Click += new System.EventHandler(this.btnXML_Click);
-            // 
-            // chkSelectAll
-            // 
-            this.chkSelectAll.AutoSize = true;
-            this.chkSelectAll.Location = new System.Drawing.Point(59, 129);
-            this.chkSelectAll.Name = "chkSelectAll";
-            this.chkSelectAll.Size = new System.Drawing.Size(87, 17);
-            this.chkSelectAll.TabIndex = 22;
-            this.chkSelectAll.Text = "Tümünü Seç";
-            this.chkSelectAll.UseVisualStyleBackColor = true;
-            this.chkSelectAll.CheckedChanged += new System.EventHandler(this.chkSelectAll_CheckedChanged);
-            // 
             // chk
             // 
             this.chk.HeaderText = "Seçim";
@@ -335,11 +251,109 @@
             this.Column16.Name = "Column16";
             this.Column16.ReadOnly = true;
             // 
+            // btnLastLog
+            // 
+            this.btnLastLog.Location = new System.Drawing.Point(1082, 39);
+            this.btnLastLog.Name = "btnLastLog";
+            this.btnLastLog.Size = new System.Drawing.Size(72, 22);
+            this.btnLastLog.TabIndex = 13;
+            this.btnLastLog.Text = "Loglar";
+            this.btnLastLog.UseVisualStyleBackColor = true;
+            this.btnLastLog.Click += new System.EventHandler(this.btnLastLog_Click);
+            // 
+            // chkDispatch
+            // 
+            this.chkDispatch.AutoSize = true;
+            this.chkDispatch.Location = new System.Drawing.Point(168, 8);
+            this.chkDispatch.Name = "chkDispatch";
+            this.chkDispatch.Size = new System.Drawing.Size(86, 17);
+            this.chkDispatch.TabIndex = 19;
+            this.chkDispatch.Text = "İrsaliye Aktar";
+            this.chkDispatch.UseVisualStyleBackColor = true;
+            this.chkDispatch.Visible = false;
+            this.chkDispatch.CheckedChanged += new System.EventHandler(this.chkDispatch_CheckedChanged);
+            // 
+            // lblDispatch
+            // 
+            this.lblDispatch.AutoSize = true;
+            this.lblDispatch.Location = new System.Drawing.Point(165, 28);
+            this.lblDispatch.Name = "lblDispatch";
+            this.lblDispatch.Size = new System.Drawing.Size(110, 13);
+            this.lblDispatch.TabIndex = 18;
+            this.lblDispatch.Text = "İrsaliye Tipini Seçiniz :";
+            this.lblDispatch.Visible = false;
+            // 
+            // cmbDispatch
+            // 
+            this.cmbDispatch.FormattingEnabled = true;
+            this.cmbDispatch.Items.AddRange(new object[] {
+            "Satış İrsaliyesi",
+            "Hasarlı Satış İade İrsaliyesi",
+            "Sağlam Satış İade İrsaliyesi",
+            "Alım İrsaliyesi",
+            "Hasarılı Alım İade İrsaliyesi",
+            "Sağlam Alım İade İrsaliyesi"});
+            this.cmbDispatch.Location = new System.Drawing.Point(168, 42);
+            this.cmbDispatch.Name = "cmbDispatch";
+            this.cmbDispatch.Size = new System.Drawing.Size(149, 21);
+            this.cmbDispatch.TabIndex = 17;
+            this.cmbDispatch.Visible = false;
+            this.cmbDispatch.SelectedIndexChanged += new System.EventHandler(this.cmbDispatch_SelectedIndexChanged);
+            // 
+            // btnWaybill
+            // 
+            this.btnWaybill.Enabled = false;
+            this.btnWaybill.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnWaybill.Location = new System.Drawing.Point(823, 67);
+            this.btnWaybill.Name = "btnWaybill";
+            this.btnWaybill.Size = new System.Drawing.Size(109, 43);
+            this.btnWaybill.TabIndex = 20;
+            this.btnWaybill.Text = "İrsaliyeleri Aktar";
+            this.btnWaybill.UseVisualStyleBackColor = true;
+            this.btnWaybill.Visible = false;
+            this.btnWaybill.Click += new System.EventHandler(this.btnWaybill_Click);
+            // 
+            // btnXML
+            // 
+            this.btnXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnXML.Location = new System.Drawing.Point(712, 67);
+            this.btnXML.Name = "btnXML";
+            this.btnXML.Size = new System.Drawing.Size(109, 43);
+            this.btnXML.TabIndex = 21;
+            this.btnXML.Text = "Faturaları XML Kaydet";
+            this.btnXML.UseVisualStyleBackColor = true;
+            this.btnXML.Visible = false;
+            this.btnXML.Click += new System.EventHandler(this.btnXML_Click);
+            // 
+            // chkSelectAll
+            // 
+            this.chkSelectAll.AutoSize = true;
+            this.chkSelectAll.Location = new System.Drawing.Point(59, 129);
+            this.chkSelectAll.Name = "chkSelectAll";
+            this.chkSelectAll.Size = new System.Drawing.Size(87, 17);
+            this.chkSelectAll.TabIndex = 22;
+            this.chkSelectAll.Text = "Tümünü Seç";
+            this.chkSelectAll.UseVisualStyleBackColor = true;
+            this.chkSelectAll.CheckedChanged += new System.EventHandler(this.chkSelectAll_CheckedChanged);
+            // 
+            // btnSendOrderToLogo
+            // 
+            this.btnSendOrderToLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnSendOrderToLogo.Location = new System.Drawing.Point(934, 67);
+            this.btnSendOrderToLogo.Name = "btnSendOrderToLogo";
+            this.btnSendOrderToLogo.Size = new System.Drawing.Size(109, 43);
+            this.btnSendOrderToLogo.TabIndex = 23;
+            this.btnSendOrderToLogo.Text = "Siparişleri Logoya Aktar";
+            this.btnSendOrderToLogo.UseVisualStyleBackColor = true;
+            this.btnSendOrderToLogo.Visible = false;
+            this.btnSendOrderToLogo.Click += new System.EventHandler(this.btnSendOrderToLogo_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1174, 730);
+            this.Controls.Add(this.btnSendOrderToLogo);
             this.Controls.Add(this.chkSelectAll);
             this.Controls.Add(this.btnXML);
             this.Controls.Add(this.btnWaybill);
@@ -400,6 +414,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
         private System.Windows.Forms.CheckBox chkSelectAll;
+        private System.Windows.Forms.Button btnSendOrderToLogo;
     }
 }
 

@@ -110,5 +110,11 @@ namespace invoiceIntegration.config
         {
             return ConfigurationManager.AppSettings["campaignLineNo"];
         }
+
+        public static bool getOrderTransferToLogoInfo()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["orderTransferToLogo"]);
+        }
+        
     }
 }
