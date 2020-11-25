@@ -8,6 +8,10 @@ namespace invoiceIntegration.model.order
 {
     public class OrderDetail
     {
+        public int type { get; set; }
+        public decimal rate { get; set; }
+        public decimal discountTotal { get; set; }
+        public decimal price { get; set; }
         public string productCode { get; set; }
         public string productBarcode { get; set; }
         public decimal orderItemPrice { get; set; }
@@ -24,5 +28,6 @@ namespace invoiceIntegration.model.order
         public decimal? discountRate { get; set; }
         public decimal manualDiscountAmount { get; set; }
         public decimal manualDiscountRate { get; set; }
+        public List<Discount> discounts { get; set; }
     }
 }

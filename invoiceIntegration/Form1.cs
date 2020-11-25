@@ -619,9 +619,7 @@ namespace invoiceIntegration
                         ordDetail.orderItemPrice = selectedOrderDetail.orderItemPrice;
                         ordDetail.grossTotal = selectedOrderDetail.grossTotal;
                         ordDetail.discountAmount = selectedOrderDetail.discountAmount;
-                        //ordDetail.unitCode = selectedOrderDetail.unitCode;
                         //ordDetail.vatIncluded = selectedOrderDetail.vatIncluded;
-                        //ordDetail.vatRate = selectedOrderDetail.vatRate;
                         ordDetail.vatTotal = selectedOrderDetail.vatTotal;
                         ordDetail.preVatNetTotal = selectedOrderDetail.preVatNetTotal;
                         ordDetail.productBarcode = selectedOrderDetail.productBarcode;
@@ -630,8 +628,29 @@ namespace invoiceIntegration
                         ordDetail.vatRate = selectedOrderDetail.vatRate;
                         ordDetail.unitCode = selectedOrderDetail.unitCode;
 
+                        List<OrderDetail> orderDetailDiscountDetails = new List<OrderDetail>();
+                        foreach (var discount in selectedOrderDetail.discounts)
+                        {
+                            OrderDetail ordDetailDiscountDetail = new OrderDetail();
+
+                            ordDetailDiscountDetail.type = 2;
+                            ordDetailDiscountDetail.rate = discount.rate;
+                            ordDetailDiscountDetail.discountTotal = discount.discountTotal;
+                            ordDetailDiscountDetail.price = ordDetail.price;
+                            ordDetailDiscountDetail.grossTotal = ordDetail.grossTotal;
+                            ordDetailDiscountDetail.productName = discount.name;
+
+                            orderDetailDiscountDetails.Add(ordDetailDiscountDetail);
+                        }
+
                         orderDetails.Add(ordDetail);
-                         
+                        if (orderDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar order detail e eklendi
+                        {
+                            foreach (var orderDetailDiscountDetail in orderDetailDiscountDetails)
+                            {
+                                orderDetails.Add(orderDetailDiscountDetail);
+                            }
+                        }
                     }
                     order.details = orderDetails;
                     orders.Add(order);
@@ -1596,8 +1615,7 @@ namespace invoiceIntegration
                         newOrder.DataFields.FieldByName("SOURCE_COST_GRP").Value = order.warehouse.code;
                         newOrder.DataFields.FieldByName("ORDER_STATUS").Value = 1;
                         //newOrder.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-
-                        string asdfg = order.customer.code.Substring(2, 2);
+                        
 
                         if (useCypheCode)
                         {
@@ -1626,29 +1644,39 @@ namespace invoiceIntegration
                             {
                                 OrderDetail detail = order.details[i];
 
-                                newOrderLines[i].FieldByName("TYPE").Value = 0; 
-                                newOrderLines[i].FieldByName("MASTER_CODE").Value = detail.productCode;
-                                // newOrderLines[i].FieldByName("SOURCEINDEX").Value = order.warehouse.code;
-                               //  newOrderLines[i].FieldByName("SOURCECOSTGRP").Value = order.warehouse.code;
-                                newOrderLines[i].FieldByName("QUANTITY").Value = detail.quantity;
-                                newOrderLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.orderItemPrice);
-                                newOrderLines[i].FieldByName("TOTAL").Value = detail.grossTotal;
-                                newOrderLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                newOrderLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
-                                newOrderLines[i].FieldByName("PAYMENT_CODE").Value = order.paymentType.code;
+                                if (detail.type == 2)  // indirim
+                                {
+                                    newOrderLines[i].FieldByName("TYPE").Value = detail.type;
+                                    newOrderLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
+                                    newOrderLines[i].FieldByName("DESCRIPTION").Value = detail.productName;
 
-                                newOrderLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
-                                newOrderLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatTotal;
-                                //newOrderLines[i].FieldByName("SALEMANCODE").Value = order.salesman.code;
-                                //newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
-                                //newOrderLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
-                                //newOrderLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
-                                //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
-                                //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
-                                //newOrderLines[i].FieldByName("BARCODE").Value = detail.productBarcode;
+                                }
+                                else
+                                {
 
-                                newOrderLines[i].FieldByName("PRCLISTTYPE").Value = 2;
-                                 
+                                    newOrderLines[i].FieldByName("TYPE").Value = 0;
+                                    newOrderLines[i].FieldByName("MASTER_CODE").Value = detail.productCode;
+                                    // newOrderLines[i].FieldByName("SOURCEINDEX").Value = order.warehouse.code;
+                                    //  newOrderLines[i].FieldByName("SOURCECOSTGRP").Value = order.warehouse.code;
+                                    newOrderLines[i].FieldByName("QUANTITY").Value = detail.quantity;
+                                    newOrderLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.orderItemPrice);
+                                    newOrderLines[i].FieldByName("TOTAL").Value = detail.grossTotal;
+                                    newOrderLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
+                                    newOrderLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+                                    newOrderLines[i].FieldByName("PAYMENT_CODE").Value = order.paymentType.code;
+
+                                    newOrderLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
+                                    newOrderLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatTotal;
+                                    //newOrderLines[i].FieldByName("SALEMANCODE").Value = order.salesman.code;
+                                    //newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
+                                    //newOrderLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
+                                    //newOrderLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
+                                    //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
+                                    //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
+                                    //newOrderLines[i].FieldByName("BARCODE").Value = detail.productBarcode;
+
+                                    newOrderLines[i].FieldByName("PRCLISTTYPE").Value = 2;
+                                }
                             }
                         } 
 
