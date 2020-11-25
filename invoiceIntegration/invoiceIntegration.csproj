@@ -100,7 +100,6 @@
     </Compile>
     <Compile Include="LogWatcherEventArgs.cs" />
     <Compile Include="model\BaseInvoiceDto.cs" />
-    <Compile Include="model\BillingTypeEnum.cs" />
     <Compile Include="model\DiscountJson.cs" />
     <Compile Include="model\Discount.cs" />
     <Compile Include="model\GetTransferableInvoicesRequest.cs" />

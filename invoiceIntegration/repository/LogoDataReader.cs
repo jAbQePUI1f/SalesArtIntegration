@@ -431,7 +431,7 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
                     cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
                     cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);   // 0:Ticari Fatura 1:Temel Fatura
-                    cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == BillingTypeEnum.BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_BUYING_RETURN || invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
+                    cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == InvoiceType.BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
                     cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
                     cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
                     cmd.Parameters.AddWithValue("@PAYMENT_DUE_DATE", invoice.date);  // vade tarihi
@@ -448,7 +448,7 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@CINSI", SqlDbType.TinyInt).SqlValue = 6;  // satış faturası için 6  --> 	0:Nakit 1:Müşteri Çeki 2:Müşteri Senedi 3:Firma Çeki 4:Firma Senedi 5:Dekont 6:Toptan Fatura 7:Perakende Faturası 8:Hizmet Faturası 9:Serbest Meslek Makbuzu 10:Vade Farkı Faturası 11:Kur Farkı Faturası 12:Fason Faturası 13:Dış Ticaret Faturası 14:Demirbaş Faturası 15:Değer Farkı Faturası 16:Cari Açılış 17:Müşteri Havale Sözü 18:Müşteri Ödeme Sözü 19:Müşteri Kredi Kartı 20:Firma Havale Emri 21:Firma Ödeme Emri 22:Firma Kredi Kartı 23:Vade Farkı Sıfırlama 24:Hal Faturası 25:Müstahsil Fatura 26:Stok Gider Pusulası 27:Gider Makbuzu 28:İthalat Masraf Faturası 29:Gümrük Beyannamesi 30:Finansal Kiralama Sözleşmesi 31:Finansal Kira Faturası 32:FUTURE_2 33:Avans Makbuzu 34:Müstahsil Değer Farkı Faturası 35:Kabzımal Faturası 36:Hediye Çeki Faturası 37:Müşteri Teminat Mektubu 38:Firma Teminat Mektubu 39:Depozito Çeki 40:Depozito Senedi 41:Firma Reel Kredi Kartı
                     cmd.Parameters.AddWithValue("@CHECK_UUID", SqlDbType.Bit).SqlValue = 1;  // fatura numarası içeeride daha önce kaydedilmiş mi kontro ledilsin mi ? 1 ise evet
                     cmd.Parameters.AddWithValue("@SATIRNO", 0);  // 0 olacak , cünkü her bir fsturanın tek bir header'ı olacak
-                    cmd.Parameters.AddWithValue("@EVRAKTIP", (invoice.invoiceType == BillingTypeEnum.DAMAGED_SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING || invoice.invoiceType == BillingTypeEnum.SELLING_RETURN || invoice.invoiceType == BillingTypeEnum.SELLING_SERVICE) ? 63 : 0);  //  0:Alış Faturası , 63:Satış Faturası 
+                    cmd.Parameters.AddWithValue("@EVRAKTIP", (invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING_SERVICE) ? 63 : 0);  //  0:Alış Faturası , 63:Satış Faturası 
                     
                     SqlParameter sqlParam = new SqlParameter("@id", SqlDbType.UniqueIdentifier);
                     sqlParam.Direction = ParameterDirection.Output;
@@ -463,7 +463,7 @@ namespace invoiceIntegration.repository
                     {
                         cmd.Parameters.Clear();
 
-                        cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", (invoice.invoiceType == BillingTypeEnum.SELLING || invoice.invoiceType == BillingTypeEnum.SELLING_SERVICE) ? "SATIŞ" : "IADE");  //0:Normal 1:İade
+                        cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.SELLING_SERVICE) ? "SATIŞ" : "IADE");  //0:Normal 1:İade
                         cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
                         cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
@@ -642,6 +642,43 @@ namespace invoiceIntegration.repository
                 MessageBox.Show(e.Message, "Beklenmeyen Bir Hata Oluştu", MessageBoxButtons.OK);
             }
             return invoiceGuid;
+        }
+        
+        public string getServiceCodeBySalesArtServiceCode(string serviceCode)
+        {
+            string erpServiceCode = "";
+
+            try
+            {
+                String Qry = "SELECT CODE";
+                Qry += " FROM LG_" + companyCode + "_SRVCARD WITH (NOLOCK) ";
+                Qry += " WHERE   SPECODE5  = '" + serviceCode + "'  AND ACTIVE =  0 ";
+
+                helper.LogFile("SQL Query", serviceCode, "", "", Qry);
+
+                SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+
+                conn.Open();
+
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+
+
+                if (dr.Read())
+                {
+                    erpServiceCode = dr["CODE"].ToString();
+                }
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                helper.LogFile("SQL Query", serviceCode, "", "", e.Message + "__" + serviceCode);
+            }
+            return erpServiceCode;
         }
     }
 }
