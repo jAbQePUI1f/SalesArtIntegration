@@ -1177,7 +1177,7 @@ namespace invoiceIntegration
                                         } 
                                         else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
                                         {
-                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode("HİZMET_" + detail.code);
+                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code);
                                             newInvoiceLines[i].FieldByName("TYPE").Value = 4;
                                         }
                                         else
@@ -1191,7 +1191,11 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
                                         newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
                                         newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                        newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+                                        if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
+                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit("HİZMET" + detail.unitCode);
+                                            else
+                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+                                        
                                         newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
 
                                         //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
