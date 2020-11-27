@@ -1177,7 +1177,8 @@ namespace invoiceIntegration
                                         } 
                                         else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
                                         {
-                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code);
+                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode("HİZMET_" + detail.code);
+                                            newInvoiceLines[i].FieldByName("TYPE").Value = 4;
                                         }
                                         else
                                             newInvoiceLines[i].FieldByName("MASTER_CODE").Value = detail.code;
