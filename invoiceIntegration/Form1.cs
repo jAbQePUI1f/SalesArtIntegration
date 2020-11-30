@@ -629,18 +629,21 @@ namespace invoiceIntegration
                         ordDetail.unitCode = selectedOrderDetail.unitCode;
 
                         List<OrderDetail> orderDetailDiscountDetails = new List<OrderDetail>();
-                        foreach (var discount in selectedOrderDetail.discounts)
+                        if (selectedOrderDetail.discountDetails != null)
                         {
-                            OrderDetail ordDetailDiscountDetail = new OrderDetail();
+                            foreach (var discount in selectedOrderDetail.discountDetails)
+                            {
+                                OrderDetail ordDetailDiscountDetail = new OrderDetail();
 
-                            ordDetailDiscountDetail.type = 2;
-                            ordDetailDiscountDetail.rate = discount.rate;
-                            ordDetailDiscountDetail.discountTotal = discount.discountTotal;
-                            ordDetailDiscountDetail.price = ordDetail.price;
-                            ordDetailDiscountDetail.grossTotal = ordDetail.grossTotal;
-                            ordDetailDiscountDetail.productName = discount.name;
+                                ordDetailDiscountDetail.type = 2;
+                                ordDetailDiscountDetail.rate = discount.rate;
+                                ordDetailDiscountDetail.discountTotal = discount.discountTotal;
+                                ordDetailDiscountDetail.price = ordDetail.price;
+                                ordDetailDiscountDetail.grossTotal = ordDetail.grossTotal;
+                                ordDetailDiscountDetail.productName = discount.name;
 
-                            orderDetailDiscountDetails.Add(ordDetailDiscountDetail);
+                                orderDetailDiscountDetails.Add(ordDetailDiscountDetail);
+                            }
                         }
 
                         orderDetails.Add(ordDetail);
@@ -761,6 +764,7 @@ namespace invoiceIntegration
                 dataGridInvoice.Rows[n].Cells[2].Value = data.number;
                 dataGridInvoice.Rows[n].Cells[3].Value = data.date.ToShortDateString();
                 dataGridInvoice.Rows[n].Cells[4].Value = data.documentNumber;
+                dataGridInvoice.Rows[n].Cells[5].Value = data.customerCode;
                 dataGridInvoice.Rows[n].Cells[6].Value = data.customerName;
                 dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
                 dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
@@ -778,7 +782,8 @@ namespace invoiceIntegration
                 dataGridInvoice.Rows[n].Cells[2].Value = data.receiptNumber;
                 dataGridInvoice.Rows[n].Cells[3].Value = data.orderDate.ToShortDateString();
                 dataGridInvoice.Rows[n].Cells[4].Value = data.receiptNumber;
-                dataGridInvoice.Rows[n].Cells[6].Value = data.customer.code;
+                dataGridInvoice.Rows[n].Cells[5].Value = data.customer.code;
+                dataGridInvoice.Rows[n].Cells[6].Value = data.customer.name;
                 dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
                 dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
                 dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
@@ -1608,7 +1613,7 @@ namespace invoiceIntegration
                             newOrder.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
                         }
 
-                        newOrder.DataFields.FieldByName("TIME").Value = helper.Hour(order.orderDate.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+                        newOrder.DataFields.FieldByName("TIME").Value = helper.Hour(order.deliveryDate.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
                         newOrder.DataFields.FieldByName("SALESMAN_CODE").Value = order.salesman.code;
                         newOrder.DataFields.FieldByName("ARP_CODE").Value = order.customer.code;
                         newOrder.DataFields.FieldByName("SOURCE_WH").Value = order.warehouse.code;
@@ -1648,7 +1653,8 @@ namespace invoiceIntegration
                                 {
                                     newOrderLines[i].FieldByName("TYPE").Value = detail.type;
                                     newOrderLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
-                                    newOrderLines[i].FieldByName("DESCRIPTION").Value = detail.productName;
+                                    newOrderLines[i].FieldByName("DUE_DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
+                                    newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
 
                                 }
                                 else
@@ -1664,6 +1670,7 @@ namespace invoiceIntegration
                                     newOrderLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
                                     newOrderLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
                                     newOrderLines[i].FieldByName("PAYMENT_CODE").Value = order.paymentType.code;
+                                    newOrderLines[i].FieldByName("DUE_DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
 
                                     newOrderLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
                                     newOrderLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatTotal;
@@ -1892,7 +1899,6 @@ namespace invoiceIntegration
                             {
                                 newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
                                 newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
-                                newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
 
                             }
                             else
