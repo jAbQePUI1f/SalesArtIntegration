@@ -60,7 +60,7 @@ namespace invoiceIntegration
 
         bool isLoggedIn = false;
         string filePath = "";
-        InvoiceType invoiceType;
+        string invoiceType;
 
         private void Form1_Load(object sender, EventArgs e)
         { 
@@ -1191,8 +1191,9 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
                                         newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
                                         newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
+
                                         if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
-                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit("HİZMET" + detail.unitCode);
+                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit("HİZMET_" + detail.unitCode);
                                             else
                                             newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
                                         
@@ -2176,28 +2177,28 @@ namespace invoiceIntegration
             switch (cmbInvoice.SelectedIndex)
             {
                 case 0:
-                    invoiceType = InvoiceType.SELLING;
+                    invoiceType = "SELLING";
                     break;
                 case 1:
-                    invoiceType = InvoiceType.DAMAGED_SELLING_RETURN;
+                    invoiceType = "DAMAGED_SELLING_RETURN";
                     break;
                 case 2:
-                    invoiceType = InvoiceType.SELLING_RETURN;
+                    invoiceType = "SELLING_RETURN";
                     break;
                 case 3:
-                    invoiceType = InvoiceType.SELLING_SERVICE;
+                    invoiceType = "SELLING_SERVICE";
                     break;
                 case 4:
-                    invoiceType = InvoiceType.BUYING_SERVICE;
+                    invoiceType = "BUYING_SERVICE";
                     break;
                 case 5:
-                    invoiceType = InvoiceType.BUYING;
+                    invoiceType = "BUYING";
                     break;
                 case 6:
-                    invoiceType = InvoiceType.DAMAGED_BUYING_RETURN;
+                    invoiceType = "DAMAGED_BUYING_RETURN";
                     break;
                 case 7:
-                    invoiceType = InvoiceType.BUYING_RETURN;
+                    invoiceType = "BUYING_RETURN";
                     break;
             }
         }
@@ -2206,22 +2207,22 @@ namespace invoiceIntegration
             switch (cmbDispatch.SelectedIndex)
             {
                 case 0:
-                    invoiceType = InvoiceType.SELLING;
+                    invoiceType = "SELLING";
                     break;
                 case 1:
-                    invoiceType = InvoiceType.DAMAGED_SELLING_RETURN;
+                    invoiceType = "DAMAGED_SELLING_RETURN";
                     break;
                 case 2:
-                    invoiceType = InvoiceType.SELLING_RETURN;
+                    invoiceType = "SELLING_RETURN";
                     break;
                 case 3:
-                    invoiceType = InvoiceType.BUYING;
+                    invoiceType = "BUYING";
                     break;
                 case 4:
-                    invoiceType = InvoiceType.DAMAGED_BUYING_RETURN;
+                    invoiceType = "DAMAGED_BUYING_RETURN";
                     break;
                 case 5:
-                    invoiceType = InvoiceType.BUYING_RETURN;
+                    invoiceType = "BUYING_RETURN";
                     break;
             }
         }
