@@ -8,7 +8,7 @@ namespace invoiceIntegration.model
 {
     public class LogoInvoiceJson
     {
-        public BillingTypeEnum invoiceType { get; set; }   // 8 satış , 3 Satış iade ,9 verilen hizmet ;  4 alınan hizmet ,1 alım ,  6 alım iade ,  
+        public InvoiceType invoiceType { get; set; }   // 8 satış , 3 Satış iade ,9 verilen hizmet ;  4 alınan hizmet ,1 alım ,  6 alım iade ,  
         public string number { get; set; }
         public DateTime date { get; set; }
         public string documentNumber { get; set; }

@@ -8,16 +8,13 @@ namespace invoiceIntegration
 {
     public enum InvoiceType
     {
-        SELLING  ,
-        SELLING_RETURN  ,
-        DAMAGED_SELLING_RETURN  ,
-        DAMAGED_BUYING_RETURN ,
-        BUYING_SERVICE  ,
-        BUYING_RETURN,
-        SELLING_SERVICE,
-        BUYING
-
-        //SELLING_SERVICE,
-        //BUYING_SERVICE
+        SELLING = 8  ,
+        SELLING_RETURN =3 ,
+        DAMAGED_SELLING_RETURN =3 ,
+        DAMAGED_BUYING_RETURN = 6 ,
+        BUYING_SERVICE  = 4 ,
+        BUYING_RETURN = 6,
+        SELLING_SERVICE = 9,
+        BUYING = 1 
     }
 }

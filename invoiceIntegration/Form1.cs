@@ -60,7 +60,7 @@ namespace invoiceIntegration
 
         bool isLoggedIn = false;
         string filePath = "";
-        InvoiceType invoiceType;
+        string invoiceType;
 
         private void Form1_Load(object sender, EventArgs e)
         { 
@@ -452,6 +452,10 @@ namespace invoiceIntegration
                     foreach (var selectedInvoiceDetail in selectedInvoice.details)
                     {
                         InvoiceDetail invDetail = new InvoiceDetail();
+                        if(selectedInvoice.invoiceType == InvoiceType.BUYING_SERVICE || selectedInvoice.invoiceType == InvoiceType.SELLING_SERVICE)
+                        {
+                            invDetail.type = (int)selectedInvoice.invoiceType;
+                        }
                         invDetail.type = 0;
                         invDetail.code = selectedInvoiceDetail.code;
                         invDetail.quantity = selectedInvoiceDetail.quantity;
@@ -738,19 +742,22 @@ namespace invoiceIntegration
         void FillGrid(List<LogoInvoiceJson> jsonData)
         {
             dataGridInvoice.Rows.Clear();
-            foreach (var data in jsonData)
+            if (jsonData != null)
             {
-                int n = dataGridInvoice.Rows.Add();
-                dataGridInvoice.Rows[n].Cells[0].Value = "false";
-                dataGridInvoice.Rows[n].Cells[1].Value = (helper.getInvoiceType((int)data.invoiceType)).ToString();
-                dataGridInvoice.Rows[n].Cells[2].Value = data.number;
-                dataGridInvoice.Rows[n].Cells[3].Value = data.date.ToShortDateString();
-                dataGridInvoice.Rows[n].Cells[4].Value = data.documentNumber;
-                dataGridInvoice.Rows[n].Cells[5].Value = data.customerCode;
-                dataGridInvoice.Rows[n].Cells[6].Value = data.customerName;
-                dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
+                foreach (var data in jsonData)
+                {
+                    int n = dataGridInvoice.Rows.Add();
+                    dataGridInvoice.Rows[n].Cells[0].Value = "false";
+                    dataGridInvoice.Rows[n].Cells[1].Value = (helper.getInvoiceType((int)data.invoiceType)).ToString();
+                    dataGridInvoice.Rows[n].Cells[2].Value = data.number;
+                    dataGridInvoice.Rows[n].Cells[3].Value = data.date.ToShortDateString();
+                    dataGridInvoice.Rows[n].Cells[4].Value = data.documentNumber;
+                    dataGridInvoice.Rows[n].Cells[5].Value = data.customerCode;
+                    dataGridInvoice.Rows[n].Cells[6].Value = data.customerName;
+                    dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
+                    dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
+                    dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
+                }
             }
         }
         void FillGrid(List<LogoWaybillJson> jsonData)
@@ -1076,57 +1083,60 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
 
 
-
-                            Lines dispatches_lines = newInvoice.DataFields.FieldByName("DISPATCHES").Lines;
-                            if (dispatches_lines.AppendLine())
+                            if (invoice.type != (int)InvoiceType.BUYING_SERVICE && invoice.type != (int)InvoiceType.SELLING_SERVICE) // hizmet faturaları için irsaliye alanları doldurulmadı
                             {
-                                dispatches_lines[0].FieldByName("TYPE").Value = invoice.type;
-                                if (useDefaultNumber)
+                                Lines dispatches_lines = newInvoice.DataFields.FieldByName("DISPATCHES").Lines;
+                                if (dispatches_lines.AppendLine())
                                 {
-                                    dispatches_lines[0].FieldByName("NUMBER").Value = "~";
+                                    dispatches_lines[0].FieldByName("TYPE").Value = invoice.type;
+                                    if (useDefaultNumber)
+                                    {
+                                        dispatches_lines[0].FieldByName("NUMBER").Value = "~";
+                                    }
+                                    else
+                                    {
+                                        dispatches_lines[0].FieldByName("NUMBER").Value = invoice.number; // düzenlecek
+                                    }
+
+                                    if (useShortDate)
+                                    {
+                                        dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
+                                    }
+                                    else
+                                    {
+                                        dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
+                                    }
+
+                                    dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
+                                    dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
+                                    dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
+                                    dispatches_lines[0].FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
+                                    dispatches_lines[0].FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
+                                    dispatches_lines[0].FieldByName("DIVISION").Value = invoice.distributorBranchCode;
+                                    dispatches_lines[0].FieldByName("INVOICED").Value = 1;
+                                    dispatches_lines[0].FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
+                                    dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
+                                    dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
+                                    dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
+
+
+                                    //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
+
+                                    dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
+                                    dispatches_lines[0].FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
+                                    dispatches_lines[0].FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
+
+                                    dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
+                                    dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
+                                    dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
+                                    dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode + "_" + invoice.customerBranchName;
+                                    //dispatches_lines[0].FieldByName("TC_NET").Value = invoice.netTotal;
+                                    //dispatches_lines[0].FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
+                                    //dispatches_lines[0].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
+                                    //dispatches_lines[0].FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
                                 }
-                                else
-                                {
-                                    dispatches_lines[0].FieldByName("NUMBER").Value = invoice.number; // düzenlecek
-                                }
+                            }
 
-                                if (useShortDate)
-                                {
-                                    dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
-                                }
-                                else
-                                {
-                                    dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
-                                }
-
-                                dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
-                                dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
-                                dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
-                                dispatches_lines[0].FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
-                                dispatches_lines[0].FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
-                                dispatches_lines[0].FieldByName("DIVISION").Value = invoice.distributorBranchCode;
-                                dispatches_lines[0].FieldByName("INVOICED").Value = 1;
-                                dispatches_lines[0].FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
-                                dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
-                                dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
-                                dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
-
-
-                                //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
-
-                                dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
-                                dispatches_lines[0].FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
-                                dispatches_lines[0].FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
-
-                                dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
-                                dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
-                                dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                                dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode + "_" + invoice.customerBranchName;
-                                //dispatches_lines[0].FieldByName("TC_NET").Value = invoice.netTotal;
-                                //dispatches_lines[0].FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
-                                //dispatches_lines[0].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-                                //dispatches_lines[0].FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
-                            }     
                             Lines newInvoiceLines = newInvoice.DataFields.FieldByName("TRANSACTIONS").Lines;
 
                             for (int i = 0; i < invoice.details.Count; i++)
@@ -1189,17 +1199,28 @@ namespace invoiceIntegration
                                                 return integratedInvoices;
                                             }
                                         } 
+                                        else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
+                                        {
+                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code);
+                                            newInvoiceLines[i].FieldByName("TYPE").Value = 4;
+                                        }
                                         else
                                             newInvoiceLines[i].FieldByName("MASTER_CODE").Value = detail.code;
 
-
+                                        newInvoiceLines[i].FieldByName("MASTER_DEF").Value = detail.name; 
+                                        newInvoiceLines[i].FieldByName("DESCRIPTION").Value = invoice.note;
                                         newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
                                         newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
                                         newInvoiceLines[i].FieldByName("QUANTITY").Value = detail.quantity;
                                         newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
                                         newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
                                         newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                        newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+
+                                        if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
+                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit("HİZMET_" + detail.unitCode);
+                                            else
+                                            newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
+                                        
                                         newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
 
                                         //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
@@ -2190,28 +2211,28 @@ namespace invoiceIntegration
             switch (cmbInvoice.SelectedIndex)
             {
                 case 0:
-                    invoiceType = InvoiceType.SELLING;
+                    invoiceType = "SELLING";
                     break;
                 case 1:
-                    invoiceType = InvoiceType.DAMAGED_SELLING_RETURN;
+                    invoiceType = "DAMAGED_SELLING_RETURN";
                     break;
                 case 2:
-                    invoiceType = InvoiceType.SELLING_RETURN;
+                    invoiceType = "SELLING_RETURN";
                     break;
                 case 3:
-                    invoiceType = InvoiceType.SELLING_SERVICE;
+                    invoiceType = "SELLING_SERVICE";
                     break;
                 case 4:
-                    invoiceType = InvoiceType.BUYING_SERVICE;
+                    invoiceType = "BUYING_SERVICE";
                     break;
                 case 5:
-                    invoiceType = InvoiceType.BUYING;
+                    invoiceType = "BUYING";
                     break;
                 case 6:
-                    invoiceType = InvoiceType.DAMAGED_BUYING_RETURN;
+                    invoiceType = "DAMAGED_BUYING_RETURN";
                     break;
                 case 7:
-                    invoiceType = InvoiceType.BUYING_RETURN;
+                    invoiceType = "BUYING_RETURN";
                     break;
             }
         }
@@ -2220,22 +2241,22 @@ namespace invoiceIntegration
             switch (cmbDispatch.SelectedIndex)
             {
                 case 0:
-                    invoiceType = InvoiceType.SELLING;
+                    invoiceType = "SELLING";
                     break;
                 case 1:
-                    invoiceType = InvoiceType.DAMAGED_SELLING_RETURN;
+                    invoiceType = "DAMAGED_SELLING_RETURN";
                     break;
                 case 2:
-                    invoiceType = InvoiceType.SELLING_RETURN;
+                    invoiceType = "SELLING_RETURN";
                     break;
                 case 3:
-                    invoiceType = InvoiceType.BUYING;
+                    invoiceType = "BUYING";
                     break;
                 case 4:
-                    invoiceType = InvoiceType.DAMAGED_BUYING_RETURN;
+                    invoiceType = "DAMAGED_BUYING_RETURN";
                     break;
                 case 5:
-                    invoiceType = InvoiceType.BUYING_RETURN;
+                    invoiceType = "BUYING_RETURN";
                     break;
             }
         }
