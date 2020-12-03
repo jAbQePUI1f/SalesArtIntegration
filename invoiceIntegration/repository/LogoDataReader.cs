@@ -644,7 +644,7 @@ namespace invoiceIntegration.repository
             return invoiceGuid;
         }
         
-        public string getServiceCodeBySalesArtServiceCode(string serviceCode)
+        public string getServiceCodeBySalesArtServiceCode(string serviceCode, int serviceType)
         {
             string erpServiceCode = "";
 
@@ -652,7 +652,7 @@ namespace invoiceIntegration.repository
             {
                 String Qry = "SELECT CODE";
                 Qry += " FROM LG_" + companyCode + "_SRVCARD WITH (NOLOCK) ";
-                Qry += " WHERE   SPECODE5  = '" + serviceCode + "'  AND ACTIVE =  0 ";
+                Qry += " WHERE   SPECODE5  = '" + serviceCode + "' AND CARDTYPE = '" + serviceType + "'  AND ACTIVE =  0 ";
 
                 helper.LogFile("SQL Query", serviceCode, "", "", Qry);
 

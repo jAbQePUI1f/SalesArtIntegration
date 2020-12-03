@@ -1075,7 +1075,7 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                            newInvoice.DataFields.FieldByName("NOTES1").Value = "ST Notu: "+ invoice.note + " Sevk :"+ invoice.customerBranchCode +"_"+ invoice.customerBranchName ;
+                            newInvoice.DataFields.FieldByName("NOTES1").Value = invoice.note ;
                             newInvoice.DataFields.FieldByName("TC_NET").Value = invoice.netTotal;
                             newInvoice.DataFields.FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
                             newInvoice.DataFields.FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
@@ -1129,7 +1129,7 @@ namespace invoiceIntegration
                                     dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                                     dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                                     dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                                    dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode + "_" + invoice.customerBranchName;
+                                    dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode ;
                                     //dispatches_lines[0].FieldByName("TC_NET").Value = invoice.netTotal;
                                     //dispatches_lines[0].FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
                                     //dispatches_lines[0].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
@@ -1201,7 +1201,7 @@ namespace invoiceIntegration
                                         } 
                                         else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
                                         {
-                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code);
+                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code, invoice.type == 4 ? 1 : 2 );
                                             newInvoiceLines[i].FieldByName("TYPE").Value = 4;
                                         }
                                         else
