@@ -348,8 +348,13 @@ namespace invoiceIntegration
             helper.AddNode(output, outputOrderDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
             helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
             helper.AddNode(output, outputOrderDbop, "NOTES1", " "+invoice.note); 
-            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", shipAgentCode); 
+            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", shipAgentCode);
 
+            if (useShipCode)
+            {
+                helper.AddNode(output, outputOrderDbop, "SHIPLOC_CODE", invoice.customerBranchCode);
+                helper.AddNode(output, outputOrderDbop, "SHIPLOC_DEF", invoice.customerBranchName);
+            }
 
 
             if (invoice.type == 8 || invoice.type == 3)
@@ -1075,7 +1080,7 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                            newInvoice.DataFields.FieldByName("NOTES1").Value = invoice.note ;
+                            newInvoice.DataFields.FieldByName("NOTES1").Value = invoice.note + "Şube:"+ invoice.customerBranchCode + "_" + invoice.customerBranchName ;
                             newInvoice.DataFields.FieldByName("TC_NET").Value = invoice.netTotal;
                             newInvoice.DataFields.FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
                             newInvoice.DataFields.FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
