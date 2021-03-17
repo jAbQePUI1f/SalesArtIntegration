@@ -191,6 +191,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="logo_WwH_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <COMReference Include="UnityObjects">
       <Guid>{51F6657D-9972-45FD-8D5D-98849802A9C9}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -201,10 +204,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="logo_WwH_icon.ico" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

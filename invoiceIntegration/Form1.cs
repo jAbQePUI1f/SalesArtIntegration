@@ -155,7 +155,7 @@ namespace invoiceIntegration
 
             helper.AddNode(output, outputInvoiceDbop, "DATE", date);
             helper.AddNode(output, outputInvoiceDbop, "TIME", helper.Hour(invoice.date).ToString());
-            helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.documentNumber);
+            helper.AddNode(output, outputInvoiceDbop, "DOC_NUMBER", invoice.number);
             helper.AddNode(output, outputInvoiceDbop, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
             helper.AddNode(output, outputInvoiceDbop, "ARP_CODE", invoice.customerCode);
             helper.AddNode(output, outputInvoiceDbop, "SHIPPING_AGENT", shipAgentCode);
@@ -174,6 +174,10 @@ namespace invoiceIntegration
             helper.AddNode(output, outputInvoiceDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
             helper.AddNode(output, outputInvoiceDbop, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
             helper.AddNode(output, outputInvoiceDbop, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
+
+            if (distributorId == 47)
+                invoice.note = invoice.customerBranchName + " - " + invoice.note;  // gülpa distributoru, şubelerin açıklamaya eklenmesini istedi
+
             helper.AddNode(output, outputInvoiceDbop, "NOTES1", invoice.note);  
 
             //zorunlu değil
@@ -349,11 +353,11 @@ namespace invoiceIntegration
             helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
             helper.AddNode(output, outputOrderDbop, "NOTES1", " "+invoice.note); 
             helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", shipAgentCode);
-
+            
             if (useShipCode)
             {
                 helper.AddNode(output, outputOrderDbop, "SHIPLOC_CODE", invoice.customerBranchCode);
-                helper.AddNode(output, outputOrderDbop, "SHIPLOC_DEF", invoice.customerBranchName);
+               // helper.AddNode(output, outputOrderDbop, "SHIPLOC_DEF", invoice.customerBranchName);
             }
 
 
@@ -379,7 +383,7 @@ namespace invoiceIntegration
                     {
                         helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString()); 
                         helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
-                        helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
+                        //helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
                     }
                 }
                 else
@@ -998,7 +1002,6 @@ namespace invoiceIntegration
         {
             string remoteInvoiceNumber = "";
             string message = "";
-            string remoteInvoiceStatus = "";
 
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
 
@@ -1346,7 +1349,6 @@ namespace invoiceIntegration
 
             string remoteDespatchNumber = "";
             string message = "";
-            string remoteDespatcheStatus = "";
 
             List<IntegratedWaybillDto> receivedWaybills = new List<IntegratedWaybillDto>();
             
@@ -1581,9 +1583,7 @@ namespace invoiceIntegration
 
         public IntegratedOrderStatus sendMultipleOrder(List<Order> orders)
         {
-            string remoteNumber = "";
             string message = "";
-            string remoteOrderStatus = "";
             long remoteOrderId = 0;
 
             List<IntegratedOrderDto> receivedOrders = new List<IntegratedOrderDto>(); 
@@ -1787,7 +1787,6 @@ namespace invoiceIntegration
         {
             string remoteInvoiceNumber = "";
             string message = "";
-            string remoteInvoiceStatus = "";
 
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
 
@@ -2063,9 +2062,7 @@ namespace invoiceIntegration
         }
         public IntegratedInvoiceStatus xmlExport(List<LogoInvoice> invoices)
         {
-            string remoteNumber = "";
             string message = "";
-            string remoteInvoiceStatus = "";
 
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
              
@@ -2098,7 +2095,6 @@ namespace invoiceIntegration
         {
             string remoteNumber = "";
             string message = "";
-            string remoteInvoiceStatus = "";
 
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
 
@@ -2345,7 +2341,7 @@ namespace invoiceIntegration
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 //IntegratedInvoiceStatus status = xmlExportWithLObjects(selectedInvoices);
                 IntegratedInvoiceStatus status = xmlExport(selectedInvoices);
-                SendResponse(status);
+               // SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
