@@ -105,13 +105,19 @@ namespace invoiceIntegration
             output = new XmlDocument();
             outputInvoiceSales = null;
             XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);
-            if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN)
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", ""); //Satış Faturası
-
+            output.InsertBefore(xmlDeclaration, output.DocumentElement);      
+            if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN)//Satış Faturası
+            {
+                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", "");
+            }
+            else if (invoice.type == (int)InvoiceType.BUYING || invoice.type == (int)InvoiceType.BUYING_RETURN)// Alış Faturası
+            {
+                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", "");
+            }
             else
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", ""); // Alış Faturası
-
+            {
+                // Başka Bir fatura tipi gelirse diye tasarlandı.
+            }
             output.AppendChild(outputInvoiceSales);
             outputInvoiceDbop = output.CreateNode(XmlNodeType.Element, "INVOICE", "");
             XmlAttribute newAttr = output.CreateAttribute("DBOP");
@@ -2067,9 +2073,17 @@ namespace invoiceIntegration
             output.InsertBefore(xmlDeclaration, output.DocumentElement);
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
             if (invoices.FirstOrDefault().type == (int)InvoiceType.SELLING || invoices.FirstOrDefault().type == (int)InvoiceType.SELLING_RETURN)
+            {
                 outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", "");
-            else
+            }
+            else if (invoices.FirstOrDefault().type == (int)InvoiceType.BUYING || invoices.FirstOrDefault().type == (int)InvoiceType.BUYING_RETURN)
+            {
                 outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", "");
+            }
+            else
+            {
+                // Başka Bir fatura tipi gelirse diye tasarlandı.
+            }
             output.AppendChild(outputInvoiceSales);
             foreach (var invoice in invoices)
             {
@@ -2361,7 +2375,7 @@ namespace invoiceIntegration
                 IntegratedInvoiceStatus status = null;
                 if (distributorId == 47) // Gülpa için geliştirilen Fatura Listesini Xml'e çevirme geliştirmesi
                 {
-                    status = InvoiceListExportToXml(selectedInvoices); 
+                    status = InvoiceListExportToXml(selectedInvoices);
                 }
                 else
                 {
