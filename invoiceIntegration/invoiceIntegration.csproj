@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="config\Configuration.cs" />
     <Compile Include="config\LogoApplication.cs" />
+    <Compile Include="Constants\NodeType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
