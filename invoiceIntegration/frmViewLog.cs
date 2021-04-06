@@ -1,15 +1,17 @@
-﻿using System;
+﻿using MetroFramework.Forms;
+using System;
 using System.Collections.Generic; 
 using System.IO; 
 using System.Windows.Forms;
 
 namespace invoiceIntegration
 {
-    public partial class frmViewLog : Form
+    public partial class frmViewLog : MetroForm
     {
         public frmViewLog()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void LogViewForm_Load(object sender, EventArgs e)
