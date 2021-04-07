@@ -1,6 +1,6 @@
 ﻿namespace invoiceIntegration
 {
-    partial class Form1
+    partial class frmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.btnCheckLogoConnection = new System.Windows.Forms.Button();
             this.lblLogoConnectionInfo = new System.Windows.Forms.Label();
             this.dataGridInvoice = new System.Windows.Forms.DataGridView();
+            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chkSelectAll = new System.Windows.Forms.CheckBox();
             this.cmbInvoice = new MetroFramework.Controls.MetroComboBox();
             this.lblInvoice = new MetroFramework.Controls.MetroLabel();
@@ -44,16 +55,6 @@
             this.endDate = new MetroFramework.Controls.MetroDateTime();
             this.btnXML = new MetroFramework.Controls.MetroButton();
             this.btnLastLog = new MetroFramework.Controls.MetroButton();
-            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSendOrderToLogo = new MetroFramework.Controls.MetroButton();
             this.btnSendToLogo = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
@@ -104,155 +105,6 @@
             this.dataGridInvoice.Name = "dataGridInvoice";
             this.dataGridInvoice.Size = new System.Drawing.Size(1272, 593);
             this.dataGridInvoice.TabIndex = 12;
-            // 
-            // chkSelectAll
-            // 
-            this.chkSelectAll.AutoSize = true;
-            this.chkSelectAll.Location = new System.Drawing.Point(59, 124);
-            this.chkSelectAll.Name = "chkSelectAll";
-            this.chkSelectAll.Size = new System.Drawing.Size(87, 17);
-            this.chkSelectAll.TabIndex = 22;
-            this.chkSelectAll.Text = "Tümünü Seç";
-            this.chkSelectAll.UseVisualStyleBackColor = true;
-            this.chkSelectAll.CheckedChanged += new System.EventHandler(this.chkSelectAll_CheckedChanged);
-            // 
-            // cmbInvoice
-            // 
-            this.cmbInvoice.FormattingEnabled = true;
-            this.cmbInvoice.ItemHeight = 23;
-            this.cmbInvoice.Items.AddRange(new object[] {
-            "Satış Faturaları",
-            "Hasarlı Satış İade Faturaları",
-            "Sağlam Satış İade Faturaları",
-            "Verilen Hizmet Faturaları",
-            "Alınan Hizmet Faturaları",
-            "Alım Faturaları",
-            "Hasarılı Alım İade Faturaları",
-            "Sağlam Alım İade Faturaları"});
-            this.cmbInvoice.Location = new System.Drawing.Point(12, 33);
-            this.cmbInvoice.Name = "cmbInvoice";
-            this.cmbInvoice.Size = new System.Drawing.Size(194, 29);
-            this.cmbInvoice.TabIndex = 24;
-            this.cmbInvoice.UseSelectable = true;
-            this.cmbInvoice.SelectedIndexChanged += new System.EventHandler(this.cmbInvoice_SelectedIndexChanged);
-            // 
-            // lblInvoice
-            // 
-            this.lblInvoice.AutoSize = true;
-            this.lblInvoice.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lblInvoice.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblInvoice.Location = new System.Drawing.Point(12, 10);
-            this.lblInvoice.Name = "lblInvoice";
-            this.lblInvoice.Size = new System.Drawing.Size(116, 15);
-            this.lblInvoice.TabIndex = 25;
-            this.lblInvoice.Text = "Fatura Tipiniz Seçiniz";
-            // 
-            // btnGetInvoices
-            // 
-            this.btnGetInvoices.Location = new System.Drawing.Point(12, 72);
-            this.btnGetInvoices.Name = "btnGetInvoices";
-            this.btnGetInvoices.Size = new System.Drawing.Size(194, 43);
-            this.btnGetInvoices.TabIndex = 26;
-            this.btnGetInvoices.Text = "Faturaları getir";
-            this.btnGetInvoices.UseSelectable = true;
-            this.btnGetInvoices.Click += new System.EventHandler(this.btnGetInvoices_Click);
-            // 
-            // cmbDispatch
-            // 
-            this.cmbDispatch.FormattingEnabled = true;
-            this.cmbDispatch.ItemHeight = 23;
-            this.cmbDispatch.Items.AddRange(new object[] {
-            "Satış İrsaliyesi",
-            "Hasarlı Satış İade İrsaliyesi",
-            "Sağlam Satış İade İrsaliyesi",
-            "Alım İrsaliyesi",
-            "Hasarılı Alım İade İrsaliyesi",
-            "Sağlam Alım İade İrsaliyesi"});
-            this.cmbDispatch.Location = new System.Drawing.Point(598, 32);
-            this.cmbDispatch.Name = "cmbDispatch";
-            this.cmbDispatch.Size = new System.Drawing.Size(189, 29);
-            this.cmbDispatch.TabIndex = 27;
-            this.cmbDispatch.UseSelectable = true;
-            this.cmbDispatch.SelectedIndexChanged += new System.EventHandler(this.cmbDispatch_SelectedIndexChanged);
-            // 
-            // chkDispatch
-            // 
-            this.chkDispatch.AutoSize = true;
-            this.chkDispatch.Location = new System.Drawing.Point(598, 10);
-            this.chkDispatch.Name = "chkDispatch";
-            this.chkDispatch.Size = new System.Drawing.Size(90, 15);
-            this.chkDispatch.TabIndex = 28;
-            this.chkDispatch.Text = "İrsaliye Aktar";
-            this.chkDispatch.UseSelectable = true;
-            this.chkDispatch.CheckedChanged += new System.EventHandler(this.chkDispatch_CheckedChanged);
-            // 
-            // btnWaybill
-            // 
-            this.btnWaybill.Location = new System.Drawing.Point(598, 72);
-            this.btnWaybill.Name = "btnWaybill";
-            this.btnWaybill.Size = new System.Drawing.Size(189, 43);
-            this.btnWaybill.TabIndex = 29;
-            this.btnWaybill.Text = "İrsaliyeleri Aktar";
-            this.btnWaybill.UseSelectable = true;
-            this.btnWaybill.Click += new System.EventHandler(this.btnWaybill_Click);
-            // 
-            // lblStartDate
-            // 
-            this.lblStartDate.AutoSize = true;
-            this.lblStartDate.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lblStartDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblStartDate.Location = new System.Drawing.Point(223, 10);
-            this.lblStartDate.Name = "lblStartDate";
-            this.lblStartDate.Size = new System.Drawing.Size(88, 15);
-            this.lblStartDate.TabIndex = 30;
-            this.lblStartDate.Text = "Başlangıç Tarihi";
-            // 
-            // lblEndDate
-            // 
-            this.lblEndDate.AutoSize = true;
-            this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblEndDate.Location = new System.Drawing.Point(397, 7);
-            this.lblEndDate.Name = "lblEndDate";
-            this.lblEndDate.Size = new System.Drawing.Size(60, 15);
-            this.lblEndDate.TabIndex = 31;
-            this.lblEndDate.Text = "Bitiş Tarihi";
-            // 
-            // startDate
-            // 
-            this.startDate.Location = new System.Drawing.Point(223, 33);
-            this.startDate.MinimumSize = new System.Drawing.Size(0, 29);
-            this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(168, 29);
-            this.startDate.TabIndex = 32;
-            // 
-            // endDate
-            // 
-            this.endDate.Location = new System.Drawing.Point(397, 33);
-            this.endDate.MinimumSize = new System.Drawing.Size(0, 29);
-            this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(167, 29);
-            this.endDate.TabIndex = 33;
-            // 
-            // btnXML
-            // 
-            this.btnXML.Location = new System.Drawing.Point(223, 72);
-            this.btnXML.Name = "btnXML";
-            this.btnXML.Size = new System.Drawing.Size(341, 43);
-            this.btnXML.TabIndex = 34;
-            this.btnXML.Text = "Faturaları XML\'e Aktar";
-            this.btnXML.UseSelectable = true;
-            this.btnXML.Click += new System.EventHandler(this.btnXML_Click);
-            // 
-            // btnLastLog
-            // 
-            this.btnLastLog.Location = new System.Drawing.Point(1185, 74);
-            this.btnLastLog.Name = "btnLastLog";
-            this.btnLastLog.Size = new System.Drawing.Size(99, 41);
-            this.btnLastLog.TabIndex = 35;
-            this.btnLastLog.Text = "Log Kayıtları";
-            this.btnLastLog.UseSelectable = true;
-            this.btnLastLog.Click += new System.EventHandler(this.btnLastLog_Click);
             // 
             // chk
             // 
@@ -317,6 +169,155 @@
             this.Column16.ReadOnly = true;
             this.Column16.Width = 120;
             // 
+            // chkSelectAll
+            // 
+            this.chkSelectAll.AutoSize = true;
+            this.chkSelectAll.Location = new System.Drawing.Point(59, 124);
+            this.chkSelectAll.Name = "chkSelectAll";
+            this.chkSelectAll.Size = new System.Drawing.Size(87, 17);
+            this.chkSelectAll.TabIndex = 22;
+            this.chkSelectAll.Text = "Tümünü Seç";
+            this.chkSelectAll.UseVisualStyleBackColor = true;
+            this.chkSelectAll.CheckedChanged += new System.EventHandler(this.chkSelectAll_CheckedChanged);
+            // 
+            // cmbInvoice
+            // 
+            this.cmbInvoice.FormattingEnabled = true;
+            this.cmbInvoice.ItemHeight = 23;
+            this.cmbInvoice.Items.AddRange(new object[] {
+            "Satış Faturaları",
+            "Hasarlı Satış İade Faturaları",
+            "Sağlam Satış İade Faturaları",
+            "Verilen Hizmet Faturaları",
+            "Alınan Hizmet Faturaları",
+            "Alım Faturaları",
+            "Hasarılı Alım İade Faturaları",
+            "Sağlam Alım İade Faturaları"});
+            this.cmbInvoice.Location = new System.Drawing.Point(12, 33);
+            this.cmbInvoice.Name = "cmbInvoice";
+            this.cmbInvoice.Size = new System.Drawing.Size(194, 29);
+            this.cmbInvoice.TabIndex = 24;
+            this.cmbInvoice.UseSelectable = true;
+            this.cmbInvoice.SelectedIndexChanged += new System.EventHandler(this.cmbInvoice_SelectedIndexChanged);
+            // 
+            // lblInvoice
+            // 
+            this.lblInvoice.AutoSize = true;
+            this.lblInvoice.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.lblInvoice.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.lblInvoice.Location = new System.Drawing.Point(12, 12);
+            this.lblInvoice.Name = "lblInvoice";
+            this.lblInvoice.Size = new System.Drawing.Size(116, 15);
+            this.lblInvoice.TabIndex = 25;
+            this.lblInvoice.Text = "Fatura Tipiniz Seçiniz";
+            // 
+            // btnGetInvoices
+            // 
+            this.btnGetInvoices.Location = new System.Drawing.Point(12, 72);
+            this.btnGetInvoices.Name = "btnGetInvoices";
+            this.btnGetInvoices.Size = new System.Drawing.Size(194, 43);
+            this.btnGetInvoices.TabIndex = 26;
+            this.btnGetInvoices.Text = "Faturaları getir";
+            this.btnGetInvoices.UseSelectable = true;
+            this.btnGetInvoices.Click += new System.EventHandler(this.btnGetInvoices_Click);
+            // 
+            // cmbDispatch
+            // 
+            this.cmbDispatch.FormattingEnabled = true;
+            this.cmbDispatch.ItemHeight = 23;
+            this.cmbDispatch.Items.AddRange(new object[] {
+            "Satış İrsaliyesi",
+            "Hasarlı Satış İade İrsaliyesi",
+            "Sağlam Satış İade İrsaliyesi",
+            "Alım İrsaliyesi",
+            "Hasarılı Alım İade İrsaliyesi",
+            "Sağlam Alım İade İrsaliyesi"});
+            this.cmbDispatch.Location = new System.Drawing.Point(610, 32);
+            this.cmbDispatch.Name = "cmbDispatch";
+            this.cmbDispatch.Size = new System.Drawing.Size(189, 29);
+            this.cmbDispatch.TabIndex = 27;
+            this.cmbDispatch.UseSelectable = true;
+            this.cmbDispatch.SelectedIndexChanged += new System.EventHandler(this.cmbDispatch_SelectedIndexChanged);
+            // 
+            // chkDispatch
+            // 
+            this.chkDispatch.AutoSize = true;
+            this.chkDispatch.Location = new System.Drawing.Point(610, 10);
+            this.chkDispatch.Name = "chkDispatch";
+            this.chkDispatch.Size = new System.Drawing.Size(90, 15);
+            this.chkDispatch.TabIndex = 28;
+            this.chkDispatch.Text = "İrsaliye Aktar";
+            this.chkDispatch.UseSelectable = true;
+            this.chkDispatch.CheckedChanged += new System.EventHandler(this.chkDispatch_CheckedChanged);
+            // 
+            // btnWaybill
+            // 
+            this.btnWaybill.Location = new System.Drawing.Point(610, 72);
+            this.btnWaybill.Name = "btnWaybill";
+            this.btnWaybill.Size = new System.Drawing.Size(189, 43);
+            this.btnWaybill.TabIndex = 29;
+            this.btnWaybill.Text = "İrsaliyeleri Aktar";
+            this.btnWaybill.UseSelectable = true;
+            this.btnWaybill.Click += new System.EventHandler(this.btnWaybill_Click);
+            // 
+            // lblStartDate
+            // 
+            this.lblStartDate.AutoSize = true;
+            this.lblStartDate.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.lblStartDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.lblStartDate.Location = new System.Drawing.Point(223, 12);
+            this.lblStartDate.Name = "lblStartDate";
+            this.lblStartDate.Size = new System.Drawing.Size(88, 15);
+            this.lblStartDate.TabIndex = 30;
+            this.lblStartDate.Text = "Başlangıç Tarihi";
+            // 
+            // lblEndDate
+            // 
+            this.lblEndDate.AutoSize = true;
+            this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.lblEndDate.Location = new System.Drawing.Point(407, 12);
+            this.lblEndDate.Name = "lblEndDate";
+            this.lblEndDate.Size = new System.Drawing.Size(60, 15);
+            this.lblEndDate.TabIndex = 31;
+            this.lblEndDate.Text = "Bitiş Tarihi";
+            // 
+            // startDate
+            // 
+            this.startDate.Location = new System.Drawing.Point(223, 33);
+            this.startDate.MinimumSize = new System.Drawing.Size(0, 29);
+            this.startDate.Name = "startDate";
+            this.startDate.Size = new System.Drawing.Size(178, 29);
+            this.startDate.TabIndex = 32;
+            // 
+            // endDate
+            // 
+            this.endDate.Location = new System.Drawing.Point(407, 33);
+            this.endDate.MinimumSize = new System.Drawing.Size(0, 29);
+            this.endDate.Name = "endDate";
+            this.endDate.Size = new System.Drawing.Size(175, 29);
+            this.endDate.TabIndex = 33;
+            // 
+            // btnXML
+            // 
+            this.btnXML.Location = new System.Drawing.Point(223, 72);
+            this.btnXML.Name = "btnXML";
+            this.btnXML.Size = new System.Drawing.Size(359, 43);
+            this.btnXML.TabIndex = 34;
+            this.btnXML.Text = "Faturaları XML\'e Aktar";
+            this.btnXML.UseSelectable = true;
+            this.btnXML.Click += new System.EventHandler(this.btnXML_Click);
+            // 
+            // btnLastLog
+            // 
+            this.btnLastLog.Location = new System.Drawing.Point(1185, 74);
+            this.btnLastLog.Name = "btnLastLog";
+            this.btnLastLog.Size = new System.Drawing.Size(99, 41);
+            this.btnLastLog.TabIndex = 35;
+            this.btnLastLog.Text = "Log Kayıtları";
+            this.btnLastLog.UseSelectable = true;
+            this.btnLastLog.Click += new System.EventHandler(this.btnLastLog_Click);
+            // 
             // btnSendOrderToLogo
             // 
             this.btnSendOrderToLogo.Location = new System.Drawing.Point(853, 72);
@@ -337,7 +338,7 @@
             this.btnSendToLogo.UseSelectable = true;
             this.btnSendToLogo.Click += new System.EventHandler(this.btnSendToLogo_Click);
             // 
-            // Form1
+            // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -361,8 +362,9 @@
             this.Controls.Add(this.lblLogoConnectionInfo);
             this.Controls.Add(this.btnCheckLogoConnection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "frmMain";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).EndInit();

@@ -15,14 +15,15 @@ using invoiceIntegration.helper;
 using System.Xml;
 using invoiceIntegration.model.order;
 using MetroFramework.Forms;
+using System.Threading;
 
 namespace invoiceIntegration
 {
-    public partial class Form1 : MetroForm
+    public partial class frmMain : MetroForm
     {
-        public Form1()
-        {
-            InitializeComponent();
+        public frmMain()
+        {        
+            InitializeComponent();  
             this.FormBorderStyle = FormBorderStyle.None;
         }
 
@@ -2184,6 +2185,7 @@ namespace invoiceIntegration
                 unity.UserLogout();
                 unity.Disconnect();
             }
+            System.Windows.Forms.Application.Exit();
         }
         private void btnGetInvoices_Click(object sender, EventArgs e)
         {
