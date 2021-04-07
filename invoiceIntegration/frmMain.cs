@@ -14,14 +14,17 @@ using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
 using System.Xml;
 using invoiceIntegration.model.order;
+using MetroFramework.Forms;
+using System.Threading;
 
 namespace invoiceIntegration
 {
-    public partial class Form1 : Form
+    public partial class frmMain : MetroForm
     {
-        public Form1()
-        {
-            InitializeComponent();
+        public frmMain()
+        {        
+            InitializeComponent();  
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         string logoUserName = Configuration.getLogoUserName();
@@ -2182,6 +2185,7 @@ namespace invoiceIntegration
                 unity.UserLogout();
                 unity.Disconnect();
             }
+            System.Windows.Forms.Application.Exit();
         }
         private void btnGetInvoices_Click(object sender, EventArgs e)
         {
@@ -2300,10 +2304,8 @@ namespace invoiceIntegration
             {
                 cmbInvoice.Enabled = false;
                 lblInvoice.Enabled = false;
-                cmbDispatch.Visible = true;
-                lblDispatch.Visible = true;
-                cmbDispatch.Enabled = true;
-                lblDispatch.Enabled = true;
+                cmbDispatch.Visible = true;             
+                cmbDispatch.Enabled = true;             
                 btnWaybill.Visible = true;
                 btnWaybill.Enabled = true;
                 btnSendToLogo.Enabled = false;
@@ -2314,8 +2316,7 @@ namespace invoiceIntegration
             {
                 cmbInvoice.Enabled = true;
                 lblInvoice.Enabled = true;
-                cmbDispatch.Enabled = false;
-                lblDispatch.Enabled = false;
+                cmbDispatch.Enabled = false;         
                 btnWaybill.Enabled = false;
                 cmbInvoice.SelectedIndex = 0;
                 cmbInvoice_SelectedIndexChanged(0, EventArgs.Empty);
