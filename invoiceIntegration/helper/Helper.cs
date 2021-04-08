@@ -17,6 +17,7 @@ namespace invoiceIntegration.helper
 {
     public class Helper
     {
+        bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         public void LogFile(string logCaption, string invoiceNumber, string remoteInvoiceNumber, string isSuccess, string message)
         {
             StreamWriter log;
@@ -45,9 +46,6 @@ namespace invoiceIntegration.helper
         {
             return Configuration.getDepartment();
         }
-
-        bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
-
         public string getInvoiceType(int type)
         {
             string invoiceType = "";
@@ -131,13 +129,13 @@ namespace invoiceIntegration.helper
                 if (item.successfullyIntegrated)
                 {
                     LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteInvoiceNumber, "AKTARIM BAŞARILI", item.errorMessage);
-                    basarili += " Fatura Numarası   : " ;
+                    basarili += " Fatura Numarası   : ";
                     basarili += integrationForMikroERP ? item.invoiceNumber : item.remoteInvoiceNumber;
                 }
                 else
                 {
                     LogFile("Aktarım Bilgisi", item.invoiceNumber, item.remoteInvoiceNumber, "AKTARIM BAŞARISIZ..!!!", item.errorMessage);
-                    basarisiz += item.invoiceNumber + " numaralı fatura için : " + item.errorMessage; 
+                    basarisiz += item.invoiceNumber + " numaralı fatura için : " + item.errorMessage;
                 }
             }
             string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;
@@ -187,70 +185,6 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan Sipariş Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
-        public  void AddNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
-        {
-            XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
-            tempNode.InnerText = InnerText;
-            Node.AppendChild(tempNode);
-        }
-        public  void AddCDataNode(XmlDocument Document, XmlNode Node, string Tag, string InnerText)
-        {
-            XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
-            XmlCDataSection cdata = Document.CreateCDataSection(InnerText);
-            tempNode.AppendChild(cdata);
-            Node.AppendChild(tempNode);
-        }
-
-        //public static int GetConv1(string unitname, string productcode)
-        //{
-        //    int conv1 = 1;
-        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
-        //    Connection.Open();
-        //    SqlCommand cmdConv1 = Connection.CreateCommand();
-        //    cmdConv1.CommandType = CommandType.Text;
-
-
-        //    cmdConv1.CommandText = "SELECT IT.CONVFACT1 FROM LG_" + Settings.DBFirmNo + "_ITMUNITA IT INNER JOIN LG_" + Settings.DBFirmNo + "_UNITSETL UNIT ON UNIT.LOGICALREF=IT.UNITLINEREF INNER JOIN LG_" + Settings.DBFirmNo + "_ITEMS STOK ON IT.ITEMREF=STOK.LOGICALREF WHERE UNIT.NAME='" + unitname + "' AND STOK.CODE='" + productcode + "'";
-
-        //    conv1 = Convert.ToInt32(cmdConv1.ExecuteScalar());
-        //    Connection.Close();
-        //    return conv1;
-        //}
-
-
-
-        //public static int GetConv2(string unitname, string productcode)
-        //{
-        //    int conv2 = 1;
-        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
-        //    Connection.Open();
-        //    Logger.WriteLineHistory("GetConv2:");
-        //    SqlCommand cmdConv2 = Connection.CreateCommand();
-        //    cmdConv2.CommandType = CommandType.Text;
-
-
-        //    cmdConv2.CommandText = "SELECT IT.CONVFACT2 FROM LG_" + Settings.DBFirmNo + "_ITMUNITA IT INNER JOIN LG_" + Settings.DBFirmNo + "_UNITSETL UNIT ON UNIT.LOGICALREF=IT.UNITLINEREF INNER JOIN LG_" + Settings.DBFirmNo + "_ITEMS STOK ON IT.ITEMREF=STOK.LOGICALREF WHERE UNIT.NAME='" + unitname + "' AND STOK.CODE='" + productcode + "'";
-
-        //    conv2 = Convert.ToInt32(cmdConv2.ExecuteScalar());
-        //    Connection.Close();
-        //    return conv2;
-        //}
-
-        //public static int GetCurrencyType(string curcode)
-        //{
-        //    int curtype = 1;
-        //    Logger.WriteLineHistory("GetConv1:");
-        //    SqlConnection Connection = new SqlConnection(Settings.DataSourceErpSQLConnectionString(ApplicationProcessOwnerName: "frmInvoiceSeller"));
-        //    Connection.Open();
-        //    SqlCommand cmdcurtype = Connection.CreateCommand();
-        //    cmdcurtype.CommandType = CommandType.Text;
-
-
-        //    cmdcurtype.CommandText = "SELECT CURTYPE FROM L_CURRENCYLIST   WHERE  CURCODE='" + curcode + "'";
-
-        //    curtype = Convert.ToInt32(cmdcurtype.ExecuteScalar());
-        //    Connection.Close();
-        //    return curtype;
-        //}
+       
     }
 }

@@ -12,24 +12,24 @@ namespace invoiceIntegration.config
         public static string getLogoUserName()
         {
             return ConfigurationManager.AppSettings["LogoUserName"];
-        }
+        }      
 
-        public static String getLogoPassword()
+        public static string getLogoPassword()
         {
             return ConfigurationManager.AppSettings["LogoPassword"];
         }
 
-        public static String getCompanyCode()
+        public static string getCompanyCode()
         {
             return ConfigurationManager.AppSettings["CompanyCode"];
         }
 
-        public static String getSeason()
+        public static string getSeason()
         {
             return ConfigurationManager.AppSettings["Season"];
         }
 
-        public static String getLogoConnection()
+        public static string getLogoConnection()
         {
             return ConfigurationManager.AppSettings["logoConnection"];
         }
@@ -115,6 +115,5 @@ namespace invoiceIntegration.config
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["orderTransferToLogo"]);
         }
-        
     }
 }
