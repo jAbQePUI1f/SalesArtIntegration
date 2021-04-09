@@ -9,19 +9,17 @@ using UnityObjects;
 using RestSharp;
 using System.Linq;
 using System.Data;
-using System.IO;
 using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
-using System.Xml;
 using invoiceIntegration.model.order;
 using MetroFramework.Forms;
 using invoiceIntegration.controller;
 
 namespace invoiceIntegration
 {
-    public partial class frmMain : MetroForm
+    public partial class frmMain : MetroForm 
     {
-     
+
         public frmMain()
         {
             InitializeComponent();
@@ -43,7 +41,7 @@ namespace invoiceIntegration
         string url = Configuration.getUrl();
         string campaignLineNo = Configuration.getCampaignLineNo();
         bool orderTransferToLogoInfo = Configuration.getOrderTransferToLogoInfo();
-        
+
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
         IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
@@ -89,7 +87,7 @@ namespace invoiceIntegration
                 cmbInvoice.Items.Add("Satış Siparişleri");
                 cmbInvoice.SelectedIndex = 0;
             }
-        }       
+        }
         public List<LogoInvoiceJson> GetSelectedInvoicesForMikro()
         {
             List<LogoInvoiceJson> invoices = new List<LogoInvoiceJson>();
@@ -174,7 +172,7 @@ namespace invoiceIntegration
         }
         public void GetInvoices()
         {
-            GridController gridController = new GridController();
+            GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(url);
             RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
             {
@@ -196,11 +194,11 @@ namespace invoiceIntegration
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
             jsonInvoices = JsonConvert.DeserializeObject<GenericResponse<List<LogoInvoiceJson>>>(requestResponse.Content, settings);
-            gridController.FillGrid(jsonInvoices.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoInvoiceJson);
+            gridHelper.FillGrid(jsonInvoices.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoInvoiceJson);
         }
         public void GetWaybills()
         {
-            GridController gridController = new GridController();
+            GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(url);
             RestRequest restRequest = new RestRequest("/integration/waybills?", Method.POST)
             {
@@ -222,11 +220,11 @@ namespace invoiceIntegration
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
             jsonWaybills = JsonConvert.DeserializeObject<GenericResponse<List<LogoWaybillJson>>>(requestResponse.Content, settings);
-            gridController.FillGrid(jsonWaybills.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoWaybillJson);
+            gridHelper.FillGrid(jsonWaybills.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoWaybillJson);
         }
         public void GetOrders()
         {
-            GridController gridController = new GridController();
+            GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(url);
             RestRequest restRequest = new RestRequest("/integration/orders/", Method.POST)
             {
@@ -246,7 +244,7 @@ namespace invoiceIntegration
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
             jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
-            gridController.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
+            gridHelper.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
         }
         void SendResponse(IntegratedInvoiceStatus integratedInvoices)
         {
@@ -1135,17 +1133,17 @@ namespace invoiceIntegration
         }
         public void SaveToXml()
         {
-            SelectionController selectionController = new SelectionController();
-            XmlController xmlController = new XmlController();
+            SelectionHelper selectionHelper = new SelectionHelper();
+            XmlHelper xmlHelper = new XmlHelper();
             //var selectedInvoices1 = GetSelectedInvoices();
-            var selectedInvoices = selectionController.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
+            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
             Cursor.Current = Cursors.WaitCursor;
             helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
             IntegratedInvoiceStatus status = null;
             if (XMLTransferForOrder)
-                status = xmlController.OrderListExportToXml(selectedInvoices);
+                status = xmlHelper.OrderListExportToXml(selectedInvoices);
             else
-                status = xmlController.InvoiceListExportToXml(selectedInvoices);
+                status = xmlHelper.InvoiceListExportToXml(selectedInvoices);
             helper.ShowMessages(status);
             helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
             dataGridInvoice.Rows.Clear();
@@ -1220,7 +1218,7 @@ namespace invoiceIntegration
                 GetWaybills();
             else if (orderTransferToLogoInfo)
                 GetOrders();
-            else GetInvoices();  
+            else GetInvoices();
             btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
             btnCheckLogoConnection.Enabled = (dataGridInvoice.Rows.Count > 0 && !isLoggedIn) ? true : false;
             Cursor.Current = Cursors.Default;
@@ -1228,7 +1226,7 @@ namespace invoiceIntegration
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
             IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
-            SelectionController selectionController = new SelectionController();
+            SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
                 List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
@@ -1236,7 +1234,7 @@ namespace invoiceIntegration
                 if (integrationForMikroERP)
                     selectedInvoicesForMikro = GetSelectedInvoicesForMikro();
                 else
-                    selectedInvoices = selectionController.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
+                    selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 if (integrationForMikroERP)
@@ -1339,11 +1337,12 @@ namespace invoiceIntegration
             }
         }
         private void btnWaybill_Click(object sender, EventArgs e)
-        {SelectionController selectionController = new SelectionController();
+        {
+            SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
                 //List<LogoWaybill> selectedWaybills = GetSelectedWaybills();
-                List<LogoWaybill> selectedWaybills = selectionController.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
+                List<LogoWaybill> selectedWaybills = selectionHelper.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedWaybillStatus status = sendMultipleDespatch(selectedWaybills);//sendMultipleInvoice(selectedInvoices);
@@ -1379,11 +1378,11 @@ namespace invoiceIntegration
         }
         private void btnSendOrderToLogo_Click(object sender, EventArgs e)
         {
-            SelectionController selectionController = new SelectionController();
+            SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
                 //List<Order> selectedOrders = GetSelectedOrders();
-                List<Order> selectedOrders = selectionController.GetSelectedOrders(dataGridInvoice, jsonOrders);
+                List<Order> selectedOrders = selectionHelper.GetSelectedOrders(dataGridInvoice, jsonOrders);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Sipariş Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedOrderStatus status = sendMultipleOrder(selectedOrders);

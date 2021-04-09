@@ -1,25 +1,18 @@
 ﻿using invoiceIntegration.helper;
-using invoiceIntegration.model;
 using invoiceIntegration.model.order;
-using invoiceIntegration.model.waybill;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace invoiceIntegration.controller
 {
-    public class GridController
+    public class GridHelper
     {
         Helper helper = new Helper();
-        public void FillGrid(List<dynamic> jsonData, DataGridView dataGridInvoice, string listType)
+        public void FillGrid(List<dynamic> dataList, DataGridView dataGridInvoice, string listType)
         {
             dataGridInvoice.Rows.Clear();
-            if (jsonData != null)
+            if (dataList != null)
             {
-                foreach (var data in jsonData)
+                foreach (var data in dataList)
                 {
                     int row = dataGridInvoice.Rows.Add();
                     dataGridInvoice.Rows[row].Cells[0].Value = "false";
@@ -38,10 +31,10 @@ namespace invoiceIntegration.controller
                 }
             }
         }
-        public void FillOrdersToGrid(OrderResponse jsonData, DataGridView dataGridInvoice)
+        public void FillOrdersToGrid(OrderResponse dataList, DataGridView dataGridInvoice)
         {
             dataGridInvoice.Rows.Clear();
-            foreach (var order in jsonData.orders)
+            foreach (var order in dataList.orders)
             {
                 int row = dataGridInvoice.Rows.Add();
                 dataGridInvoice.Rows[row].Cells[0].Value = "false";

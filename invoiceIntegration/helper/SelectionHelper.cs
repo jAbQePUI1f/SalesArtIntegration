@@ -1,21 +1,16 @@
-﻿using invoiceIntegration.config;
+﻿
 using invoiceIntegration.model;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
-using MetroFramework.Controls;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static invoiceIntegration.frmMain;
 
 namespace invoiceIntegration.controller
 {
-    public class SelectionController
+    public class SelectionHelper
     {      
         public List<LogoInvoice> GetSelectedInvoices(DataGridView dataGridInvoice, GenericResponse<List<LogoInvoiceJson>> jsonInvoices)
         {

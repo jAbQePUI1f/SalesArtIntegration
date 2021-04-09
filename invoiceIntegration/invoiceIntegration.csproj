@@ -97,10 +97,9 @@
     <Compile Include="config\LogoApplication.cs" />
     <Compile Include="constants\ListType.cs" />
     <Compile Include="constants\NodeType.cs" />
-    <Compile Include="controller\BaseController.cs" />
-    <Compile Include="controller\GridController.cs" />
-    <Compile Include="controller\SelectionController.cs" />
-    <Compile Include="controller\XmlController.cs" />
+    <Compile Include="helper\GridHelper.cs" />
+    <Compile Include="helper\SelectionHelper.cs" />
+    <Compile Include="helper\XmlHelper.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
