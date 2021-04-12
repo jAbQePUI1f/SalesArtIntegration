@@ -38,25 +38,22 @@ namespace invoiceIntegration
         bool useDispatch = Configuration.getUseDispatch();
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
-        string url = Configuration.getUrl();
         string campaignLineNo = Configuration.getCampaignLineNo();
         bool orderTransferToLogoInfo = Configuration.getOrderTransferToLogoInfo();
 
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
-        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
-        IntegratedOrderStatusForMessage integratedOrderStatusForMessage = new IntegratedOrderStatusForMessage();
+        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus(); 
 
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
         LogoDataReader reader = new LogoDataReader();
         UnityApplication unity = LogoApplication.getApplication();
-        List<Discount> discounts = new List<Discount>();
-        Helper helper = new Helper();
+         Helper helper = new Helper();
         bool isLoggedIn = false;
         string invoiceType;
-        private void Form1_Load(object sender, EventArgs e)
+        private void frmMain_Load(object sender, EventArgs e)
         {
             cmbInvoice.SelectedIndex = 0;
             lblLogoConnectionInfo.Text = "";
@@ -87,59 +84,7 @@ namespace invoiceIntegration
                 cmbInvoice.Items.Add("Satış Siparişleri");
                 cmbInvoice.SelectedIndex = 0;
             }
-        }
-        public List<LogoInvoiceJson> GetSelectedInvoicesForMikro()
-        {
-            List<LogoInvoiceJson> invoices = new List<LogoInvoiceJson>();
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    string number = row.Cells["number"].Value.ToString();
-                    LogoInvoiceJson selectedInvoice = jsonInvoices.data.Where(inv => inv.number == number).FirstOrDefault();
-
-                    invoices.Add(selectedInvoice);
-                }
-            }
-            return invoices;
-        }
-        void Test()
-        {
-
-            string url = "http://172.16.40.17:9002";
-            RestClient restClient = new RestClient(url);
-            RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
-            {
-                RequestFormat = DataFormat.Json
-            };
-
-            GetTransferableInvoicesRequest req = new GetTransferableInvoicesRequest()
-            {
-                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                invoiceTypes = new List<string>()
-            };
-
-            req.invoiceTypes.Add(invoiceType.ToString());
-
-            restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
-            restRequest.AddJsonBody(req);
-
-            var requestResponse = restClient.Execute<LogoInvoice>(restRequest);
-            var con = requestResponse.Content;
-
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-
-            GenericResponse<List<LogoInvoice>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<LogoInvoice>>>(requestResponse.Content, settings);
-
-            dataGridInvoice.DataSource = invResponse.data;
-
-            List<LogoInvoice> testInvoices = new List<LogoInvoice>();
-        }
+        }         
         void CheckLogin()
         {
             string logoUserName = Configuration.getLogoUserName();
@@ -173,7 +118,7 @@ namespace invoiceIntegration
         public void GetInvoices()
         {
             GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(url);
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
@@ -199,7 +144,7 @@ namespace invoiceIntegration
         public void GetWaybills()
         {
             GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(url);
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/waybills?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
@@ -225,7 +170,7 @@ namespace invoiceIntegration
         public void GetOrders()
         {
             GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(url);
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/orders/", Method.POST)
             {
                 RequestFormat = DataFormat.Json
@@ -245,97 +190,7 @@ namespace invoiceIntegration
             };
             jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
             gridHelper.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
-        }
-        void SendResponse(IntegratedInvoiceStatus integratedInvoices)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.POST)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedInvoices);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("Fatura Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Fatura Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
-        void SendResponse(IntegratedWaybillStatus integratedWaybills)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.POST)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedWaybills);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("İrsaliye Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "İrsaliye Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
-        void SendResponse(IntegratedOrderStatus integratedOrders)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedOrders);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("Sipariş Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Fatura Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
+        }   
         public IntegratedInvoiceStatus sendMultipleInvoice(List<LogoInvoice> invoices)
         {
             string remoteInvoiceNumber = "";
@@ -1200,7 +1055,7 @@ namespace invoiceIntegration
             CheckLogin();
             helper.LogFile("Login Kontolü Bitti", "-", "-", "-", "-");
         }
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (isLoggedIn)
             {
@@ -1226,13 +1081,14 @@ namespace invoiceIntegration
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
             IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
+            ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
                 List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
                 List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
                 if (integrationForMikroERP)
-                    selectedInvoicesForMikro = GetSelectedInvoicesForMikro();
+                    selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
                 else
                     selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                 Cursor.Current = Cursors.WaitCursor;
@@ -1241,7 +1097,7 @@ namespace invoiceIntegration
                     status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
                     status = sendMultipleInvoice(selectedInvoices);
-                SendResponse(status);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -1339,6 +1195,7 @@ namespace invoiceIntegration
         private void btnWaybill_Click(object sender, EventArgs e)
         {
             SelectionHelper selectionHelper = new SelectionHelper();
+            ResponseHelper responseHelper = new ResponseHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
                 //List<LogoWaybill> selectedWaybills = GetSelectedWaybills();
@@ -1347,7 +1204,7 @@ namespace invoiceIntegration
                 helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedWaybillStatus status = sendMultipleDespatch(selectedWaybills);//sendMultipleInvoice(selectedInvoices);
                                                                                         //IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
-                SendResponse(status);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -1378,6 +1235,7 @@ namespace invoiceIntegration
         }
         private void btnSendOrderToLogo_Click(object sender, EventArgs e)
         {
+            ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
@@ -1386,7 +1244,7 @@ namespace invoiceIntegration
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Sipariş Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedOrderStatus status = sendMultipleOrder(selectedOrders);
-                SendResponse(status);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Sipariş Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -1403,5 +1261,3 @@ namespace invoiceIntegration
     }
 
 }
-
-

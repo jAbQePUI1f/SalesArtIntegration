@@ -98,6 +98,7 @@
     <Compile Include="constants\ListType.cs" />
     <Compile Include="constants\NodeType.cs" />
     <Compile Include="helper\GridHelper.cs" />
+    <Compile Include="helper\ResponseHelper.cs" />
     <Compile Include="helper\SelectionHelper.cs" />
     <Compile Include="helper\XmlHelper.cs" />
     <Compile Include="frmMain.cs">

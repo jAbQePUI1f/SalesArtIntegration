@@ -241,5 +241,19 @@ namespace invoiceIntegration.controller
             }
             return orders;
         }
+        public List<LogoInvoiceJson> GetSelectedInvoicesForMikro(DataGridView dataGridInvoice, GenericResponse<List<LogoInvoiceJson>> dataList)
+        {
+            List<LogoInvoiceJson> invoices = new List<LogoInvoiceJson>();
+            foreach (DataGridViewRow row in dataGridInvoice.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
+                {
+                    string number = row.Cells["number"].Value.ToString();
+                    LogoInvoiceJson selectedInvoice = dataList.data.FirstOrDefault(inv => inv.number == number);
+                    invoices.Add(selectedInvoice);
+                }
+            }
+            return invoices;
+        }
     }
 }
