@@ -237,6 +237,7 @@
             this.cmbDispatch.Size = new System.Drawing.Size(189, 29);
             this.cmbDispatch.TabIndex = 27;
             this.cmbDispatch.UseSelectable = true;
+            this.cmbDispatch.Visible = false;
             this.cmbDispatch.SelectedIndexChanged += new System.EventHandler(this.cmbDispatch_SelectedIndexChanged);
             // 
             // chkDispatch
@@ -248,6 +249,7 @@
             this.chkDispatch.TabIndex = 28;
             this.chkDispatch.Text = "İrsaliye Aktar";
             this.chkDispatch.UseSelectable = true;
+            this.chkDispatch.Visible = false;
             this.chkDispatch.CheckedChanged += new System.EventHandler(this.chkDispatch_CheckedChanged);
             // 
             // btnWaybill
@@ -258,6 +260,7 @@
             this.btnWaybill.TabIndex = 29;
             this.btnWaybill.Text = "İrsaliyeleri Aktar";
             this.btnWaybill.UseSelectable = true;
+            this.btnWaybill.Visible = false;
             this.btnWaybill.Click += new System.EventHandler(this.btnWaybill_Click);
             // 
             // lblStartDate
@@ -300,12 +303,13 @@
             // 
             // btnXML
             // 
-            this.btnXML.Location = new System.Drawing.Point(223, 72);
+            this.btnXML.Location = new System.Drawing.Point(820, 72);
             this.btnXML.Name = "btnXML";
             this.btnXML.Size = new System.Drawing.Size(359, 43);
             this.btnXML.TabIndex = 34;
             this.btnXML.Text = "Faturaları XML\'e Aktar";
             this.btnXML.UseSelectable = true;
+            this.btnXML.Visible = false;
             this.btnXML.Click += new System.EventHandler(this.btnXML_Click);
             // 
             // btnLastLog
@@ -320,19 +324,20 @@
             // 
             // btnSendOrderToLogo
             // 
-            this.btnSendOrderToLogo.Location = new System.Drawing.Point(853, 72);
+            this.btnSendOrderToLogo.Location = new System.Drawing.Point(820, 25);
             this.btnSendOrderToLogo.Name = "btnSendOrderToLogo";
-            this.btnSendOrderToLogo.Size = new System.Drawing.Size(224, 43);
+            this.btnSendOrderToLogo.Size = new System.Drawing.Size(359, 43);
             this.btnSendOrderToLogo.TabIndex = 36;
             this.btnSendOrderToLogo.Text = "Siparişleri Logoya Aktar";
             this.btnSendOrderToLogo.UseSelectable = true;
+            this.btnSendOrderToLogo.Visible = false;
             this.btnSendOrderToLogo.Click += new System.EventHandler(this.btnSendOrderToLogo_Click);
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(853, 18);
+            this.btnSendToLogo.Location = new System.Drawing.Point(223, 74);
             this.btnSendToLogo.Name = "btnSendToLogo";
-            this.btnSendToLogo.Size = new System.Drawing.Size(224, 43);
+            this.btnSendToLogo.Size = new System.Drawing.Size(359, 43);
             this.btnSendToLogo.TabIndex = 37;
             this.btnSendToLogo.Text = "Faturaları Logoya Aktar";
             this.btnSendToLogo.UseSelectable = true;
