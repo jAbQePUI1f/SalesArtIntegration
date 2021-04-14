@@ -64,9 +64,9 @@
             // 
             this.btnCheckLogoConnection.Enabled = false;
             this.btnCheckLogoConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnCheckLogoConnection.Location = new System.Drawing.Point(1185, 25);
+            this.btnCheckLogoConnection.Location = new System.Drawing.Point(1071, 26);
             this.btnCheckLogoConnection.Name = "btnCheckLogoConnection";
-            this.btnCheckLogoConnection.Size = new System.Drawing.Size(99, 43);
+            this.btnCheckLogoConnection.Size = new System.Drawing.Size(207, 46);
             this.btnCheckLogoConnection.TabIndex = 10;
             this.btnCheckLogoConnection.Text = "Bağlantıyı Kontrol Et";
             this.btnCheckLogoConnection.UseVisualStyleBackColor = true;
@@ -76,7 +76,7 @@
             // 
             this.lblLogoConnectionInfo.AutoSize = true;
             this.lblLogoConnectionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(1225, 6);
+            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(1068, 7);
             this.lblLogoConnectionInfo.Name = "lblLogoConnectionInfo";
             this.lblLogoConnectionInfo.Size = new System.Drawing.Size(25, 16);
             this.lblLogoConnectionInfo.TabIndex = 11;
@@ -103,7 +103,7 @@
             this.Column16});
             this.dataGridInvoice.Location = new System.Drawing.Point(12, 121);
             this.dataGridInvoice.Name = "dataGridInvoice";
-            this.dataGridInvoice.Size = new System.Drawing.Size(1272, 593);
+            this.dataGridInvoice.Size = new System.Drawing.Size(1266, 593);
             this.dataGridInvoice.TabIndex = 12;
             // 
             // chk
@@ -305,7 +305,7 @@
             // 
             this.btnXML.Location = new System.Drawing.Point(820, 72);
             this.btnXML.Name = "btnXML";
-            this.btnXML.Size = new System.Drawing.Size(359, 43);
+            this.btnXML.Size = new System.Drawing.Size(243, 43);
             this.btnXML.TabIndex = 34;
             this.btnXML.Text = "Faturaları XML\'e Aktar";
             this.btnXML.UseSelectable = true;
@@ -314,9 +314,9 @@
             // 
             // btnLastLog
             // 
-            this.btnLastLog.Location = new System.Drawing.Point(1185, 74);
+            this.btnLastLog.Location = new System.Drawing.Point(1071, 76);
             this.btnLastLog.Name = "btnLastLog";
-            this.btnLastLog.Size = new System.Drawing.Size(99, 41);
+            this.btnLastLog.Size = new System.Drawing.Size(207, 41);
             this.btnLastLog.TabIndex = 35;
             this.btnLastLog.Text = "Log Kayıtları";
             this.btnLastLog.UseSelectable = true;
@@ -326,7 +326,7 @@
             // 
             this.btnSendOrderToLogo.Location = new System.Drawing.Point(820, 25);
             this.btnSendOrderToLogo.Name = "btnSendOrderToLogo";
-            this.btnSendOrderToLogo.Size = new System.Drawing.Size(359, 43);
+            this.btnSendOrderToLogo.Size = new System.Drawing.Size(243, 43);
             this.btnSendOrderToLogo.TabIndex = 36;
             this.btnSendOrderToLogo.Text = "Siparişleri Logoya Aktar";
             this.btnSendOrderToLogo.UseSelectable = true;
