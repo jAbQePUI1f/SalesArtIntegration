@@ -84,26 +84,22 @@ namespace invoiceIntegration
                 cmbInvoice.Items.Add("Satış Siparişleri");
                 cmbInvoice.SelectedIndex = 0;
             }
-        }         
+        }
         void CheckLogin()
         {
-            string logoUserName = Configuration.getLogoUserName();
-            string logoPassword = Configuration.getLogoPassword();
-            string season = Configuration.getSeason();
-            string companyCode = Configuration.getCompanyCode();
             Cursor.Current = Cursors.WaitCursor;
-            isLoggedIn = unity.Login(logoUserName, logoPassword, int.Parse(companyCode), int.Parse(season));
+            isLoggedIn = unity.Login(Configuration.getLogoUserName(), Configuration.getLogoPassword(), int.Parse(Configuration.getCompanyCode()), int.Parse(Configuration.getSeason()));
             if (isLoggedIn)
             {
-                lblLogoConnectionInfo.BackColor = System.Drawing.Color.Green;
-                lblLogoConnectionInfo.Text = "Logo Bağlantısı BAŞARILI.";
+                lblLogoConnectionInfo.ForeColor = System.Drawing.Color.Green;
+                lblLogoConnectionInfo.Text = "Logo Bağlantısı Başarılı";
                 btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn && chkDispatch.Checked != true) ? true : false;
                 btnCheckLogoConnection.Enabled = false;
             }
             else
             {
-                lblLogoConnectionInfo.BackColor = System.Drawing.Color.Red;
-                lblLogoConnectionInfo.Text = "Logo Bağlantısı BAŞARISIZ.";
+                lblLogoConnectionInfo.ForeColor = System.Drawing.Color.Red;
+                lblLogoConnectionInfo.Text = "Logo Bağlantısı Başarılı";
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = true;
             }
