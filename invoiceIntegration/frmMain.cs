@@ -9,28 +9,22 @@ using UnityObjects;
 using RestSharp;
 using System.Linq;
 using System.Data;
-using System.IO;
 using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
-using System.Xml;
 using invoiceIntegration.model.order;
 using MetroFramework.Forms;
-using System.Threading;
+using invoiceIntegration.controller;
 
 namespace invoiceIntegration
 {
-    public partial class frmMain : MetroForm
+    public partial class frmMain : MetroForm 
     {
+
         public frmMain()
-        {        
-            InitializeComponent();  
+        {
+            InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
         }
-
-        string logoUserName = Configuration.getLogoUserName();
-        string logoPassword = Configuration.getLogoPassword();
-        string season = Configuration.getSeason();
-        string companyCode = Configuration.getCompanyCode();
         bool isProducerCode = Configuration.getIsProducerCode();
         bool useCypheCode = Configuration.getUseCypheCode();
         string cypheCode = Configuration.getCypheCode();
@@ -44,27 +38,22 @@ namespace invoiceIntegration
         bool useDispatch = Configuration.getUseDispatch();
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
-        string url = Configuration.getUrl();
         string campaignLineNo = Configuration.getCampaignLineNo();
         bool orderTransferToLogoInfo = Configuration.getOrderTransferToLogoInfo();
 
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
-        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
-        IntegratedOrderStatusForMessage integratedOrderStatusForMessage = new IntegratedOrderStatusForMessage();
+        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus(); 
 
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
         LogoDataReader reader = new LogoDataReader();
         UnityApplication unity = LogoApplication.getApplication();
-        List<Discount> discounts = new List<Discount>();
-        Helper helper = new Helper();
-
+         Helper helper = new Helper();
         bool isLoggedIn = false;
-        string filePath = "";
         string invoiceType;
-        private void Form1_Load(object sender, EventArgs e)
+        private void frmMain_Load(object sender, EventArgs e)
         {
             cmbInvoice.SelectedIndex = 0;
             lblLogoConnectionInfo.Text = "";
@@ -95,493 +84,13 @@ namespace invoiceIntegration
                 cmbInvoice.Items.Add("Satış Siparişleri");
                 cmbInvoice.SelectedIndex = 0;
             }
-        }
-        void createXMLforInvoice(LogoInvoice invoice)
-        {
-            XmlDocument output = null;
-            XmlNode outputInvoiceDbop = null;
-            XmlNode outputInvoiceSales = null;
-            XmlNode outputTransactions = null;
-            XmlNode outputDispatches = null;
-            XmlNode outputDispatch = null;
-            XmlNode outputTransaction = null;
-            output = new XmlDocument();
-            outputInvoiceSales = null;
-            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);      
-            if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN)//Satış Faturası
-            {
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", "");
-            }
-            else if (invoice.type == (int)InvoiceType.BUYING || invoice.type == (int)InvoiceType.BUYING_RETURN)// Alış Faturası
-            {
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", "");
-            }
-            else
-            {
-                // Başka Bir fatura tipi gelirse diye tasarlandı.
-            }
-            output.AppendChild(outputInvoiceSales);
-            outputInvoiceDbop = output.CreateNode(XmlNodeType.Element, "INVOICE", "");
-            XmlAttribute newAttr = output.CreateAttribute("DBOP");
-            newAttr.Value = "INS";
-            outputInvoiceDbop.Attributes.Append(newAttr);
-            outputInvoiceSales.AppendChild(outputInvoiceDbop);
-            outputInvoiceDbop = CreateXmlNode(output, outputInvoiceDbop, invoice, Constants.NodeType.OutputInvoiceDbop);
-
-            outputDispatches = output.CreateNode(XmlNodeType.Element, "DISPATCHES", "");
-            outputInvoiceDbop.AppendChild(outputDispatches);
-            outputDispatch = output.CreateNode(XmlNodeType.Element, "DISPATCH", "");
-            outputDispatches.AppendChild(outputDispatch);
-            outputDispatch = CreateXmlNode(output, outputDispatch, invoice, Constants.NodeType.OutputInvoiceDispatch);
-
-            outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
-            outputInvoiceDbop.AppendChild(outputTransactions);
-            outputTransaction = CreateXmlTransaction(output, outputTransactions, outputTransaction, invoice);
-
-            helper.AddNode(output, outputInvoiceDbop, "EINVOICE", invoice.ebillCustomer ? "1" : "0");
-            //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", invoice.isElectronicInvoiceCustomer ? "1" : "0");
-
-            string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
-            string saveFilePath = filePath + "\\" + fileName;
-            output.Save(saveFilePath);
-
-        }
-        void createXMLforOrder(LogoInvoice invoice)
-        {
-            XmlDocument output = null;
-            XmlNode outputOrderDbop = null;
-            XmlNode outputOrderSales = null;
-            XmlNode outputTransactions = null;
-            XmlNode outputTransaction = null;
-
-            string date = "";
-
-            output = new XmlDocument();
-            outputOrderSales = null;
-
-            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);
-
-            //8 satış , 3 Satış iade  
-            if (invoice.type == 8 || invoice.type == 3)
-            {
-                outputOrderSales = output.CreateNode(XmlNodeType.Element, "SALES_ORDERS", "");
-            }
-            else
-            {
-                outputOrderSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_ORDERS", "");
-            }
-            output.AppendChild(outputOrderSales);
-
-            outputOrderDbop = output.CreateNode(XmlNodeType.Element, "ORDER_SLIP", "");
-            XmlAttribute newAttr = output.CreateAttribute("DBOP");
-            newAttr.Value = "INS";
-            outputOrderDbop.Attributes.Append(newAttr);
-            outputOrderSales.AppendChild(outputOrderDbop);
-
-            helper.AddNode(output, outputOrderDbop, "NUMBER", "JW" + invoice.number);
-
-            if (useShortDate)
-            {
-                date = (invoice.date.ToShortDateString());
-            }
-            else
-            {
-                date = (invoice.date.ToString("dd.MM.yyyy"));
-            }
-
-            helper.AddNode(output, outputOrderDbop, "DATE", date);
-            helper.AddNode(output, outputOrderDbop, "TIME", helper.Hour(invoice.date).ToString());
-            helper.AddNode(output, outputOrderDbop, "DOC_NUMBER", invoice.number);
-            helper.AddNode(output, outputOrderDbop, "ORDER_STATUS", "4");
-            helper.AddNode(output, outputOrderDbop, "DIVISION", "1");
-            helper.AddNode(output, outputOrderDbop, "SOURCE_WH", invoice.wareHouseCode);
-            helper.AddNode(output, outputOrderDbop, "SOURCE_COST_GRP", invoice.wareHouseCode);
-            helper.AddNode(output, outputOrderDbop, "AUXIL_CODE", invoice.salesmanCode);
-            helper.AddNode(output, outputOrderDbop, "ARP_CODE", invoice.customerCode);
-            helper.AddNode(output, outputOrderDbop, "TOTAL_DISCOUNTED", (invoice.netTotal - invoice.discountTotal).ToString().Replace(",", "."));  // toplam tutar
-            helper.AddNode(output, outputOrderDbop, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
-            helper.AddNode(output, outputOrderDbop, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
-            helper.AddNode(output, outputOrderDbop, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
-            helper.AddNode(output, outputOrderDbop, "PAYMENT_CODE", invoice.paymentCode);
-            helper.AddNode(output, outputOrderDbop, "NOTES1", " " + invoice.note);
-            helper.AddNode(output, outputOrderDbop, "SHIPPING_AGENT", shipAgentCode);
-
-            if (useShipCode)
-            {
-                helper.AddNode(output, outputOrderDbop, "SHIPLOC_CODE", invoice.customerBranchCode);
-                // helper.AddNode(output, outputOrderDbop, "SHIPLOC_DEF", invoice.customerBranchName);
-            }
-
-
-            if (invoice.type == 8 || invoice.type == 3)
-                helper.AddNode(output, outputOrderDbop, "SALESMAN_CODE", invoice.salesmanCode);
-
-            if (useCypheCode)
-                helper.AddNode(output, outputOrderDbop, "AUTH_CODE", cypheCode);
-
-            outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
-            outputOrderDbop.AppendChild(outputTransactions);
-
-            for (int i = 0; i < invoice.details.Count; i++)
-            {
-
-                outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
-                outputTransactions.AppendChild(outputTransaction);
-
-                if (invoice.details[i].type == 2)
-                {
-                    //1discounts 
-                    if (invoice.details[i].rate > Convert.ToDecimal(0) && invoice.details[i].rate < Convert.ToDecimal(100))
-                    {
-                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString());
-                        //helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
-                    }
-                }
-                else
-                {
-                    helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                    helper.AddNode(output, outputTransaction, "MASTER_CODE", "JW" + invoice.details[i].code);
-                    helper.AddNode(output, outputTransaction, "DIVISION", "1");
-                    if (invoice.type == 8 || invoice.type == 3)
-                    {
-                        helper.AddNode(output, outputTransaction, "GL_CODE1", "600.10.20.J01");
-                        helper.AddNode(output, outputTransaction, "GL_CODE2", "391.01.18");
-                    }
-                    else
-                    {
-                        helper.AddNode(output, outputTransaction, "GL_CODE1", "153.10.20.J01");
-                    }
-                    helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                    helper.AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].total, 2).ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "TOTAL_NET", invoice.details[i].netTotal.ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "VAT_AMOUNT", invoice.details[i].vatAmount.ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
-                    helper.AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
-                    helper.AddNode(output, outputTransaction, "SOURCE_WH", invoice.wareHouseCode);
-                    helper.AddNode(output, outputTransaction, "SOURCE_COST_GRP", invoice.wareHouseCode);
-
-                    if (invoice.type == 8 || invoice.type == 3)
-                        helper.AddNode(output, outputTransaction, "SALESMAN_CODE", invoice.salesmanCode);
-                }
-            }
-
-            string fileName = invoice.number + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
-
-            string saveFilePath = filePath + "\\" + fileName;
-            output.Save(saveFilePath);
-
-        }
-        public List<LogoInvoice> GetSelectedInvoices()
-        {
-            List<LogoInvoice> invoices = new List<LogoInvoice>();
-
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    string number = row.Cells["number"].Value.ToString();
-                    LogoInvoiceJson selectedInvoice = jsonInvoices.data.Where(inv => inv.number == number).FirstOrDefault();
-
-                    LogoInvoice invoice = new LogoInvoice();
-                    invoice.type = (int)selectedInvoice.invoiceType;
-                    invoice.number = selectedInvoice.number;
-                    invoice.documentNumber = selectedInvoice.documentNumber;
-                    invoice.wareHouseCode = selectedInvoice.wareHouseCode;
-                    invoice.customerCode = selectedInvoice.customerCode;
-                    invoice.customerName = selectedInvoice.customerName;
-                    invoice.ebillCustomer = selectedInvoice.ebillCustomer;
-                    invoice.date = selectedInvoice.date;
-                    invoice.documentDate = selectedInvoice.documentDate;
-                    invoice.deliveryDate = selectedInvoice.deliveryDate;
-                    invoice.discountTotal = selectedInvoice.discountTotal;
-                    invoice.preVatIncludedTotal = selectedInvoice.preVatIncludedTotal;
-                    invoice.vatTotal = selectedInvoice.vatTotal;
-                    invoice.grossTotal = selectedInvoice.grossTotal;
-                    invoice.netTotal = selectedInvoice.netTotal;
-                    invoice.paymentCode = selectedInvoice.paymentCode;
-                    invoice.note = selectedInvoice.note;
-                    invoice.salesmanCode = selectedInvoice.salesmanCode;
-                    invoice.distributorBranchCode = selectedInvoice.distributorBranchCode;
-                    invoice.customerBranchCode = selectedInvoice.customerBranchCode;
-                    invoice.customerBranchName = selectedInvoice.customerBranchName;
-
-                    List<InvoiceDetail> invoiceDetails = new List<model.InvoiceDetail>();
-                    foreach (var selectedInvoiceDetail in selectedInvoice.details)
-                    {
-                        InvoiceDetail invDetail = new InvoiceDetail();
-                        if (selectedInvoice.invoiceType == InvoiceType.BUYING_SERVICE || selectedInvoice.invoiceType == InvoiceType.SELLING_SERVICE)
-                        {
-                            invDetail.type = (int)selectedInvoice.invoiceType;
-                        }
-                        invDetail.type = 0;
-                        invDetail.code = selectedInvoiceDetail.code;
-                        invDetail.quantity = selectedInvoiceDetail.quantity;
-                        invDetail.price = selectedInvoiceDetail.price;
-                        invDetail.total = selectedInvoiceDetail.total;
-                        invDetail.discountTotal = selectedInvoiceDetail.discountTotal;
-                        invDetail.unitCode = selectedInvoiceDetail.unitCode;
-                        invDetail.vatIncluded = selectedInvoiceDetail.vatIncluded;
-                        invDetail.vatRate = selectedInvoiceDetail.vatRate;
-                        invDetail.vatAmount = selectedInvoiceDetail.vatAmount;
-                        invDetail.netTotal = selectedInvoiceDetail.netTotal;
-                        invDetail.barcode = selectedInvoiceDetail.barcode;
-                        invDetail.invoiceDetailLineOrder = selectedInvoiceDetail.invoiceDetailLineOrder;
-                        invDetail.grossTotal = selectedInvoiceDetail.grossTotal;
-
-                        List<InvoiceDetail> invoiceDetailDiscountDetails = new List<InvoiceDetail>();
-                        foreach (var discount in selectedInvoiceDetail.discounts)
-                        {
-                            InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
-
-                            invDetailDiscountDetail.type = 2;
-                            invDetailDiscountDetail.rate = discount.rate;
-                            invDetailDiscountDetail.discountTotal = discount.discountTotal;
-                            invDetailDiscountDetail.price = invDetail.price;
-                            invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
-                            invDetailDiscountDetail.name = discount.name;
-
-                            invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
-                        }
-
-                        invoiceDetails.Add(invDetail);
-
-                        if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
-                        {
-                            foreach (var invoiceDetailDiscountDetail in invoiceDetailDiscountDetails)
-                            {
-                                invoiceDetails.Add(invoiceDetailDiscountDetail);
-                            }
-                        }
-                    }
-                    invoice.details = invoiceDetails;
-                    invoices.Add(invoice);
-                }
-            }
-            return invoices;
-        }
-        public List<LogoWaybill> GetSelectedWaybills()
-        {
-            List<LogoWaybill> waybills = new List<LogoWaybill>();
-
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    string number = row.Cells["number"].Value.ToString();
-                    LogoWaybillJson selectedWaybill = jsonWaybills.data.Where(inv => inv.number == number).FirstOrDefault();
-
-                    LogoWaybill waybill = new LogoWaybill();
-                    waybill.type = (int)selectedWaybill.waybillType;
-                    waybill.number = selectedWaybill.number;
-                    waybill.documentNumber = selectedWaybill.documentNumber;
-                    waybill.wareHouseCode = selectedWaybill.wareHouseCode;
-                    waybill.customerCode = selectedWaybill.customerCode;
-                    waybill.customerName = selectedWaybill.customerName;
-                    waybill.date = selectedWaybill.date;
-                    waybill.documentDate = selectedWaybill.documentDate;
-                    waybill.deliveryDate = selectedWaybill.deliveryDate;
-                    waybill.discountTotal = selectedWaybill.discountTotal;
-                    waybill.preVatIncludedTotal = selectedWaybill.preVatIncludedTotal;
-                    waybill.vatTotal = selectedWaybill.vatTotal;
-                    waybill.grossTotal = selectedWaybill.grossTotal;
-                    waybill.netTotal = selectedWaybill.netTotal;
-                    waybill.paymentCode = selectedWaybill.paymentCode;
-                    waybill.note = selectedWaybill.note;
-                    waybill.salesmanCode = selectedWaybill.salesmanCode;
-                    waybill.distributorBranchCode = selectedWaybill.distributorBranchCode;
-                    waybill.customerBranchCode = selectedWaybill.customerBranchCode;
-                    waybill.customerBranchName = selectedWaybill.customerBranchName;
-
-                    List<WaybillDetail> waybillDetails = new List<WaybillDetail>();
-                    foreach (var selectedWaybillDetail in selectedWaybill.details)
-                    {
-                        WaybillDetail waybillDetail = new WaybillDetail();
-                        waybillDetail.type = 0;
-                        waybillDetail.code = selectedWaybillDetail.code;
-                        waybillDetail.quantity = selectedWaybillDetail.quantity;
-                        waybillDetail.price = selectedWaybillDetail.price;
-                        waybillDetail.total = selectedWaybillDetail.total;
-                        waybillDetail.discountTotal = selectedWaybillDetail.discountTotal;
-                        waybillDetail.unitCode = selectedWaybillDetail.unitCode;
-                        waybillDetail.vatIncluded = selectedWaybillDetail.vatIncluded;
-                        waybillDetail.vatRate = selectedWaybillDetail.vatRate;
-                        waybillDetail.vatAmount = selectedWaybillDetail.vatAmount;
-                        waybillDetail.netTotal = selectedWaybillDetail.netTotal;
-                        waybillDetail.barcode = selectedWaybillDetail.barcode;
-                        waybillDetail.waybillDetailLineOrder = selectedWaybillDetail.waybillDetailLineOrder;
-                        waybillDetail.grossTotal = selectedWaybillDetail.grossTotal;
-
-                        List<WaybillDetail> waybillDetailDiscountDetails = new List<WaybillDetail>();
-                        foreach (var discount in selectedWaybillDetail.discounts)
-                        {
-                            WaybillDetail waybillDetailDiscountDetail = new WaybillDetail();
-
-                            waybillDetailDiscountDetail.type = 2;
-                            waybillDetailDiscountDetail.rate = discount.rate;
-                            waybillDetailDiscountDetail.discountTotal = discount.discountTotal;
-                            waybillDetailDiscountDetail.price = waybillDetail.price;
-                            waybillDetailDiscountDetail.grossTotal = waybillDetail.grossTotal;
-                            waybillDetailDiscountDetail.name = discount.name;
-
-                            waybillDetailDiscountDetails.Add(waybillDetailDiscountDetail);
-                        }
-
-                        waybillDetails.Add(waybillDetail);
-
-                        if (waybillDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
-                        {
-                            foreach (var waybillDetailDiscountDetail in waybillDetailDiscountDetails)
-                            {
-                                waybillDetails.Add(waybillDetailDiscountDetail);
-                            }
-                        }
-                    }
-                    waybill.details = waybillDetails;
-                    waybills.Add(waybill);
-                }
-            }
-            return waybills;
-        }
-        public List<Order> GetSelectedOrders()
-        {
-            List<Order> orders = new List<Order>();
-
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    string number = row.Cells["number"].Value.ToString();
-                    Order selectedOrder = jsonOrders.data.orders.Where(inv => inv.receiptNumber == number).FirstOrDefault();
-
-                    Order order = new Order();
-                    order.type = 3;
-                    order.receiptNumber = selectedOrder.receiptNumber;
-                    order.warehouse = selectedOrder.warehouse;
-                    order.customer = selectedOrder.customer;
-                    order.orderDate = selectedOrder.orderDate;
-                    order.deliveryDate = selectedOrder.deliveryDate;
-                    order.discountTotal = selectedOrder.discountTotal;
-                    order.preVatNetTotal = selectedOrder.preVatNetTotal;
-                    order.vatTotal = selectedOrder.vatTotal;
-                    order.grossTotal = selectedOrder.grossTotal;
-                    order.paymentType = selectedOrder.paymentType;
-                    order.salesmanNote = selectedOrder.salesmanNote;
-                    order.salesman = selectedOrder.salesman;
-                    order.customerBranch = selectedOrder.customerBranch;
-                    order.orderId = selectedOrder.orderId;
-
-                    List<OrderDetail> orderDetails = new List<OrderDetail>();
-                    foreach (var selectedOrderDetail in selectedOrder.details)
-                    {
-                        OrderDetail ordDetail = new OrderDetail();
-
-                        ordDetail.productCode = selectedOrderDetail.productCode;
-                        ordDetail.quantity = selectedOrderDetail.quantity;
-                        ordDetail.orderItemPrice = selectedOrderDetail.orderItemPrice;
-                        ordDetail.grossTotal = selectedOrderDetail.grossTotal;
-                        ordDetail.discountAmount = selectedOrderDetail.discountAmount;
-                        //ordDetail.vatIncluded = selectedOrderDetail.vatIncluded;
-                        ordDetail.vatTotal = selectedOrderDetail.vatTotal;
-                        ordDetail.preVatNetTotal = selectedOrderDetail.preVatNetTotal;
-                        ordDetail.productBarcode = selectedOrderDetail.productBarcode;
-                        ordDetail.lineOrder = selectedOrderDetail.lineOrder;
-                        ordDetail.grossTotal = selectedOrderDetail.grossTotal;
-                        ordDetail.vatRate = selectedOrderDetail.vatRate;
-                        ordDetail.unitCode = selectedOrderDetail.unitCode;
-
-                        List<OrderDetail> orderDetailDiscountDetails = new List<OrderDetail>();
-                        if (selectedOrderDetail.discountDetails != null)
-                        {
-                            foreach (var discount in selectedOrderDetail.discountDetails)
-                            {
-                                OrderDetail ordDetailDiscountDetail = new OrderDetail();
-
-                                ordDetailDiscountDetail.type = 2;
-                                ordDetailDiscountDetail.rate = discount.rate;
-                                ordDetailDiscountDetail.discountTotal = discount.discountTotal;
-                                ordDetailDiscountDetail.price = ordDetail.price;
-                                ordDetailDiscountDetail.grossTotal = ordDetail.grossTotal;
-                                ordDetailDiscountDetail.productName = discount.name;
-
-                                orderDetailDiscountDetails.Add(ordDetailDiscountDetail);
-                            }
-                        }
-
-                        orderDetails.Add(ordDetail);
-                        if (orderDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar order detail e eklendi
-                        {
-                            foreach (var orderDetailDiscountDetail in orderDetailDiscountDetails)
-                            {
-                                orderDetails.Add(orderDetailDiscountDetail);
-                            }
-                        }
-                    }
-                    order.details = orderDetails;
-                    orders.Add(order);
-                }
-            }
-            return orders;
-        }
-        public List<LogoInvoiceJson> GetSelectedInvoicesForMikro()
-        {
-            List<LogoInvoiceJson> invoices = new List<LogoInvoiceJson>();
-
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    string number = row.Cells["number"].Value.ToString();
-                    LogoInvoiceJson selectedInvoice = jsonInvoices.data.Where(inv => inv.number == number).FirstOrDefault();
-
-                    invoices.Add(selectedInvoice);
-                }
-            }
-            return invoices;
-        }
-        void Test()
-        {
-
-            string url = "http://172.16.40.17:9002";
-            RestClient restClient = new RestClient(url);
-            RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
-            {
-                RequestFormat = DataFormat.Json
-            };
-
-            GetTransferableInvoicesRequest req = new GetTransferableInvoicesRequest()
-            {
-                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                invoiceTypes = new List<string>()
-            };
-
-            req.invoiceTypes.Add(invoiceType.ToString());
-
-            restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
-            restRequest.AddJsonBody(req);
-
-            var requestResponse = restClient.Execute<LogoInvoice>(restRequest);
-            var con = requestResponse.Content;
-
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-
-            GenericResponse<List<LogoInvoice>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<LogoInvoice>>>(requestResponse.Content, settings);
-
-            dataGridInvoice.DataSource = invResponse.data;
-
-            List<LogoInvoice> testInvoices = new List<LogoInvoice>();
-        }
+        }         
         void CheckLogin()
         {
+            string logoUserName = Configuration.getLogoUserName();
+            string logoPassword = Configuration.getLogoPassword();
+            string season = Configuration.getSeason();
+            string companyCode = Configuration.getCompanyCode();
             Cursor.Current = Cursors.WaitCursor;
             isLoggedIn = unity.Login(logoUserName, logoPassword, int.Parse(companyCode), int.Parse(season));
             if (isLoggedIn)
@@ -599,66 +108,8 @@ namespace invoiceIntegration
                 btnCheckLogoConnection.Enabled = true;
             }
             Cursor.Current = Cursors.Default;
-            //return isLoggedIn;
         }
-        void FillGrid(List<LogoInvoiceJson> jsonData)
-        {
-            dataGridInvoice.Rows.Clear();
-            if (jsonData != null)
-            {
-                foreach (var data in jsonData)
-                {
-                    int n = dataGridInvoice.Rows.Add();
-                    dataGridInvoice.Rows[n].Cells[0].Value = "false";
-                    dataGridInvoice.Rows[n].Cells[1].Value = (helper.getInvoiceType((int)data.invoiceType)).ToString();
-                    dataGridInvoice.Rows[n].Cells[2].Value = data.number;
-                    dataGridInvoice.Rows[n].Cells[3].Value = data.date.ToShortDateString();
-                    dataGridInvoice.Rows[n].Cells[4].Value = data.documentNumber;
-                    dataGridInvoice.Rows[n].Cells[5].Value = data.customerCode;
-                    dataGridInvoice.Rows[n].Cells[6].Value = data.customerName;
-                    dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
-                    dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
-                    dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
-                }
-            }
-        }
-        void FillGrid(List<LogoWaybillJson> jsonData)
-        {
-            dataGridInvoice.Rows.Clear();
-            foreach (var data in jsonData)
-            {
-                int n = dataGridInvoice.Rows.Add();
-                dataGridInvoice.Rows[n].Cells[0].Value = "false";
-                dataGridInvoice.Rows[n].Cells[1].Value = (helper.getInvoiceTypeForWaybill((int)data.waybillType)).ToString();
-                dataGridInvoice.Rows[n].Cells[2].Value = data.number;
-                dataGridInvoice.Rows[n].Cells[3].Value = data.date.ToShortDateString();
-                dataGridInvoice.Rows[n].Cells[4].Value = data.documentNumber;
-                dataGridInvoice.Rows[n].Cells[5].Value = data.customerCode;
-                dataGridInvoice.Rows[n].Cells[6].Value = data.customerName;
-                dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
-            }
-        }
-        void FillGrid(OrderResponse jsonData)
-        {
-            dataGridInvoice.Rows.Clear();
-            foreach (var data in jsonData.orders)
-            {
-                int n = dataGridInvoice.Rows.Add();
-                dataGridInvoice.Rows[n].Cells[0].Value = "false";
-                dataGridInvoice.Rows[n].Cells[1].Value = "Satış Siparişi";
-                dataGridInvoice.Rows[n].Cells[2].Value = data.receiptNumber;
-                dataGridInvoice.Rows[n].Cells[3].Value = data.orderDate.ToShortDateString();
-                dataGridInvoice.Rows[n].Cells[4].Value = data.receiptNumber;
-                dataGridInvoice.Rows[n].Cells[5].Value = data.customer.code;
-                dataGridInvoice.Rows[n].Cells[6].Value = data.customer.name;
-                dataGridInvoice.Rows[n].Cells[7].Value = data.discountTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[8].Value = data.vatTotal.ToString();
-                dataGridInvoice.Rows[n].Cells[9].Value = data.grossTotal.ToString();
-            }
-        }
-        class GenericResponse<T>
+        public class GenericResponse<T>
         {
             public T data { get; set; }
             public int responseStatus { get; set; }
@@ -666,191 +117,80 @@ namespace invoiceIntegration
         }
         public void GetInvoices()
         {
-            RestClient restClient = new RestClient(url);
+            GridHelper gridHelper = new GridHelper();
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
-
             GetTransferableInvoicesRequest req = new GetTransferableInvoicesRequest()
             {
                 startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 invoiceTypes = new List<string>()
             };
-
             req.invoiceTypes.Add(invoiceType.ToString());
-
             restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
             restRequest.AddJsonBody(req);
-
             var requestResponse = restClient.Execute<LogoInvoice>(restRequest);
-            var con = requestResponse.Content;
-
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-
             jsonInvoices = JsonConvert.DeserializeObject<GenericResponse<List<LogoInvoiceJson>>>(requestResponse.Content, settings);
-
-            FillGrid(jsonInvoices.data);
+            gridHelper.FillGrid(jsonInvoices.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoInvoiceJson);
         }
         public void GetWaybills()
         {
-            RestClient restClient = new RestClient(url);
+            GridHelper gridHelper = new GridHelper();
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/waybills?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
-
             GetTransferableWaybillsRequest req = new GetTransferableWaybillsRequest()
             {
                 startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 waybillTypes = new List<string>()
             };
-
             req.waybillTypes.Add(invoiceType.ToString());
-
             restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
             restRequest.AddJsonBody(req);
-
             var requestResponse = restClient.Execute<LogoWaybill>(restRequest);
-            var con = requestResponse.Content;
-
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-
             jsonWaybills = JsonConvert.DeserializeObject<GenericResponse<List<LogoWaybillJson>>>(requestResponse.Content, settings);
-
-            FillGrid(jsonWaybills.data);
+            gridHelper.FillGrid(jsonWaybills.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoWaybillJson);
         }
         public void GetOrders()
         {
-            RestClient restClient = new RestClient(url);
+            GridHelper gridHelper = new GridHelper();
+            RestClient restClient = new RestClient(Configuration.getUrl());
             RestRequest restRequest = new RestRequest("/integration/orders/", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
-
             GetTransferableOrdersRequest req = new GetTransferableOrdersRequest()
             {
                 startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
                 distributorId = distributorId
             };
-
             restRequest.AddJsonBody(req);
-
             var requestResponse = restClient.Execute<OrderResponse>(restRequest);
-            var con = requestResponse.Content;
-
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-
             jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
-
-            FillGrid(jsonOrders.data);
-        }
-
-        void SendResponse(IntegratedInvoiceStatus integratedInvoices)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.POST)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedInvoices);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("Fatura Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Fatura Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
-        void SendResponse(IntegratedWaybillStatus integratedWaybills)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.POST)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedWaybills);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("İrsaliye Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "İrsaliye Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
-        void SendResponse(IntegratedOrderStatus integratedOrders)
-        {
-            try
-            {
-                RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
-                {
-                    RequestFormat = DataFormat.Json
-                };
-
-                restRequest.AddJsonBody(integratedOrders);
-
-                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
-                var con = requestResponse.Content;
-
-                var settings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                GenericResponse<List<StatusResponse>> invResponse = JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
-
-            }
-            catch
-            {
-                MessageBox.Show("Sipariş Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Fatura Statüsünün Gücellenememesi", MessageBoxButtons.OK);
-            }
-
-        }
+            gridHelper.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
+        }   
         public IntegratedInvoiceStatus sendMultipleInvoice(List<LogoInvoice> invoices)
         {
             string remoteInvoiceNumber = "";
@@ -1433,7 +773,6 @@ namespace invoiceIntegration
 
             return integratedWaybills;
         }
-
         public IntegratedOrderStatus sendMultipleOrder(List<Order> orders)
         {
             string message = "";
@@ -1636,496 +975,34 @@ namespace invoiceIntegration
 
             return integratedOrders;
         }
-        public IntegratedInvoiceStatus xmlExportWithLObjects(List<LogoInvoice> invoices)
+        private void btnXML_Click(object sender, EventArgs e)
         {
-            string remoteInvoiceNumber = "";
-            string message = "";
-
-            List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
-
-            unity.Login(logoUserName, logoPassword, int.Parse(companyCode), int.Parse(season));
-
-            try
+            if (dataGridInvoice.Rows.Count > 0)
             {
-                foreach (var invoice in invoices)
-                {
-                    Data newInvoice = new Data();
-
-                    //8 satış , 3 Satış iade ,9 verilen hizmet
-                    if (invoice.type == 8 || invoice.type == 3 || invoice.type == 9)
-                    {
-                        newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
-                    }
-                    else
-                    {
-                        newInvoice = unity.NewDataObject(DataObjectType.doPurchInvoice);
-                    }
-                    newInvoice.New();
-                    newInvoice.DataFields.FieldByName("TYPE").Value = invoice.type;
-
-                    if (useDefaultNumber)
-                    {
-                        newInvoice.DataFields.FieldByName("NUMBER").Value = "~";
-                    }
-                    else
-                    {
-                        newInvoice.DataFields.FieldByName("NUMBER").Value = invoice.number;
-                    }
-
-                    newInvoice.DataFields.FieldByName("DOC_NUMBER").Value = invoice.documentNumber;
-
-                    if (useShortDate)
-                    {
-                        newInvoice.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
-                    }
-                    else
-                    {
-                        newInvoice.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
-                    }
-
-                    newInvoice.DataFields.FieldByName("TIME").Value = helper.Hour(invoice.date.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-                    newInvoice.DataFields.FieldByName("AUXIL_CODE").Value = invoice.salesmanCode;
-                    newInvoice.DataFields.FieldByName("ARP_CODE").Value = invoice.customerCode;
-                    newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
-                    newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
-                    newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-                    newInvoice.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
-
-                    if (useShipCode)
-                    {
-                        newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
-                    }
-
-                    if (useCypheCode)
-                    {
-                        newInvoice.DataFields.FieldByName("AUTH_CODE").Value = cypheCode;
-                    }
-
-                    //newInvoice.DataFields.FieldByName("POST_FLAGS").Value = 241;
-                    newInvoice.DataFields.FieldByName("DIVISION").Value = invoice.distributorBranchCode;
-                    newInvoice.DataFields.FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
-                    newInvoice.DataFields.FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
-                    newInvoice.DataFields.FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
-
-                    newInvoice.DataFields.FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
-                    newInvoice.DataFields.FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
-                    newInvoice.DataFields.FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                    newInvoice.DataFields.FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode + "_" + invoice.customerBranchName;
-                    newInvoice.DataFields.FieldByName("TC_NET").Value = invoice.netTotal;
-                    newInvoice.DataFields.FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
-                    newInvoice.DataFields.FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-                    newInvoice.DataFields.FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
-
-
-                    Lines dispatches_lines = newInvoice.DataFields.FieldByName("DISPATCHES").Lines;
-                    if (dispatches_lines.AppendLine())
-                    {
-                        dispatches_lines[0].FieldByName("TYPE").Value = invoice.type;
-                        if (useDefaultNumber)
-                        {
-                            dispatches_lines[0].FieldByName("NUMBER").Value = "~";
-                        }
-                        else
-                        {
-                            dispatches_lines[0].FieldByName("NUMBER").Value = invoice.number; // düzenlecek
-                        }
-
-                        if (useShortDate)
-                        {
-                            dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
-                        }
-                        else
-                        {
-                            dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
-                        }
-
-                        dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
-                        dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
-                        dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
-                        dispatches_lines[0].FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
-                        dispatches_lines[0].FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
-                        dispatches_lines[0].FieldByName("DIVISION").Value = invoice.distributorBranchCode;
-                        dispatches_lines[0].FieldByName("INVOICED").Value = 1;
-                        dispatches_lines[0].FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
-                        dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
-                        dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
-                        dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
-
-                        //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
-
-                        dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
-                        dispatches_lines[0].FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
-                        dispatches_lines[0].FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
-
-                        dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
-                        dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
-                        dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                        dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode + "_" + invoice.customerBranchName;
-                        //dispatches_lines[0].FieldByName("TC_NET").Value = invoice.netTotal;
-                        //dispatches_lines[0].FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
-                        //dispatches_lines[0].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-                        //dispatches_lines[0].FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
-                    }
-                    Lines newInvoiceLines = newInvoice.DataFields.FieldByName("TRANSACTIONS").Lines;
-
-                    for (int i = 0; i < invoice.details.Count; i++)
-                    {
-                        if (newInvoiceLines.AppendLine())
-                        {
-                            InvoiceDetail detail = invoice.details[i];
-                            if (detail.type == 2)  // indirim
-                            {
-                                newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-                                newInvoiceLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
-
-                            }
-                            else
-                            {
-                                newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-
-                                if (isProducerCode) // bazı distlerde üürn kodları producerCode a yazılı ,
-                                {
-                                    string productCodeByProducer = reader.getProductCodeByProducerCode(detail.code);
-                                    if (productCodeByProducer != "" && productCodeByProducer != null)
-                                        newInvoiceLines[i].FieldByName("MASTER_CODE").Value = productCodeByProducer;
-                                    else
-                                    {
-                                        helper.LogFile("producer code hata", "", "", "", productCodeByProducer);
-                                        string productDetailMessage = detail.code + " Kodlu Ürün Logoda Bulunamadı ";
-                                        IntegratedInvoiceDto unRecievedInvoice = new IntegratedInvoiceDto(productDetailMessage, invoice.number, remoteInvoiceNumber, false);
-                                        receivedInvoices.Add(unRecievedInvoice);
-                                        integratedInvoices.integratedInvoices = receivedInvoices;
-                                        integratedInvoices.distributorId = distributorId;
-                                        return integratedInvoices;
-                                    }
-                                }
-                                else if (isBarcode)   //sümerde ürün kodları barkoda göre getirilecek
-                                {
-                                    string productCodeByBarcode = reader.getProductCodeByBarcode(detail.barcode);
-                                    if (productCodeByBarcode != "" && productCodeByBarcode != null)
-                                        newInvoiceLines[i].FieldByName("MASTER_CODE").Value = productCodeByBarcode;
-                                    else
-                                    {
-                                        string productDetailMessage = detail.barcode + " Barkodlu Ürün Logoda bulunamadı ..";
-                                        IntegratedInvoiceDto unRecievedInvoice = new IntegratedInvoiceDto(productDetailMessage, invoice.number, remoteInvoiceNumber, false);
-                                        receivedInvoices.Add(unRecievedInvoice);
-                                        integratedInvoices.integratedInvoices = receivedInvoices;
-                                        integratedInvoices.distributorId = distributorId;
-                                        return integratedInvoices;
-                                    }
-                                }
-                                else
-                                    newInvoiceLines[i].FieldByName("MASTER_CODE").Value = detail.code;
-
-
-                                newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
-                                newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
-                                newInvoiceLines[i].FieldByName("QUANTITY").Value = detail.quantity;
-                                newInvoiceLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.price);
-                                newInvoiceLines[i].FieldByName("TOTAL").Value = detail.total;
-                                newInvoiceLines[i].FieldByName("CURR_PRICE").Value = 160;  // currency TL
-                                                                                           //newInvoiceLines[i].FieldByName("UNIT_CODE").Value = "AD";
-                                newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
-                                newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-
-                                //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
-                                //newInvoiceLines[i].FieldByName("UNIT_CONV2").Value = 12;  // koli carpanı
-                                newInvoiceLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
-                                newInvoiceLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatAmount;
-                                newInvoiceLines[i].FieldByName("VAT_BASE").Value = Convert.ToDouble(detail.price) * detail.quantity;
-                                newInvoiceLines[i].FieldByName("TOTAL_NET").Value = Convert.ToDouble(detail.price) * detail.quantity;
-                                newInvoiceLines[i].FieldByName("SALEMANCODE").Value = invoice.salesmanCode;
-                                newInvoiceLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
-                                newInvoiceLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
-                                //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
-                                //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
-                                newInvoiceLines[i].FieldByName("BARCODE").Value = detail.barcode;
-
-                                if (invoice.type == 3 || invoice.type == 8 || invoice.type == 9) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
-                                {
-
-                                    newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 2;
-                                }
-                                else
-                                {
-                                    newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 1;
-                                }
-
-                                if (invoice.type == 3)  // iade faturaları 
-                                {
-                                    newInvoiceLines[i].FieldByName("RET_COST_TYPE").Value = 1;
-                                }
-                            }
-                        }
-                    }
-
-                    Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
-
-                    newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
-                    newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
-
-                    newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 0;
-                    newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
-                    newInvoice.DataFields.FieldByName("EXIMVAT").Value = 0;
-
-                    //newInvoice.DataFields.FieldByName("EARCHIVEDETR_INTPAYMENTTYPE").Value = 0;
-                    //newInvoice.DataFields.FieldByName("EBOOK_DOCDATE").Value = "06.07.2015";
-                    //newInvoice.DataFields.FieldByName("EBOOK_DOCNR").Value = "1234";
-                    //newInvoice.DataFields.FieldByName("EBOOK_DOCTYPE").Value = 5;
-                    //newInvoice.DataFields.FieldByName("EBOOK_PAYTYPE").Value = "COKSECMELI";
-                    //newInvoice.DataFields.FieldByName("EBOOK_NOPAY").Value = 1;
-
-                    newInvoice.FillAccCodes();
-                    newInvoice.CreateCompositeLines();
-                    newInvoice.ReCalculate();
-
-
-                    ValidateErrors err = newInvoice.ValidateErrors;
-
-                    helper.LogFile("Post İşlemi Basladı", "-", "-", "-", "-");
-
-                    string fileName = invoice.number + "_" + DateTime.Now.ToShortDateString() + ".xml";
-
-                    if (invoice.type == 8 || invoice.type == 3 || invoice.type == 9)
-                        newInvoice.ExportToXML("SALES_INVOICES", filePath + "\\" + fileName);
-                    else
-                        newInvoice.ExportToXML("PURCHASE_INVOICES", filePath + "\\" + fileName);
-
-                    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, invoice.number, true);
-                    receivedInvoices.Add(recievedInvoice);
-
-                    helper.LogFile("POST Bitti", "-", "-", "-", "-");
-                }
-            }
-            catch (Exception ex)
-            {
-                IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(ex.Message.ToString(), "", "", false);
-                receivedInvoices.Add(recievedInvoice);
-            }
-            finally
-            {
-                unity.UserLogout();
-                unity.Disconnect();
-            }
-
-            integratedInvoices.integratedInvoices = receivedInvoices;
-            integratedInvoices.distributorId = distributorId;
-
-            return integratedInvoices;
-        }
-        public IntegratedInvoiceStatus xmlExport(List<LogoInvoice> invoices)
-        {
-            string message = "";
-
-            List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
-
-
-            try
-            {
-                foreach (var invoice in invoices)
-                {
-                    if (XMLTransferForOrder)
-                        createXMLforOrder(invoice);
-                    else
-                        createXMLforInvoice(invoice);
-
-                    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, invoice.number, true);
-                    receivedInvoices.Add(recievedInvoice);
-                }
-            }
-            catch (Exception ex)
-            {
-                IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(ex.Message.ToString(), "", "", false);
-                receivedInvoices.Add(recievedInvoice);
-            }
-
-            integratedInvoices.integratedInvoices = receivedInvoices;
-            integratedInvoices.distributorId = distributorId;
-
-            return integratedInvoices;
-        }
-
-        public XmlNode CreateXmlNode(XmlDocument output, XmlNode outputInvoiceNode, LogoInvoice invoice, string outputNodeType)
-        {
-            string date;
-            if (useShortDate)
-                date = (invoice.date.ToShortDateString());
-            else
-                date = (invoice.date.ToString("dd.MM.yyyy"));
-
-            if (outputNodeType == Constants.NodeType.OutputInvoiceDbop)
-            {
-                helper.AddNode(output, outputInvoiceNode, "TYPE", invoice.type.ToString());
-                if (useDefaultNumber)
-                    helper.AddNode(output, outputInvoiceNode, "NUMBER", "~");
-                else
-                    helper.AddNode(output, outputInvoiceNode, "NUMBER", invoice.number);
-
-                helper.AddNode(output, outputInvoiceNode, "DATE", date);
-                helper.AddNode(output, outputInvoiceNode, "TIME", helper.Hour(invoice.date).ToString());
-                helper.AddNode(output, outputInvoiceNode, "DOC_NUMBER", invoice.number);
-                helper.AddNode(output, outputInvoiceNode, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
-                helper.AddNode(output, outputInvoiceNode, "ARP_CODE", invoice.customerCode);
-                helper.AddNode(output, outputInvoiceNode, "SHIPPING_AGENT", shipAgentCode);
-                if (useCypheCode)
-                    helper.AddNode(output, outputInvoiceNode, "AUTH_CODE", cypheCode);
-                if (useShipCode)
-                {
-                    helper.AddNode(output, outputInvoiceNode, "SHIPLOC_CODE", invoice.customerBranchCode);
-                    helper.AddNode(output, outputInvoiceNode, "SHIPLOC_DEF", invoice.customerBranchName);
-                }
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString().Replace(",", "."));  // indirim toplamı
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_DISCOUNTED", (invoice.grossTotal).ToString().Replace(",", "."));  // toplam tutar
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç
-                // /if (distributorId == 47)                                                                                                                  
-                //invoice.note = invoice.customerBranchName + " - " + invoice.note;  // gülpa distributoru, şubelerin açıklamaya eklenmesini istedi
-                helper.AddNode(output, outputInvoiceNode, "NOTES1", invoice.note);
-                helper.AddNode(output, outputInvoiceNode, "DIVISION", invoice.distributorBranchCode);
-                helper.AddNode(output, outputInvoiceNode, "DEPARTMENT", helper.getDepartment());
-                helper.AddNode(output, outputInvoiceNode, "AUXIL_CODE", invoice.salesmanCode);
-                helper.AddNode(output, outputInvoiceNode, "SOURCE_WH", invoice.wareHouseCode);
-                helper.AddNode(output, outputInvoiceNode, "SOURCE_COST_GRP", invoice.wareHouseCode);
-                helper.AddNode(output, outputInvoiceNode, "SALESMAN_CODE", invoice.salesmanCode);
-                return outputInvoiceNode;
+                SaveToXml();
             }
             else
             {
-                helper.AddNode(output, outputInvoiceNode, "TYPE", invoice.type.ToString());
-                helper.AddNode(output, outputInvoiceNode, "NUMBER", invoice.number);
-                helper.AddNode(output, outputInvoiceNode, "DATE", date);
-                helper.AddNode(output, outputInvoiceNode, "TIME", helper.Hour(invoice.date).ToString());
-                helper.AddNode(output, outputInvoiceNode, "DOC_NUMBER", invoice.number);
-                helper.AddNode(output, outputInvoiceNode, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
-                helper.AddNode(output, outputInvoiceNode, "SHIPPING_AGENT", shipAgentCode);
-                helper.AddNode(output, outputInvoiceNode, "SHIP_DATE", invoice.date.AddDays(2).ToString("dd.MM.yyyy"));
-                helper.AddNode(output, outputInvoiceNode, "SHIP_TIME", helper.Hour(invoice.date.AddDays(2)).ToString());
-                helper.AddNode(output, outputInvoiceNode, "DISP_STATUS", "1");
-                if (useCypheCode)
-                    helper.AddNode(output, outputInvoiceNode, "AUTH_CODE", cypheCode);
-                helper.AddNode(output, outputInvoiceNode, "ARP_CODE", invoice.customerCode);
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_DISCOUNTS", invoice.discountTotal.ToString().Replace(",", "."));  // indirim toplamı
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_DISCOUNTED", (invoice.grossTotal).ToString().Replace(",", "."));  // toplam tutar
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_GROSS", invoice.grossTotal.ToString().Replace(",", ".")); // brüt tutar
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_NET", invoice.netTotal.ToString().Replace(",", "."));  // Kdv hariç tutar
-                helper.AddNode(output, outputInvoiceNode, "TOTAL_VAT", invoice.vatTotal.ToString().Replace(",", "."));  // Toplam Kdv
-                helper.AddNode(output, outputInvoiceNode, "NOTES1", invoice.note);
-                helper.AddNode(output, outputInvoiceNode, "ORIG_NUMBER", invoice.number);
-                helper.AddNode(output, outputInvoiceNode, "DOC_DATE", invoice.documentDate.ToString("dd.MM.yyyy"));
-                helper.AddNode(output, outputInvoiceNode, "DOC_TIME", helper.Hour(invoice.documentDate).ToString());
-                return outputInvoiceNode;
+                MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
             }
         }
-        public XmlNode CreateXmlTransaction(XmlDocument output, XmlNode outputTransactions, XmlNode outputTransaction, LogoInvoice invoice)
+        public void SaveToXml()
         {
-            for (int i = 0; i < invoice.details.Count; i++)
-            {
-                outputTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
-                outputTransactions.AppendChild(outputTransaction);
-                if (invoice.details[i].type == 2)
-                {
-                    if (invoice.details[i].rate > Convert.ToDecimal(0) && invoice.details[i].rate < Convert.ToDecimal(100))
-                    {
-                        helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                        helper.AddNode(output, outputTransaction, "BILLED", "1");
-                        helper.AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
-                        helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                        helper.AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
-                        helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                        helper.AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
-                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)  // iade faturaları için
-                        {
-                            helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
-                        }
-                    }
-                }
-                else
-                {
-                    helper.AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                    helper.AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
-                    helper.AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                    helper.AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "BILLED", "1");
-                    helper.AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                    helper.AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
-                    helper.AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                    helper.AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
-                    helper.AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
-                    // efaturalarda istiyor olabilri
-                    // helper.AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
-                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)
-                    {
-                        helper.AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
-                    }
-                }
-            }
-            return outputTransaction;
-        }
-        public IntegratedInvoiceStatus InvoiceListExportToXml(List<LogoInvoice> invoices)
-        {
-            XmlDocument output = new XmlDocument();
-            XmlNode outputInvoiceDbop = null;
-            XmlNode outputInvoiceSales = null;
-            XmlNode outputTransactions = null;
-            XmlNode outputDispatches = null;
-            XmlNode outputDispatch = null;
-            XmlNode outputTransaction = null;
-            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);
-            List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
-            if (invoices.FirstOrDefault().type == (int)InvoiceType.SELLING || invoices.FirstOrDefault().type == (int)InvoiceType.SELLING_RETURN)
-            {
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "SALES_INVOICES", "");
-            }
-            else if (invoices.FirstOrDefault().type == (int)InvoiceType.BUYING || invoices.FirstOrDefault().type == (int)InvoiceType.BUYING_RETURN)
-            {
-                outputInvoiceSales = output.CreateNode(XmlNodeType.Element, "PURCHASE_INVOICES", "");
-            }
+            SelectionHelper selectionHelper = new SelectionHelper();
+            XmlHelper xmlHelper = new XmlHelper();
+            //var selectedInvoices1 = GetSelectedInvoices();
+            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
+            Cursor.Current = Cursors.WaitCursor;
+            helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
+            IntegratedInvoiceStatus status = null;
+            if (XMLTransferForOrder)
+                status = xmlHelper.OrderListExportToXml(selectedInvoices);
             else
-            {
-                // Başka Bir fatura tipi gelirse diye tasarlandı.
-            }
-            output.AppendChild(outputInvoiceSales);
-            foreach (var invoice in invoices)
-            {
-                try
-                {
-                    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto("", invoice.number, invoice.number, true);
-                    receivedInvoices.Add(recievedInvoice);
-                    outputInvoiceDbop = output.CreateNode(XmlNodeType.Element, "INVOICE", "");
-                    XmlAttribute newAttr = output.CreateAttribute("DBOP");
-                    newAttr.Value = "INS";
-                    outputInvoiceDbop.Attributes.Append(newAttr);
-                    outputInvoiceSales.AppendChild(outputInvoiceDbop);
-                    outputInvoiceDbop = CreateXmlNode(output, outputInvoiceDbop, invoice, Constants.NodeType.OutputInvoiceDbop);
-
-                    outputDispatches = output.CreateNode(XmlNodeType.Element, "DISPATCHES", "");
-                    outputInvoiceDbop.AppendChild(outputDispatches);
-                    outputDispatch = output.CreateNode(XmlNodeType.Element, "DISPATCH", "");
-                    outputDispatches.AppendChild(outputDispatch);
-                    outputDispatch = CreateXmlNode(output, outputDispatch, invoice, Constants.NodeType.OutputInvoiceDispatch);
-
-                    outputTransactions = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
-                    outputInvoiceDbop.AppendChild(outputTransactions);
-                    outputTransaction = CreateXmlTransaction(output, outputTransactions, outputTransaction, invoice);
-
-                    helper.AddNode(output, outputInvoiceDbop, "EINVOICE", invoice.ebillCustomer ? "1" : "2");
-                    //helper.AddNode(output, outputInvoiceDbop, "PROFILE_ID", invoice.isElectronicInvoiceCustomer ? "1" : "0");
-                }
-                catch (Exception ex)
-                {
-                    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(ex.Message.ToString(), "", "", false);
-                    receivedInvoices.Add(recievedInvoice);
-                }
-            }
-            string fileName = DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
-            string saveFilePath = filePath + "\\" + fileName;
-            output.Save(saveFilePath);
-            integratedInvoices.integratedInvoices = receivedInvoices;
-            integratedInvoices.distributorId = distributorId;
-            return integratedInvoices;
+                status = xmlHelper.InvoiceListExportToXml(selectedInvoices);
+            helper.ShowMessages(status);
+            helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
+            dataGridInvoice.Rows.Clear();
+            Cursor.Current = Cursors.Default;
         }
         public IntegratedInvoiceStatus sendMultipleInvoicesForMikro(List<LogoInvoiceJson> invoices)
         {
@@ -2178,7 +1055,7 @@ namespace invoiceIntegration
             CheckLogin();
             helper.LogFile("Login Kontolü Bitti", "-", "-", "-", "-");
         }
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (isLoggedIn)
             {
@@ -2197,37 +1074,30 @@ namespace invoiceIntegration
             else if (orderTransferToLogoInfo)
                 GetOrders();
             else GetInvoices();
-
             btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
             btnCheckLogoConnection.Enabled = (dataGridInvoice.Rows.Count > 0 && !isLoggedIn) ? true : false;
             Cursor.Current = Cursors.Default;
         }
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
-            int selectedInvoiceCount = 0;
             IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    selectedInvoiceCount += 1;
-                }
-            }
-            if (selectedInvoiceCount > 0)
+            ResponseHelper responseHelper = new ResponseHelper();
+            SelectionHelper selectionHelper = new SelectionHelper();
+            if (dataGridInvoice.Rows.Count > 0)
             {
                 List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
                 List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
                 if (integrationForMikroERP)
-                    selectedInvoicesForMikro = GetSelectedInvoicesForMikro();
+                    selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
                 else
-                    selectedInvoices = GetSelectedInvoices();
+                    selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 if (integrationForMikroERP)
                     status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
                     status = sendMultipleInvoice(selectedInvoices);
-                SendResponse(status);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -2304,8 +1174,8 @@ namespace invoiceIntegration
             {
                 cmbInvoice.Enabled = false;
                 lblInvoice.Enabled = false;
-                cmbDispatch.Visible = true;             
-                cmbDispatch.Enabled = true;             
+                cmbDispatch.Visible = true;
+                cmbDispatch.Enabled = true;
                 btnWaybill.Visible = true;
                 btnWaybill.Enabled = true;
                 btnSendToLogo.Enabled = false;
@@ -2316,7 +1186,7 @@ namespace invoiceIntegration
             {
                 cmbInvoice.Enabled = true;
                 lblInvoice.Enabled = true;
-                cmbDispatch.Enabled = false;         
+                cmbDispatch.Enabled = false;
                 btnWaybill.Enabled = false;
                 cmbInvoice.SelectedIndex = 0;
                 cmbInvoice_SelectedIndexChanged(0, EventArgs.Empty);
@@ -2324,22 +1194,17 @@ namespace invoiceIntegration
         }
         private void btnWaybill_Click(object sender, EventArgs e)
         {
-            int selectedWaybillCount = 0;
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
+            SelectionHelper selectionHelper = new SelectionHelper();
+            ResponseHelper responseHelper = new ResponseHelper();
+            if (dataGridInvoice.Rows.Count > 0)
             {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    selectedWaybillCount += 1;
-                }
-            }
-            if (selectedWaybillCount > 0)
-            {
-                List<LogoWaybill> selectedWaybills = GetSelectedWaybills();
+                //List<LogoWaybill> selectedWaybills = GetSelectedWaybills();
+                List<LogoWaybill> selectedWaybills = selectionHelper.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedWaybillStatus status = sendMultipleDespatch(selectedWaybills);//sendMultipleInvoice(selectedInvoices);
-                //IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
-                SendResponse(status);
+                                                                                        //IntegratedInvoiceStatus status = sendMultipleInvoice(selectedInvoices);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -2351,45 +1216,6 @@ namespace invoiceIntegration
             }
             else MessageBox.Show("İrsaliye Seçmelisiniz..", "İrsaliye Seçim", MessageBoxButtons.OK);
         }
-
-        private void btnXML_Click(object sender, EventArgs e)
-        {
-            int selectedInvoiceCount = 0;
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    selectedInvoiceCount += 1;
-                }
-            }
-            if (selectedInvoiceCount > 0)
-            {
-                SaveFileDialog fd = new SaveFileDialog();
-                fd.Title = "Faturaların Kaydedileceği Yeri Seçin";
-                fd.FileName = "_";
-                fd.ShowDialog();
-                filePath = Path.GetDirectoryName(fd.FileName);
-
-                List<LogoInvoice> selectedInvoices = GetSelectedInvoices();
-                Cursor.Current = Cursors.WaitCursor;
-                helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-                IntegratedInvoiceStatus status = null;
-                if (distributorId == 47) // Gülpa için geliştirilen Fatura Listesini Xml'e çevirme geliştirmesi
-                {
-                    status = InvoiceListExportToXml(selectedInvoices);
-                }
-                else
-                {
-                    status = xmlExport(selectedInvoices);
-                }
-                helper.ShowMessages(status);
-                helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-                dataGridInvoice.Rows.Clear();
-                Cursor.Current = Cursors.Default;
-            }
-            else MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
-        }
-
         private void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
             if (chkSelectAll.Checked)
@@ -2407,24 +1233,18 @@ namespace invoiceIntegration
                 }
             }
         }
-
         private void btnSendOrderToLogo_Click(object sender, EventArgs e)
         {
-            int selectedInvoiceCount = 0;
-            foreach (DataGridViewRow row in dataGridInvoice.Rows)
+            ResponseHelper responseHelper = new ResponseHelper();
+            SelectionHelper selectionHelper = new SelectionHelper();
+            if (dataGridInvoice.Rows.Count > 0)
             {
-                if (Convert.ToBoolean(row.Cells["chk"].Value) == true)
-                {
-                    selectedInvoiceCount += 1;
-                }
-            }
-            if (selectedInvoiceCount > 0)
-            {
-                List<Order> selectedOrders = GetSelectedOrders();
+                //List<Order> selectedOrders = GetSelectedOrders();
+                List<Order> selectedOrders = selectionHelper.GetSelectedOrders(dataGridInvoice, jsonOrders);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Sipariş Aktarım Basladı", "-", "-", "-", "-");
                 IntegratedOrderStatus status = sendMultipleOrder(selectedOrders);
-                SendResponse(status);
+                responseHelper.SendResponse(status);
                 helper.ShowMessages(status);
                 helper.LogFile("Sipariş Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
@@ -2433,10 +1253,11 @@ namespace invoiceIntegration
                 lblLogoConnectionInfo.Text = "";
                 Cursor.Current = Cursors.Default;
             }
-            else MessageBox.Show("Sipariş Seçmelisiniz..", "Sipariş Seçim", MessageBoxButtons.OK);
+            else
+            {
+                MessageBox.Show("Sipariş Seçmelisiniz..", "Sipariş Seçim", MessageBoxButtons.OK);
+            }
         }
     }
 
 }
-
-

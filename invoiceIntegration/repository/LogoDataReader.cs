@@ -15,52 +15,10 @@ namespace invoiceIntegration.repository
 {
     public class LogoDataReader
     {
-
-        String season = Configuration.getSeason();
-        String companyCode = Configuration.getCompanyCode();
-
+        string season = Configuration.getSeason();
+        string companyCode = Configuration.getCompanyCode();
         string conString = Configuration.getLogoConnection();
-
         Helper helper = new Helper(); 
-         
-        UnityApplication unity = LogoApplication.getApplication();
-
-        //string conString = "Server=172.16.40.20;Database=AYK2008;Persist Security Info=True;User ID=PG;Password=PG2007;";
-
-        //public virtual QueryModel GetQueryDesc(string[] fields, TableID tableId, int firmNr, int perNr, int topCount = 1)
-        //{
-        //    QueryModel queryModel = new QueryModel();
-        //    List<string> values = new List<string>();
-        //    string tableName = UnityApplication.GetTableName((int)tableId, firmNr, perNr);
-        //    Query Qry = UnityApplication.NewQuery();
-        //    var QueryString =
-        //        $"SELECT top({topCount}) {string.Join(",", fields)} FROM {tableName} ORDER BY LOGICALREF DESC";
-        //    Qry.Statement = QueryString;
-        //    if (Qry.OpenDirect())
-        //    {
-        //        bool res = Qry.First();
-        //        while (res)
-        //        {
-        //            for (int i = 0; i < fields.Length; i++)
-        //            {
-        //                values.Add(Qry.QueryFields[i].Value.ToString());
-        //            }
-        //            res = Qry.Next();
-        //        }
-
-        //        queryModel.IsComplete = true;
-        //        queryModel.Values = values.ToArray();
-        //    }
-        //    else
-        //    {
-        //        queryModel.IsComplete = false;
-        //        queryModel.Content = Qry.DBErrorDesc;
-        //    }
-        //    Qry.Close();
-
-        //    return queryModel;
-        //}
-
         public int getLogicalRef(String ficheNo)
         {
             int LogicalRef = 0;
