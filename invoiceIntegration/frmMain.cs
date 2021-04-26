@@ -17,7 +17,7 @@ using invoiceIntegration.controller;
 
 namespace invoiceIntegration
 {
-    public partial class frmMain : MetroForm 
+    public partial class frmMain : MetroForm
     {
 
         public frmMain()
@@ -43,14 +43,14 @@ namespace invoiceIntegration
 
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
-        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus(); 
+        IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
 
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
         LogoDataReader reader = new LogoDataReader();
         UnityApplication unity = LogoApplication.getApplication();
-         Helper helper = new Helper();
+        Helper helper = new Helper();
         bool isLoggedIn = false;
         string invoiceType;
         private void frmMain_Load(object sender, EventArgs e)
@@ -99,7 +99,7 @@ namespace invoiceIntegration
             else
             {
                 lblLogoConnectionInfo.ForeColor = System.Drawing.Color.Red;
-                lblLogoConnectionInfo.Text = "Logo Bağlantısı Başarılı";
+                lblLogoConnectionInfo.Text = "Logo Bağlantısı Başarısız";
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = true;
             }
@@ -186,25 +186,21 @@ namespace invoiceIntegration
             };
             jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
             gridHelper.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
-        }   
+        }
         public IntegratedInvoiceStatus sendMultipleInvoice(List<LogoInvoice> invoices)
         {
             string remoteInvoiceNumber = "";
             string message = "";
-
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
-
-            // invoices.Where(inv => inv.number.Contains() )
-
             try
             {
                 if (isLoggedIn)
                 {
                     foreach (var invoice in invoices)
-                    {  // boolean dön 
+                    {
                         Data newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
-
-                        remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(invoice.number);  // salesArttaki invoice number , logoda documentNumber alanına yazılıyor.
+                        remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(invoice.number);
+                        // salesArttaki invoice number , logoda documentNumber alanına yazılıyor.
                         if (remoteInvoiceNumber != "")
                         {
                             IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, true);
@@ -212,8 +208,8 @@ namespace invoiceIntegration
                         }
                         else
                         {
-                            //8 satış , 3 Satış iade ,9 verilen hizmet
-                            if (invoice.type == 8 || invoice.type == 3 || invoice.type == 9)
+                            if (invoice.type == (int)InvoiceType.SELLING
+                                || invoice.type == (int)InvoiceType.SELLING_RETURN || invoice.type == (int)InvoiceType.SELLING_SERVICE)
                             {
                                 newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
                             }
@@ -986,18 +982,19 @@ namespace invoiceIntegration
         {
             SelectionHelper selectionHelper = new SelectionHelper();
             XmlHelper xmlHelper = new XmlHelper();
+            integratedInvoices = null;
             //var selectedInvoices1 = GetSelectedInvoices();
             var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
             Cursor.Current = Cursors.WaitCursor;
             helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-            IntegratedInvoiceStatus status = null;
+            //IntegratedInvoiceStatus status = null; 
             if (XMLTransferForOrder)
-                status = xmlHelper.OrderListExportToXml(selectedInvoices);
+                integratedInvoices = xmlHelper.OrderListExportToXml(selectedInvoices);
             else
-                status = xmlHelper.InvoiceListExportToXml(selectedInvoices);
-            helper.ShowMessages(status);
+                integratedInvoices = xmlHelper.InvoiceListExportToXml(selectedInvoices);
+            helper.ShowMessages(integratedInvoices);
             helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-            dataGridInvoice.Rows.Clear();
+            dataGridInvoice.Rows.Clear();            
             Cursor.Current = Cursors.Default;
         }
         public IntegratedInvoiceStatus sendMultipleInvoicesForMikro(List<LogoInvoiceJson> invoices)
@@ -1076,7 +1073,7 @@ namespace invoiceIntegration
         }
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
-            IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
+            integratedInvoices = null;
             ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
@@ -1086,25 +1083,29 @@ namespace invoiceIntegration
                 if (integrationForMikroERP)
                     selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
                 else
+                    //selectedInvoices = GetSelectedInvoices();
                     selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 if (integrationForMikroERP)
-                    status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
+                    integratedInvoices = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
-                    status = sendMultipleInvoice(selectedInvoices);
-                responseHelper.SendResponse(status);
-                helper.ShowMessages(status);
+                    integratedInvoices = sendMultipleInvoice(selectedInvoices);
+                //status = sendMultipleInvoice(selectedInvoices);
+                responseHelper.SendResponse(integratedInvoices);
+                helper.ShowMessages(integratedInvoices);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = false;
-                lblLogoConnectionInfo.Text = "";
-
-                Cursor.Current = Cursors.Default;
+                lblLogoConnectionInfo.Text = "";                
+                Cursor.Current = Cursors.Default;               
             }
-            else MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
-        }
+            else
+            {
+                MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
+            }
+        }       
         private void btnLastLog_Click(object sender, EventArgs e)
         {
             frmViewLog frm = new frmViewLog();
