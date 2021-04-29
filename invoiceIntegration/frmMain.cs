@@ -208,8 +208,9 @@ namespace invoiceIntegration
                         }
                         else
                         {
-                            if (invoice.type == (int)InvoiceType.SELLING
-                                || invoice.type == (int)InvoiceType.SELLING_RETURN || invoice.type == (int)InvoiceType.SELLING_SERVICE)
+                            if (invoice.type == (int)InvoiceType.SELLING ||
+                                invoice.type == (int)InvoiceType.SELLING_RETURN ||
+                                invoice.type == (int)InvoiceType.SELLING_SERVICE)
                             {
                                 newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
                             }
@@ -219,7 +220,6 @@ namespace invoiceIntegration
                             }
                             newInvoice.New();
                             newInvoice.DataFields.FieldByName("TYPE").Value = invoice.type;
-
                             if (useDefaultNumber)
                             {
                                 newInvoice.DataFields.FieldByName("NUMBER").Value = "~";
@@ -228,9 +228,7 @@ namespace invoiceIntegration
                             {
                                 newInvoice.DataFields.FieldByName("NUMBER").Value = invoice.number; // düzenlecek
                             }
-
                             newInvoice.DataFields.FieldByName("DOC_NUMBER").Value = invoice.documentNumber;
-
                             if (useShortDate)
                             {
                                 newInvoice.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
@@ -239,32 +237,25 @@ namespace invoiceIntegration
                             {
                                 newInvoice.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
                             }
-
                             newInvoice.DataFields.FieldByName("TIME").Value = helper.Hour(invoice.date.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
                             newInvoice.DataFields.FieldByName("AUXIL_CODE").Value = invoice.salesmanCode;
                             newInvoice.DataFields.FieldByName("ARP_CODE").Value = invoice.customerCode;
                             newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                             newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                             newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-
                             if (useShipCode)
                             {
                                 newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
                                 newInvoice.DataFields.FieldByName("SHIPLOC_DEF").Value = invoice.customerBranchName;
                             }
-
                             if (useCypheCode)
                             {
                                 newInvoice.DataFields.FieldByName("AUTH_CODE").Value = cypheCode;
                             }
-
-
-                            //newInvoice.DataFields.FieldByName("POST_FLAGS").Value = 241;
                             newInvoice.DataFields.FieldByName("DIVISION").Value = invoice.distributorBranchCode;
                             newInvoice.DataFields.FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
                             newInvoice.DataFields.FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
-
                             newInvoice.DataFields.FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                             newInvoice.DataFields.FieldByName("TOTAL_NET").Value = invoice.netTotal;
@@ -274,9 +265,8 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
                             newInvoice.DataFields.FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
                             newInvoice.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
-
-
-                            if (invoice.type != (int)InvoiceType.BUYING_SERVICE && invoice.type != (int)InvoiceType.SELLING_SERVICE) // hizmet faturaları için irsaliye alanları doldurulmadı
+                            // hizmet faturaları için irsaliye alanları doldurulmadı
+                            if (invoice.type != (int)InvoiceType.BUYING_SERVICE && invoice.type != (int)InvoiceType.SELLING_SERVICE)
                             {
                                 Lines dispatches_lines = newInvoice.DataFields.FieldByName("DISPATCHES").Lines;
                                 if (dispatches_lines.AppendLine())
@@ -290,7 +280,6 @@ namespace invoiceIntegration
                                     {
                                         dispatches_lines[0].FieldByName("NUMBER").Value = invoice.number; // düzenlecek
                                     }
-
                                     if (useShortDate)
                                     {
                                         dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToShortDateString());
@@ -299,7 +288,6 @@ namespace invoiceIntegration
                                     {
                                         dispatches_lines[0].FieldByName("DATE").Value = Convert.ToDateTime(invoice.date.ToString("dd-MM-yyyy"));
                                     }
-
                                     dispatches_lines[0].FieldByName("DOC_NUMBER").Value = invoice.number;
                                     dispatches_lines[0].FieldByName("INVOICE_NUMBER").Value = invoice.number;
                                     dispatches_lines[0].FieldByName("ARP_CODE").Value = invoice.customerCode;
@@ -311,27 +299,16 @@ namespace invoiceIntegration
                                     dispatches_lines[0].FieldByName("SHIP_DATE").Value = invoice.date.AddDays(2).ToString("dd.MM.yyyy");
                                     dispatches_lines[0].FieldByName("SHIP_TIME").Value = helper.Hour(invoice.date.AddDays(2)).ToString();
                                     dispatches_lines[0].FieldByName("DISP_STATUS").Value = 1;
-
-
-                                    //dispatches_lines[1].FieldByName("ADD_DISCOUNTS").Value = 160.09;
-
                                     dispatches_lines[0].FieldByName("TOTAL_DISCOUNTS").Value = invoice.discountTotal;
                                     dispatches_lines[0].FieldByName("TOTAL_DISCOUNTED").Value = invoice.netTotal - invoice.discountTotal;
                                     dispatches_lines[0].FieldByName("ADD_DISCOUNTS").Value = invoice.discountTotal;
-
                                     dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                                     dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                                     dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
                                     dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode;
-                                    //dispatches_lines[0].FieldByName("TC_NET").Value = invoice.netTotal;
-                                    //dispatches_lines[0].FieldByName("SINGLE_PAYMENT").Value = invoice.netTotal;
-                                    //dispatches_lines[0].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-                                    //dispatches_lines[0].FieldByName("SALESMAN_CODE").Value = invoice.salesmanCode;
                                 }
                             }
-
                             Lines newInvoiceLines = newInvoice.DataFields.FieldByName("TRANSACTIONS").Lines;
-
                             for (int i = 0; i < invoice.details.Count; i++)
                             {
                                 if (newInvoiceLines.AppendLine())
@@ -344,7 +321,6 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                         newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
                                         newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
-
                                         if (campaignLineNo.Length > 0)
                                         {
                                             Lines newCampaignInfoLine = newInvoiceLines[i].FieldByName("CAMPAIGN_INFOS").Lines;
@@ -352,15 +328,12 @@ namespace invoiceIntegration
                                             {
                                                 newCampaignInfoLine[newCampaignInfoLine.Count - 1].FieldByName("CAMPCODE1").Value = detail.name;
                                                 newCampaignInfoLine[newCampaignInfoLine.Count - 1].FieldByName("CAMP_LN_NO").Value = campaignLineNo;
-
                                             }
                                         }
-
                                     }
                                     else
                                     {
                                         newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-
                                         if (isProducerCode) // bazı distlerde üürn kodları producerCode a yazılı ,
                                         {
                                             string productCodeByProducer = reader.getProductCodeByProducerCode(detail.code);
@@ -394,7 +367,8 @@ namespace invoiceIntegration
                                         }
                                         else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
                                         {
-                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value = reader.getServiceCodeBySalesArtServiceCode(detail.code, invoice.type == 4 ? 1 : 2);
+                                            newInvoiceLines[i].FieldByName("MASTER_CODE").Value =
+                                                reader.getServiceCodeBySalesArtServiceCode(detail.code, invoice.type == 4 ? 1 : 2);
                                             newInvoiceLines[i].FieldByName("TYPE").Value = 4;
                                         }
                                         else
@@ -413,11 +387,7 @@ namespace invoiceIntegration
                                             newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit("HİZMET_" + detail.unitCode);
                                         else
                                             newInvoiceLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
-
                                         newInvoiceLines[i].FieldByName("PAYMENT_CODE").Value = invoice.paymentCode;
-
-                                        //newInvoiceLines[i].FieldByName("UNIT_CONV1").Value = 1; //adet carpanı
-                                        //newInvoiceLines[i].FieldByName("UNIT_CONV2").Value = 12;  // koli carpanı
                                         newInvoiceLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
                                         newInvoiceLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatAmount;
                                         newInvoiceLines[i].FieldByName("VAT_BASE").Value = Convert.ToDouble(detail.price) * detail.quantity;
@@ -425,60 +395,40 @@ namespace invoiceIntegration
                                         newInvoiceLines[i].FieldByName("SALEMANCODE").Value = invoice.salesmanCode;
                                         newInvoiceLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
                                         newInvoiceLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
-                                        //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
-                                        //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
                                         newInvoiceLines[i].FieldByName("BARCODE").Value = detail.barcode;
-
-                                        if (invoice.type == 3 || invoice.type == 8 || invoice.type == 9) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
+                                        // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
+                                        if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN || invoice.type == (int)InvoiceType.SELLING_SERVICE)
                                         {
-
                                             newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 2;
                                         }
                                         else
                                         {
                                             newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 1;
                                         }
-
-                                        if (invoice.type == 3)  // iade faturaları 
+                                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)  // iade faturaları 
                                         {
                                             newInvoiceLines[i].FieldByName("RET_COST_TYPE").Value = 1;
                                         }
                                     }
                                 }
                             }
-
                             Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
-
                             newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
                             newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
-
                             newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 0;
                             newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
                             newInvoice.DataFields.FieldByName("EXIMVAT").Value = 0;
-
-                            //newInvoice.DataFields.FieldByName("EARCHIVEDETR_INTPAYMENTTYPE").Value = 0;
-                            //newInvoice.DataFields.FieldByName("EBOOK_DOCDATE").Value = "06.07.2015";
-                            //newInvoice.DataFields.FieldByName("EBOOK_DOCNR").Value = "1234";
-                            //newInvoice.DataFields.FieldByName("EBOOK_DOCTYPE").Value = 5;
-                            //newInvoice.DataFields.FieldByName("EBOOK_PAYTYPE").Value = "COKSECMELI";
-                            //newInvoice.DataFields.FieldByName("EBOOK_NOPAY").Value = 1;
-
                             newInvoice.FillAccCodes();
                             newInvoice.CreateCompositeLines();
                             newInvoice.ReCalculate();
-
-
                             ValidateErrors err = newInvoice.ValidateErrors;
-
                             newInvoice.ExportToXML("SALES_INVOICES", @"C:\invoices.xml");
                             helper.LogFile("Post İşlemi Basladı", "-", "-", "-", "-");
                             if (newInvoice.Post())
                             {
                                 var integratedInvoiceRef = newInvoice.DataFields.FieldByName("INTERNAL_REFERENCE").Value;
                                 newInvoice.Read(integratedInvoiceRef);
-
                                 remoteInvoiceNumber = newInvoice.DataFields.FieldByName("NUMBER").Value;
-
                                 IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, remoteInvoiceNumber, true);
                                 receivedInvoices.Add(recievedInvoice);
                             }
@@ -496,7 +446,6 @@ namespace invoiceIntegration
                                     {
                                         message += err[i].Error;
                                     }
-
                                     IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(message, invoice.number, remoteInvoiceNumber, false);
                                     receivedInvoices.Add(recievedInvoice);
                                 }
@@ -521,12 +470,9 @@ namespace invoiceIntegration
                 unity.Disconnect();
                 isLoggedIn = false;
                 message = "";
-
             }
-
             integratedInvoices.integratedInvoices = receivedInvoices;
             integratedInvoices.distributorId = distributorId;
-
             return integratedInvoices;
         }
         public IntegratedWaybillStatus sendMultipleDespatch(List<LogoWaybill> despatches)
@@ -994,7 +940,7 @@ namespace invoiceIntegration
                 integratedInvoices = xmlHelper.InvoiceListExportToXml(selectedInvoices);
             helper.ShowMessages(integratedInvoices);
             helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-            dataGridInvoice.Rows.Clear();            
+            dataGridInvoice.Rows.Clear();
             Cursor.Current = Cursors.Default;
         }
         public IntegratedInvoiceStatus sendMultipleInvoicesForMikro(List<LogoInvoiceJson> invoices)
@@ -1045,7 +991,14 @@ namespace invoiceIntegration
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
-            CheckLogin();
+            try
+            {
+                CheckLogin();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Logo ile bağlantı kurulamıyor. Lütfen IT Departmanı ile iletişime geçiniz...", "Bağlantı Sorunu", MessageBoxButtons.OK);
+            }
             helper.LogFile("Login Kontolü Bitti", "-", "-", "-", "-");
         }
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -1073,7 +1026,8 @@ namespace invoiceIntegration
         }
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
-            integratedInvoices = null;
+            //integratedInvoices = null;
+            IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
             ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
@@ -1088,24 +1042,25 @@ namespace invoiceIntegration
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 if (integrationForMikroERP)
-                    integratedInvoices = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
+                    status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
-                    integratedInvoices = sendMultipleInvoice(selectedInvoices);
+                    status = sendMultipleInvoice(selectedInvoices);
+                //MessageBox.Show("Aktarım Başarılı");
                 //status = sendMultipleInvoice(selectedInvoices);
-                responseHelper.SendResponse(integratedInvoices);
-                helper.ShowMessages(integratedInvoices);
+                responseHelper.SendResponse(status);
+                helper.ShowMessages(status);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
                 btnSendToLogo.Enabled = false;
                 btnCheckLogoConnection.Enabled = false;
-                lblLogoConnectionInfo.Text = "";                
-                Cursor.Current = Cursors.Default;               
+                lblLogoConnectionInfo.Text = "";
+                Cursor.Current = Cursors.Default;
             }
             else
             {
                 MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
             }
-        }       
+        }
         private void btnLastLog_Click(object sender, EventArgs e)
         {
             frmViewLog frm = new frmViewLog();

@@ -47,10 +47,10 @@ namespace invoiceIntegration.controller
                     foreach (var selectedInvoiceDetail in selectedInvoice.details)
                     {
                         InvoiceDetail invDetail = new InvoiceDetail();
-                        if (selectedInvoice.invoiceType == InvoiceType.BUYING_SERVICE || selectedInvoice.invoiceType == InvoiceType.SELLING_SERVICE)
-                        {
-                            invDetail.type = (int)selectedInvoice.invoiceType;
-                        }
+                        //if (selectedInvoice.invoiceType == InvoiceType.BUYING_SERVICE || selectedInvoice.invoiceType == InvoiceType.SELLING_SERVICE)
+                        //{
+                        //    invDetail.type = (int)selectedInvoice.invoiceType;
+                        //}
                         invDetail.type = 0;
                         invDetail.code = selectedInvoiceDetail.code;
                         invDetail.quantity = selectedInvoiceDetail.quantity;
