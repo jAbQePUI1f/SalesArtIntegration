@@ -14,6 +14,7 @@ using invoiceIntegration.helper;
 using invoiceIntegration.model.order;
 using MetroFramework.Forms;
 using invoiceIntegration.controller;
+using System.Threading;
 
 namespace invoiceIntegration
 {
@@ -23,6 +24,13 @@ namespace invoiceIntegration
         public frmMain()
         {
             InitializeComponent();
+            bool programRunningControl;
+            Mutex mutex = new Mutex(true, System.Windows.Forms.Application.ProductName, out programRunningControl);
+            if (!programRunningControl)
+            {
+                MessageBox.Show("Program Zaten Çalışıyor", "UYARI!!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(0);
+            }
             this.FormBorderStyle = FormBorderStyle.None;
         }
         bool isProducerCode = Configuration.getIsProducerCode();
