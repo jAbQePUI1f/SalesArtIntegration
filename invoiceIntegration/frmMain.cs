@@ -36,18 +36,13 @@ namespace invoiceIntegration
         bool isProducerCode = Configuration.getIsProducerCode();
         bool useCypheCode = Configuration.getUseCypheCode();
         string cypheCode = Configuration.getCypheCode();
-        bool isBarcode = Configuration.getIsBarcode();
         bool useDefaultNumber = Configuration.getUseDefaultNumber();
         bool useShortDate = Configuration.getUseShortDate();
-        bool useShipCode = Configuration.getUseShipCode();
-        bool XMLTransferInfo = Configuration.getXMLTransferInfo();
-        bool XMLTransferForOrder = Configuration.getXMLTransferForOrder();
         int distributorId = Configuration.getDistributorId();
         bool useDispatch = Configuration.getUseDispatch();
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
         string campaignLineNo = Configuration.getCampaignLineNo();
-        bool orderTransferToLogoInfo = Configuration.getOrderTransferToLogoInfo();
 
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
         IntegratedWaybillStatus integratedWaybills = new IntegratedWaybillStatus();
@@ -69,7 +64,7 @@ namespace invoiceIntegration
             if (useDispatch)
                 chkDispatch.Visible = true;
 
-            if (XMLTransferInfo)
+            if (Configuration.getXMLTransferInfo())
             {
                 btnCheckLogoConnection.Visible = false;
                 btnSendToLogo.Visible = false;
@@ -83,7 +78,7 @@ namespace invoiceIntegration
                 isLoggedIn = true;
             }
 
-            if (orderTransferToLogoInfo)
+            if (Configuration.getOrderTransferToLogoInfo())
             {
                 btnSendOrderToLogo.Visible = true;
                 btnSendToLogo.Visible = false;
@@ -251,7 +246,7 @@ namespace invoiceIntegration
                             newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                             newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                             newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-                            if (useShipCode)
+                            if (Configuration.getUseShipCode())
                             {
                                 newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
                                 newInvoice.DataFields.FieldByName("SHIPLOC_DEF").Value = invoice.customerBranchName;
@@ -358,7 +353,7 @@ namespace invoiceIntegration
                                                 return integratedInvoices;
                                             }
                                         }
-                                        else if (isBarcode)   //sümerde ürün kodları barkoda göre getirilecek
+                                        else if (Configuration.getIsBarcode())   //sümerde ürün kodları barkoda göre getirilecek
                                         {
                                             string productCodeByBarcode = reader.getProductCodeByBarcode(detail.barcode);
                                             if (productCodeByBarcode != "" && productCodeByBarcode != null)
@@ -723,37 +718,16 @@ namespace invoiceIntegration
         {
             string message = "";
             long remoteOrderId = 0;
-
             List<IntegratedOrderDto> receivedOrders = new List<IntegratedOrderDto>();
-
             try
             {
                 if (isLoggedIn)
                 {
                     foreach (var order in orders)
-                    {  // boolean dön 
+                    {
                         Data newOrder = unity.NewDataObject(DataObjectType.doSalesOrderSlip);
-
-                        // remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(order.number);  // salesArttaki invoice number , logoda documentNumber alanına yazılıyor.
-                        //if (remoteInvoiceNumber != "")
-                        //{
-                        //    IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, true);
-                        //    receivedInvoices.Add(recievedInvoice);
-                        //}
-                        //else
-                        //{
-                        //8 satış , 3 Satış iade ,9 verilen hizmet
-                        if (order.type == 3)
-                        {
-                            newOrder = unity.NewDataObject(DataObjectType.doSalesOrderSlip);
-                        }
-                        //else
-                        //{
-                        //    newInvoice = unity.NewDataObject(DataObjectType.doPurchInvoice);
-                        //}
                         newOrder.New();
                         newOrder.DataFields.FieldByName("TYPE").Value = order.type;
-
                         if (useDefaultNumber)
                         {
                             newOrder.DataFields.FieldByName("NUMBER").Value = "~";
@@ -762,12 +736,6 @@ namespace invoiceIntegration
                         {
                             newOrder.DataFields.FieldByName("NUMBER").Value = order.receiptNumber;
                         }
-
-                        //order.DataFields.FieldByName("RC_RATE").Value = 1;
-                        // order.DataFields.FieldByName("CURRSEL_TOTAL").Value = 1;
-                        // order.DataFields.FieldByName("DATA_SITEID").Value = 1;
-
-
                         if (useShortDate)
                         {
                             newOrder.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(order.orderDate.ToShortDateString());
@@ -776,58 +744,41 @@ namespace invoiceIntegration
                         {
                             newOrder.DataFields.FieldByName("DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
                         }
-
                         newOrder.DataFields.FieldByName("TIME").Value = helper.Hour(order.deliveryDate.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"));
                         newOrder.DataFields.FieldByName("SALESMAN_CODE").Value = order.salesman.code;
                         newOrder.DataFields.FieldByName("ARP_CODE").Value = order.customer.code;
                         newOrder.DataFields.FieldByName("SOURCE_WH").Value = order.warehouse.code;
                         newOrder.DataFields.FieldByName("SOURCE_COST_GRP").Value = order.warehouse.code;
                         newOrder.DataFields.FieldByName("ORDER_STATUS").Value = 1;
-                        //newOrder.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-
-
                         if (useCypheCode)
                         {
                             newOrder.DataFields.FieldByName("AUTH_CODE").Value = order.customer.code.Substring(2, 2);
                         }
-
                         newOrder.DataFields.FieldByName("AUXIL_CODE").Value = order.customer.code.Substring(4, 2);
-
-
-                        //newInvoice.DataFields.FieldByName("POST_FLAGS").Value = 241;
                         newOrder.DataFields.FieldByName("DIVISION").Value = order.customerBranch.code;
-
                         newOrder.DataFields.FieldByName("TOTAL_VAT").Value = order.vatTotal;
                         newOrder.DataFields.FieldByName("TOTAL_GROSS").Value = order.grossTotal;
                         newOrder.DataFields.FieldByName("TOTAL_NET").Value = order.preVatNetTotal;
                         newOrder.DataFields.FieldByName("NOTES1").Value = order.salesmanNote;
                         newOrder.DataFields.FieldByName("PAYMENT_CODE").Value = order.paymentType.code;
-                        //newOrder.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
-
-
                         Lines newOrderLines = newOrder.DataFields.FieldByName("TRANSACTIONS").Lines;
-
                         for (int i = 0; i < order.details.Count; i++)
                         {
                             if (newOrderLines.AppendLine())
                             {
                                 OrderDetail detail = order.details[i];
-
                                 if (detail.type == 2)  // indirim
                                 {
                                     newOrderLines[i].FieldByName("TYPE").Value = detail.type;
                                     newOrderLines[i].FieldByName("DISCOUNT_RATE").Value = Convert.ToDouble(Math.Round(detail.rate, 2));
                                     newOrderLines[i].FieldByName("DUE_DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
                                     newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
-
                                 }
                                 else
                                 {
 
                                     newOrderLines[i].FieldByName("TYPE").Value = 0;
                                     newOrderLines[i].FieldByName("MASTER_CODE").Value = detail.productCode;
-                                    // newOrderLines[i].FieldByName("SOURCEINDEX").Value = order.warehouse.code;
-                                    //  newOrderLines[i].FieldByName("SOURCECOSTGRP").Value = order.warehouse.code;
                                     newOrderLines[i].FieldByName("QUANTITY").Value = detail.quantity;
                                     newOrderLines[i].FieldByName("PRICE").Value = Convert.ToDouble(detail.orderItemPrice);
                                     newOrderLines[i].FieldByName("TOTAL").Value = detail.grossTotal;
@@ -835,44 +786,23 @@ namespace invoiceIntegration
                                     newOrderLines[i].FieldByName("UNIT_CODE").Value = helper.getUnit(detail.unitCode);
                                     newOrderLines[i].FieldByName("PAYMENT_CODE").Value = order.paymentType.code;
                                     newOrderLines[i].FieldByName("DUE_DATE").Value = Convert.ToDateTime(order.orderDate.ToString("dd-MM-yyyy"));
-
                                     newOrderLines[i].FieldByName("VAT_RATE").Value = Convert.ToInt32(detail.vatRate);
                                     newOrderLines[i].FieldByName("VAT_AMOUNT").Value = detail.vatTotal;
-                                    //newOrderLines[i].FieldByName("SALEMANCODE").Value = order.salesman.code;
-                                    //newOrderLines[i].FieldByName("SALESMAN_CODE").Value = order.salesman.code;
-                                    //newOrderLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
-                                    //newOrderLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
-                                    //newInvoiceLines[i].FieldByName("EDT_CURR").Value = 1;
-                                    //newInvoiceLines[i].FieldByName("UNIT_GLOBAL_CODE").Value = "NIU";
-                                    //newOrderLines[i].FieldByName("BARCODE").Value = detail.productBarcode;
-
                                     newOrderLines[i].FieldByName("PRCLISTTYPE").Value = 2;
                                 }
                             }
                         }
-
                         newOrder.FillAccCodes();
                         newOrder.CreateCompositeLines();
                         newOrder.ReCalculate();
-
-
                         ValidateErrors err = newOrder.ValidateErrors;
-
                         newOrder.ExportToXML("SALES_ORDERS", @"C:\orders.xml");
                         helper.LogFile("Post İşlemi Basladı", "-", "-", "-", "-");
                         if (newOrder.Post())
                         {
                             var integratedOrderRef = newOrder.DataFields.FieldByName("INTERNAL_REFERENCE").Value;
-
-                            //newOrder.Read(integratedOrderRef);
-
-                            //remoteNumber = newOrder.DataFields.FieldByName("NUMBER").Value;
-
                             IntegratedOrderDto recievedOrder = new IntegratedOrderDto(message, integratedOrderRef, order.orderId, true);
                             receivedOrders.Add(recievedOrder);
-
-                            //IntegratedOrderForMessageDto integratedOrderForMessage = new IntegratedOrderForMessageDto(message,remoteNumber,order.orderId,true);
-
                         }
                         else
                         {
@@ -893,8 +823,7 @@ namespace invoiceIntegration
                                 receivedOrders.Add(recievedOrder);
                             }
                         }
-                        helper.LogFile("POST Bitti", "-", "-", "-", "-");
-                        //}
+                        helper.LogFile("POST Bitti", "-", "-", "-", "-");                    
                     }
                 }
                 else
@@ -913,12 +842,9 @@ namespace invoiceIntegration
                 unity.Disconnect();
                 isLoggedIn = false;
                 message = "";
-
             }
-
             integratedOrders.orders = receivedOrders;
             integratedOrders.distributorId = distributorId;
-
             return integratedOrders;
         }
         private void btnXML_Click(object sender, EventArgs e)
@@ -942,7 +868,7 @@ namespace invoiceIntegration
             Cursor.Current = Cursors.WaitCursor;
             helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
             //IntegratedInvoiceStatus status = null; 
-            if (XMLTransferForOrder)
+            if (Configuration.getXMLTransferForOrder())
                 integratedInvoices = xmlHelper.OrderListExportToXml(selectedInvoices);
             else
                 integratedInvoices = xmlHelper.InvoiceListExportToXml(selectedInvoices);
@@ -1025,7 +951,7 @@ namespace invoiceIntegration
             chkSelectAll.Checked = false;
             if (chkDispatch.Checked)
                 GetWaybills();
-            else if (orderTransferToLogoInfo)
+            else if (Configuration.getOrderTransferToLogoInfo())
                 GetOrders();
             else GetInvoices();
             btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
