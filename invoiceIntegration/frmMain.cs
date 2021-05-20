@@ -851,32 +851,18 @@ namespace invoiceIntegration
         {
             if (dataGridInvoice.Rows.Count > 0)
             {
-                SaveToXml();
+                Cursor.Current = Cursors.WaitCursor;
+                XmlHelper xmlHelper = new XmlHelper();
+                xmlHelper.SaveToXml(dataGridInvoice,jsonInvoices);
+                dataGridInvoice.Rows.Clear();
+                Cursor.Current = Cursors.Default;
             }
             else
             {
                 MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
             }
         }
-        public void SaveToXml()
-        {
-            SelectionHelper selectionHelper = new SelectionHelper();
-            XmlHelper xmlHelper = new XmlHelper();
-            integratedInvoices = null;
-            //var selectedInvoices1 = GetSelectedInvoices();
-            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
-            Cursor.Current = Cursors.WaitCursor;
-            helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-            //IntegratedInvoiceStatus status = null; 
-            if (Configuration.getXMLTransferForOrder())
-                integratedInvoices = xmlHelper.OrderListExportToXml(selectedInvoices);
-            else
-                integratedInvoices = xmlHelper.InvoiceListExportToXml(selectedInvoices);
-            helper.ShowMessages(integratedInvoices);
-            helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-            dataGridInvoice.Rows.Clear();
-            Cursor.Current = Cursors.Default;
-        }
+    
         public IntegratedInvoiceStatus sendMultipleInvoicesForMikro(List<LogoInvoiceJson> invoices)
         {
             string remoteNumber = "";
@@ -960,8 +946,7 @@ namespace invoiceIntegration
         }
         private void btnSendToLogo_Click(object sender, EventArgs e)
         {
-            //integratedInvoices = null;
-            IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
+            //integratedInvoices = null; IntegratedInvoiceStatus status = new IntegratedInvoiceStatus();
             ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
             if (dataGridInvoice.Rows.Count > 0)
@@ -971,18 +956,15 @@ namespace invoiceIntegration
                 if (integrationForMikroERP)
                     selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
                 else
-                    //selectedInvoices = GetSelectedInvoices();
                     selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                 Cursor.Current = Cursors.WaitCursor;
                 helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
                 if (integrationForMikroERP)
-                    status = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
+                    integratedInvoices = sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                 else
-                    status = sendMultipleInvoice(selectedInvoices);
-                //MessageBox.Show("Aktarım Başarılı");
-                //status = sendMultipleInvoice(selectedInvoices);
-                responseHelper.SendResponse(status);
-                helper.ShowMessages(status);
+                    integratedInvoices = sendMultipleInvoice(selectedInvoices);
+                responseHelper.SendResponse(integratedInvoices);
+                helper.ShowMessages(integratedInvoices);
                 helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
                 dataGridInvoice.Rows.Clear();
                 btnSendToLogo.Enabled = false;

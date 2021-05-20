@@ -8,7 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using static invoiceIntegration.frmMain;
 
-namespace invoiceIntegration.controller
+namespace invoiceIntegration
 {
     public class SelectionHelper
     {      
