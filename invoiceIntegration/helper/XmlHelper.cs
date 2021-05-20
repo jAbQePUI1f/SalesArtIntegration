@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
+using static invoiceIntegration.frmMain;
 
 namespace invoiceIntegration
 {
@@ -326,6 +328,18 @@ namespace invoiceIntegration
             XmlNode tempNode = Document.CreateNode(XmlNodeType.Element, Tag, "");
             tempNode.InnerText = InnerText;
             Node.AppendChild(tempNode);
+        }
+        public void SaveToXml(DataGridView dataGridInvoice, GenericResponse<List<LogoInvoiceJson>> jsonInvoices)
+        {
+            SelectionHelper selectionHelper = new SelectionHelper();
+            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);       
+            helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
+            if (Configuration.getXMLTransferForOrder())
+                integratedInvoices = OrderListExportToXml(selectedInvoices);
+            else
+                integratedInvoices = InvoiceListExportToXml(selectedInvoices);
+            helper.ShowMessages(integratedInvoices);
+            helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");   
         }
 
     }
