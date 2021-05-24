@@ -2,7 +2,7 @@
 using invoiceIntegration.model.order;
 using System.Collections.Generic;
 using System.Windows.Forms;
-namespace invoiceIntegration.controller
+namespace invoiceIntegration.helper
 {
     public class GridHelper
     {
