@@ -31,14 +31,13 @@ namespace invoiceIntegration
                 Environment.Exit(0);
             }
             this.FormBorderStyle = FormBorderStyle.None;
-        }       
+        }
         int distributorId = Configuration.getDistributorId();
-        bool useDispatch = Configuration.getUseDispatch();
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
-        LogoDataReader reader = new LogoDataReader();
+ 
         UnityApplication unity = LogoApplication.getApplication();
         Helper helper = new Helper();
         bool isLoggedIn = false;
@@ -48,7 +47,7 @@ namespace invoiceIntegration
             cmbInvoice.SelectedIndex = 0;
             lblLogoConnectionInfo.Text = "";
             startDate.Value = DateTime.Now.AddDays(-1);
-            if (useDispatch)
+            if (Configuration.getUseDispatch())
                 chkDispatch.Visible = true;
 
             if (Configuration.getXMLTransferInfo())
@@ -183,7 +182,7 @@ namespace invoiceIntegration
             {
                 Cursor.Current = Cursors.WaitCursor;
                 XmlHelper xmlHelper = new XmlHelper();
-                xmlHelper.SaveToXml(dataGridInvoice,jsonInvoices);
+                xmlHelper.SaveToXml(dataGridInvoice, jsonInvoices);
                 dataGridInvoice.Rows.Clear();
                 Cursor.Current = Cursors.Default;
             }
@@ -191,7 +190,7 @@ namespace invoiceIntegration
             {
                 MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
             }
-        }    
+        }
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
@@ -236,26 +235,34 @@ namespace invoiceIntegration
             IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
             if (dataGridInvoice.Rows.Count > 0)
             {
-                List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
-                List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
-                if (integrationForMikroERP)
-                    selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
+                if (isLoggedIn)
+                {
+                    List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
+                    List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
+                    if (integrationForMikroERP)
+                        selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
+                    else
+                        selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
+                    Cursor.Current = Cursors.WaitCursor;
+                    helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
+                    if (integrationForMikroERP)
+                        integratedInvoices = integratedHelper.sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
+                    else
+                        integratedInvoices = integratedHelper.sendMultipleInvoice(selectedInvoices);
+                    responseHelper.SendResponse(integratedInvoices);
+                    helper.ShowMessages(integratedInvoices);
+                    helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
+                    dataGridInvoice.Rows.Clear();
+                    btnSendToLogo.Enabled = false;
+                    btnCheckLogoConnection.Enabled = false;
+                    isLoggedIn = false;
+                    lblLogoConnectionInfo.Text = "";
+                    Cursor.Current = Cursors.Default;
+                }
                 else
-                    selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
-                Cursor.Current = Cursors.WaitCursor;
-                helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-                if (integrationForMikroERP)
-                    integratedInvoices = integratedHelper.sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
-                else
-                    integratedInvoices = integratedHelper.sendMultipleInvoice(selectedInvoices,isLoggedIn);
-                responseHelper.SendResponse(integratedInvoices);
-                helper.ShowMessages(integratedInvoices);
-                helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
-                dataGridInvoice.Rows.Clear();
-                btnSendToLogo.Enabled = false;
-                btnCheckLogoConnection.Enabled = false;
-                lblLogoConnectionInfo.Text = "";
-                Cursor.Current = Cursors.Default;
+                {
+                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
+                }
             }
             else
             {
@@ -352,23 +359,31 @@ namespace invoiceIntegration
             IntegratedHelper integratedHelper = new IntegratedHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
-                List<LogoWaybill> selectedWaybills = selectionHelper.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
-                Cursor.Current = Cursors.WaitCursor;
-                helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
-                IntegratedWaybillStatus status = integratedHelper.sendMultipleDespatch(selectedWaybills,isLoggedIn);  
-                responseHelper.SendResponse(status);
-                helper.ShowMessages(status);
-                helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
-                dataGridInvoice.Rows.Clear();
-                btnSendToLogo.Enabled = false;
-                btnCheckLogoConnection.Enabled = false;
-                lblLogoConnectionInfo.Text = "";
-                Cursor.Current = Cursors.Default;
+                if (isLoggedIn)
+                {
+                    List<LogoWaybill> selectedWaybills = selectionHelper.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
+                    Cursor.Current = Cursors.WaitCursor;
+                    helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
+                    IntegratedWaybillStatus status = integratedHelper.sendMultipleDespatch(selectedWaybills);
+                    responseHelper.SendResponse(status);
+                    helper.ShowMessages(status);
+                    helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
+                    dataGridInvoice.Rows.Clear();
+                    btnSendToLogo.Enabled = false;
+                    btnCheckLogoConnection.Enabled = false;
+                    lblLogoConnectionInfo.Text = "";
+                    isLoggedIn = false;
+                    Cursor.Current = Cursors.Default;
+                }
+                else
+                {
+                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
+                }
             }
             else
             {
                 MessageBox.Show("İrsaliye Seçmelisiniz..", "İrsaliye Seçim", MessageBoxButtons.OK);
-            }            
+            }
         }
         private void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
@@ -394,18 +409,26 @@ namespace invoiceIntegration
             IntegratedHelper integratedHelper = new IntegratedHelper();
             if (dataGridInvoice.Rows.Count > 0)
             {
-                List<Order> selectedOrders = selectionHelper.GetSelectedOrders(dataGridInvoice, jsonOrders);
-                Cursor.Current = Cursors.WaitCursor;
-                helper.LogFile("Sipariş Aktarım Basladı", "-", "-", "-", "-");
-                IntegratedOrderStatus status = integratedHelper.sendMultipleOrder(selectedOrders,isLoggedIn);
-                responseHelper.SendResponse(status);
-                helper.ShowMessages(status);
-                helper.LogFile("Sipariş Aktarım Bitti", "-", "-", "-", "-");
-                dataGridInvoice.Rows.Clear();
-                btnSendToLogo.Enabled = false;
-                btnCheckLogoConnection.Enabled = false;
-                lblLogoConnectionInfo.Text = "";
-                Cursor.Current = Cursors.Default;
+                if (isLoggedIn)
+                {
+                    List<Order> selectedOrders = selectionHelper.GetSelectedOrders(dataGridInvoice, jsonOrders);
+                    Cursor.Current = Cursors.WaitCursor;
+                    helper.LogFile("Sipariş Aktarım Basladı", "-", "-", "-", "-");
+                    IntegratedOrderStatus status = integratedHelper.sendMultipleOrder(selectedOrders);
+                    responseHelper.SendResponse(status);
+                    helper.ShowMessages(status);
+                    helper.LogFile("Sipariş Aktarım Bitti", "-", "-", "-", "-");
+                    dataGridInvoice.Rows.Clear();
+                    btnSendToLogo.Enabled = false;
+                    btnCheckLogoConnection.Enabled = false;
+                    lblLogoConnectionInfo.Text = "";
+                    isLoggedIn = false;
+                    Cursor.Current = Cursors.Default;
+                }
+                else
+                {
+                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
+                }
             }
             else
             {
