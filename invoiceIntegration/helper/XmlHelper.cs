@@ -332,14 +332,21 @@ namespace invoiceIntegration
         public void SaveToXml(DataGridView dataGridInvoice, GenericResponse<List<LogoInvoiceJson>> jsonInvoices)
         {
             SelectionHelper selectionHelper = new SelectionHelper();
-            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);       
-            helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-            if (Configuration.getXMLTransferForOrder())
-                integratedInvoices = OrderListExportToXml(selectedInvoices);
+            var selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
+            if (selectedInvoices.Count > 0)
+            {
+                helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
+                if (Configuration.getXMLTransferForOrder())
+                    integratedInvoices = OrderListExportToXml(selectedInvoices);
+                else
+                    integratedInvoices = InvoiceListExportToXml(selectedInvoices);
+                helper.ShowMessages(integratedInvoices);
+                helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");
+            }
             else
-                integratedInvoices = InvoiceListExportToXml(selectedInvoices);
-            helper.ShowMessages(integratedInvoices);
-            helper.LogFile("Fatura Aktarım Bitti", "-", "-", "-", "-");   
+            {
+                MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
+            }
         }
 
     }
