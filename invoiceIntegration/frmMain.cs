@@ -100,32 +100,6 @@ namespace invoiceIntegration
             public int responseStatus { get; set; }
             public model.order.Message message { get; set; }
         }
-        public void GetInvoices()
-        {
-            GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
-            {
-                RequestFormat = DataFormat.Json
-            };
-            GetTransferableInvoicesRequest req = new GetTransferableInvoicesRequest()
-            {
-                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                invoiceTypes = new List<string>()
-            };
-            req.invoiceTypes.Add(invoiceType.ToString());
-            restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
-            restRequest.AddJsonBody(req);
-            var requestResponse = restClient.Execute<LogoInvoice>(restRequest);
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-            jsonInvoices = JsonConvert.DeserializeObject<GenericResponse<List<LogoInvoiceJson>>>(requestResponse.Content, settings);
-            gridHelper.FillGrid(jsonInvoices.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoInvoiceJson);
-        }
         public void GetWaybills()
         {
             GridHelper gridHelper = new GridHelper();
@@ -215,6 +189,7 @@ namespace invoiceIntegration
         }
         private void btnGetInvoices_Click(object sender, EventArgs e)
         {
+            ApiHelper apiHelper = new ApiHelper(); 
             Cursor.Current = Cursors.WaitCursor;
             dataGridInvoice.Rows.Clear();
             chkSelectAll.Checked = false;
@@ -222,7 +197,7 @@ namespace invoiceIntegration
                 GetWaybills();
             else if (Configuration.getOrderTransferToLogoInfo())
                 GetOrders();
-            else GetInvoices();
+            else jsonInvoices = apiHelper.GetInvoices(startDate,endDate,invoiceType,dataGridInvoice);
             btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
             btnCheckLogoConnection.Enabled = (dataGridInvoice.Rows.Count > 0 && !isLoggedIn) ? true : false;
             Cursor.Current = Cursors.Default;
