@@ -380,7 +380,7 @@ namespace invoiceIntegration.repository
                 {
                     string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "SP_InsertInvoice_Dilek_Grup_Izmir";
+                    cmd.CommandText = "SP_InsertInvoice_SCJ";
                     cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
                     if (invoice.customerBranchName != null)
                     {
@@ -450,7 +450,7 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.Add(sqlParam);
                     cmd.ExecuteNonQuery();
                     remoteRef = sqlParam.Value.ToString();
-                    cmd.CommandText = "SP_InsertInvoiceDetail_Dilek_Grup_Izmir";
+                    cmd.CommandText = "SP_InsertInvoiceDetail_SCJ";
                     foreach (var detail in invoice.details)
                     {
                         cmd.Parameters.Clear();
