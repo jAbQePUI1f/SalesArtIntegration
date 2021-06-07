@@ -393,11 +393,11 @@ namespace invoiceIntegration.repository
 
                     if (invoice.salesmanCode != null)
                     {
-                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode); //Salesman Kod
+                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode);
                     }
                     else
                     {
-                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş"); //Salesman Kod
+                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş");
                     }
                     if (invoice.invoiceType == InvoiceType.BUYING || invoice.invoiceType == InvoiceType.SELLING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN)
                     {
@@ -454,8 +454,7 @@ namespace invoiceIntegration.repository
                     foreach (var detail in invoice.details)
                     {
                         cmd.Parameters.Clear();
-                        if (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.SELLING_SERVICE ||
-                            invoice.invoiceType == InvoiceType.BUYING || invoice.invoiceType == InvoiceType.BUYING_SERVICE)
+                        if (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.BUYING)
                         {
                             cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", "NORMAL");  //0:Normal 1:İade
                         }
@@ -466,27 +465,49 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
                         if (invoice.salesmanCode != null)
                         {
-                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode); //Salesman Kod
+                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode);
                         }
                         else
                         {
-                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş"); //Salesman Kod
+                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş");
                         }
                         if (invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.BUYING || invoice.invoiceType == InvoiceType.SELLING_RETURN)
                         {
-                            cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 3);
+                            if (invoice.ebillCustomer)
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 13);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 3);
+                            }
                             cmd.Parameters.AddWithValue("@ST_TIP", 0);
                         }
                         else
                         {
-                            cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 4);
+                            if (invoice.ebillCustomer)
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 1);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 4);
+                            }
                             cmd.Parameters.AddWithValue("@ST_TIP", 1);
                         }
+                        if (invoice.ebillCustomer)
+                        {
+                            cmd.Parameters.AddWithValue("@EbillCustomer", "EFatura");
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@EbillCustomer", "");
+                        }
                         cmd.Parameters.AddWithValue("@WAREHOUSE_CODE", invoice.wareHouseCode); //Depo Kod
-                        cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
+                        cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date);
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);  // stok kodu                      
-                        cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.price;  // birim fiyat 
+                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
+                        cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
                         if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
                         {
                             cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;
