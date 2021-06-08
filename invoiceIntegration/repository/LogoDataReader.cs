@@ -371,23 +371,51 @@ namespace invoiceIntegration.repository
             using (SqlConnection conn = new SqlConnection(conString))
             {
                 conn.Open();
-
-                SqlCommand cmd = conn.CreateCommand(); // new SqlCommand("SP_InsertInvoice_Peros", conn);
-
+                SqlCommand cmd = conn.CreateCommand();
                 SqlTransaction transaction;
                 transaction = conn.BeginTransaction("InvoiceTransaction");
-
                 cmd.Connection = conn;
                 cmd.Transaction = transaction;
-
                 try
                 {
                     string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "SP_InsertInvoice_Peros";
-
+                    cmd.CommandText = "SP_InsertInvoice_SCJ";
                     cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                    cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
+                    if (invoice.customerBranchName != null)
+                    {
+                        cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", "Şube Adı Boş");
+                    }
+
+                    if (invoice.salesmanCode != null)
+                    {
+                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş");
+                    }
+                    if (invoice.invoiceType == InvoiceType.BUYING || invoice.invoiceType == InvoiceType.SELLING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN)
+                    {
+                        cmd.Parameters.AddWithValue("@CHA_TIP", 1);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@CHA_TIP", 0);
+                    }
+                    if (invoice.invoiceType == InvoiceType.SELLING_RETURN || invoice.invoiceType == InvoiceType.BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN)
+                    {
+                        cmd.Parameters.AddWithValue("@CHA_NORMAL_IADE", 1);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@CHA_NORMAL_IADE", 0);
+                    }
+
                     cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);   // 0:Ticari Fatura 1:Temel Fatura
                     cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == InvoiceType.BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
                     cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
@@ -398,42 +426,103 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", Convert.ToDecimal(0.00));  // 0 gelecek hep ?? 
                     cmd.Parameters.AddWithValue("@TAX_AMOUNT1", invoice.vatTotal);  // vergi tutarı
                     cmd.Parameters.AddWithValue("@PAYABLE_AMOUNT", invoice.netTotal);  // vergi dahil toplam tutar
-                    cmd.Parameters.AddWithValue("@DOCUMENT_CURRENCY_CODE", "0");  // 0: TL  , 1: Dolar
+                    cmd.Parameters.AddWithValue("@DOCUMENT_CURRENCY_CODE", "0");  // 0: TL  , 1: Dolar                   
                     cmd.Parameters.AddWithValue("@NOTE1", "" + invoice.note);
                     cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", "" + invoice.note);  // bedelsiz fatura notu(fatura notuun aynısı olablilr)
                     cmd.Parameters.AddWithValue("@KASAHIZKOD", "");  // Bos gönderileiblir.
-                    cmd.Parameters.AddWithValue("@KASAHIZMET", SqlDbType.TinyInt).SqlValue = 0;  // (0 gelecek -- 0:Carimiz 1:Cari Personelimiz 2:Bankamız 3:Hizmetimiz 4:Kasamız 5:Giderimiz 6:Muhasebe Hesabımız 7:Personelimiz 8:Demirbaşımız 9:İthalat Dosyamız 10:Finansal Sözleşmemiz 11:Kredi Sözleşmemiz 12:Dönemsel Hizmetimiz 13:Kredi Kartımız
-                    cmd.Parameters.AddWithValue("@CINSI", SqlDbType.TinyInt).SqlValue = 6;  // satış faturası için 6  --> 	0:Nakit 1:Müşteri Çeki 2:Müşteri Senedi 3:Firma Çeki 4:Firma Senedi 5:Dekont 6:Toptan Fatura 7:Perakende Faturası 8:Hizmet Faturası 9:Serbest Meslek Makbuzu 10:Vade Farkı Faturası 11:Kur Farkı Faturası 12:Fason Faturası 13:Dış Ticaret Faturası 14:Demirbaş Faturası 15:Değer Farkı Faturası 16:Cari Açılış 17:Müşteri Havale Sözü 18:Müşteri Ödeme Sözü 19:Müşteri Kredi Kartı 20:Firma Havale Emri 21:Firma Ödeme Emri 22:Firma Kredi Kartı 23:Vade Farkı Sıfırlama 24:Hal Faturası 25:Müstahsil Fatura 26:Stok Gider Pusulası 27:Gider Makbuzu 28:İthalat Masraf Faturası 29:Gümrük Beyannamesi 30:Finansal Kiralama Sözleşmesi 31:Finansal Kira Faturası 32:FUTURE_2 33:Avans Makbuzu 34:Müstahsil Değer Farkı Faturası 35:Kabzımal Faturası 36:Hediye Çeki Faturası 37:Müşteri Teminat Mektubu 38:Firma Teminat Mektubu 39:Depozito Çeki 40:Depozito Senedi 41:Firma Reel Kredi Kartı
+                    cmd.Parameters.AddWithValue("@KASAHIZMET", SqlDbType.TinyInt).SqlValue = 0;
+                    // (0 gelecek -- 0:Carimiz 1:Cari Personelimiz 2:Bankamız 3:Hizmetimiz 4:Kasamız 5:Giderimiz 6:Muhasebe                     
+                    cmd.Parameters.AddWithValue("@CINSI", SqlDbType.TinyInt).SqlValue = 6;
                     cmd.Parameters.AddWithValue("@CHECK_UUID", SqlDbType.Bit).SqlValue = 1;  // fatura numarası içeeride daha önce kaydedilmiş mi kontro ledilsin mi ? 1 ise evet
                     cmd.Parameters.AddWithValue("@SATIRNO", 0);  // 0 olacak , cünkü her bir fsturanın tek bir header'ı olacak
-                    cmd.Parameters.AddWithValue("@EVRAKTIP", (invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING_SERVICE) ? 63 : 0);  //  0:Alış Faturası , 63:Satış Faturası 
-                    
+
+                    if (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.DAMAGED_BUYING_RETURN || invoice.invoiceType == InvoiceType.BUYING_RETURN)
+                    {
+                        cmd.Parameters.AddWithValue("@EVRAKTIP", 63);  // 63:Satış Faturası                     
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@EVRAKTIP", 0);  // 0:Alış Faturası 
+                    }
+
                     SqlParameter sqlParam = new SqlParameter("@id", SqlDbType.UniqueIdentifier);
                     sqlParam.Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(sqlParam);
                     cmd.ExecuteNonQuery();
-                      
                     remoteRef = sqlParam.Value.ToString();
-
-                    cmd.CommandText = "SP_InsertInvoiceDetail_Peros";
-                    
+                    cmd.CommandText = "SP_InsertInvoiceDetail_SCJ";
                     foreach (var detail in invoice.details)
                     {
                         cmd.Parameters.Clear();
-
-                        cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.SELLING_SERVICE) ? "SATIŞ" : "IADE");  //0:Normal 1:İade
+                        if (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.BUYING)
+                        {
+                            cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", "NORMAL");  //0:Normal 1:İade
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", "IADE");
+                        }
                         cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
-                        cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
+                        if (invoice.salesmanCode != null)
+                        {
+                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", invoice.salesmanCode);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@SALESMAN_CODE", "Plasiyer Kod Boş");
+                        }
+                        if (invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.BUYING || invoice.invoiceType == InvoiceType.SELLING_RETURN)
+                        {
+                            if (invoice.ebillCustomer)
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 13);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 3);
+                            }
+                            cmd.Parameters.AddWithValue("@ST_TIP", 0);
+                        }
+                        else
+                        {
+                            if (invoice.ebillCustomer)
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 1);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@ST_EVRAK_TIP", 4);
+                            }
+                            cmd.Parameters.AddWithValue("@ST_TIP", 1);
+                        }
+                        if (invoice.ebillCustomer)
+                        {
+                            cmd.Parameters.AddWithValue("@EbillCustomer", "EFatura");
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@EbillCustomer", "");
+                        }
+                        cmd.Parameters.AddWithValue("@WAREHOUSE_CODE", invoice.wareHouseCode); //Depo Kod
+                        cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date);
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", getProductCodeFromProviderCode(detail.code));  // stok kodu
-                        cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;  // miktar
-                        cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.price;  // birim fiyat 
+                        cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
+                        cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
+                        if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
+                        {
+                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;
+                            cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 1;
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
+                            cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
+                        }
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
                         cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);
-
-                        if(detail.discounts != null && detail.discounts.Count > 0)
+                        if (detail.discounts != null && detail.discounts.Count > 0)
                         {
                             for (int i = 0; i < detail.discounts.Count; i++)
                             {
@@ -457,7 +546,7 @@ namespace invoiceIntegration.repository
                                     case 5:
                                         cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", detail.discounts[i].discountTotal);
                                         break;
-                                } 
+                                }
                             }
                         }
                         else  // indirim yok ise , indirim satırına 0 yazıldı , procedure bu alanları bekliyor , doldurmalıyız.
@@ -470,11 +559,11 @@ namespace invoiceIntegration.repository
                             cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", SqlDbType.Decimal).SqlValue = 0;
                         }
 
-                        cmd.ExecuteNonQuery(); 
+                        cmd.ExecuteNonQuery();
                     }
-                     transaction.Commit();
+                    transaction.Commit();
                 }
-                catch (Exception ex )
+                catch (Exception ex)
                 {
                     MessageBox.Show("Tip:" + ex.GetType().ToString() + ",  Hata Mesajı:" + ex.Message, "Fatura Kaydetme Hatası", MessageBoxButtons.OK);
                     try
@@ -483,7 +572,7 @@ namespace invoiceIntegration.repository
                     }
                     catch (Exception ex2)
                     {
-                        MessageBox.Show( "Tip:" + ex2.GetType().ToString() + ",  Hata Mesajı:" + ex2.Message, "Rolll Back Hatası", MessageBoxButtons.OK);
+                        MessageBox.Show("Tip:" + ex2.GetType().ToString() + ",  Hata Mesajı:" + ex2.Message, "Rolll Back Hatası", MessageBoxButtons.OK);
                     }
                 }
                 finally
@@ -491,34 +580,28 @@ namespace invoiceIntegration.repository
                     conn.Close();
                     conn.Dispose();
                 }
-            } 
+            }
             return remoteRef;
         }
-        
-        public string getProductCodeFromProviderCode(string code)
-        {
-            string productCode = "";
 
+        public decimal getProductConversionFactor(string code)
+        {
+            decimal conversionFactor = 0;
             try
             {
-                String Qry = "SELECT sto_kod ";
+                String Qry = "SELECT sto_birim2_katsayi ";
                 Qry += " FROM STOKLAR WITH (NOLOCK) ";
-                Qry += " WHERE sto_uretici_kodu = '" + code + "'";
-                 
+                Qry += " WHERE sto_kod = '" + code + "'";
                 SqlConnection conn = new SqlConnection(conString);
                 SqlCommand sqlCmd = new SqlCommand();
                 sqlCmd.CommandType = CommandType.Text;
                 sqlCmd.CommandText = Qry;
                 sqlCmd.Connection = conn;
-
                 conn.Open();
-
                 SqlDataReader dr = sqlCmd.ExecuteReader();
-
-
                 if (dr.Read())
                 {
-                    productCode = dr["sto_kod"].ToString();
+                    conversionFactor = Convert.ToDecimal(dr["sto_birim2_katsayi"]);
                 }
                 conn.Close();
             }
@@ -526,7 +609,7 @@ namespace invoiceIntegration.repository
             {
                 MessageBox.Show(code + " Kod'lu Ürünün Bilgileri Mikrodan Alınamadı.  Bu Ürünün Tanımlı Olduğundan Emin Olunuz..  Hata:" + e.Message, "Ürün Kodu Hatası", MessageBoxButtons.OK);
             }
-            return productCode;
+            return conversionFactor;
         }
 
         public int getProfileIDFromCustomerCodeMikro(string code)

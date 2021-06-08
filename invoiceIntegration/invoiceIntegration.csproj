@@ -97,6 +97,7 @@
     <Compile Include="config\LogoApplication.cs" />
     <Compile Include="constants\ListType.cs" />
     <Compile Include="constants\NodeType.cs" />
+    <Compile Include="constants\UnitCodeType.cs" />
     <Compile Include="helper\ApiHelper.cs" />
     <Compile Include="helper\GridHelper.cs" />
     <Compile Include="helper\IntegratedHelper.cs" />
