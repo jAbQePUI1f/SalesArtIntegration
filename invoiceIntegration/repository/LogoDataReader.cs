@@ -550,7 +550,15 @@ namespace invoiceIntegration.repository
                         }
                         else
                         {
-                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
+                            if (getProductConversionFactor(detail.code) > 0)
+                            {
+                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
+                            }
+                            else
+                            {
+                                MessageBox.Show("Hata Mesajı ", "Birim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, MessageBoxButtons.OK);
+                                return null;
+                            }
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
                         }
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
