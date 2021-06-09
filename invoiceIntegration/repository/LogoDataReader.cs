@@ -368,6 +368,7 @@ namespace invoiceIntegration.repository
         public string createInvoice(LogoInvoiceJson invoice)
         {
             string remoteRef = "";
+            int numberLine = 0;
             using (SqlConnection conn = new SqlConnection(conString))
             {
                 conn.Open();
@@ -428,7 +429,21 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@PAYABLE_AMOUNT", invoice.netTotal);  // vergi dahil toplam tutar
                     cmd.Parameters.AddWithValue("@DOCUMENT_CURRENCY_CODE", "0");  // 0: TL  , 1: Dolar                   
                     cmd.Parameters.AddWithValue("@NOTE1", "" + invoice.note);
-                    cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", "" + invoice.note);  // bedelsiz fatura notu(fatura notuun aynısı olablilr)
+                    if (!string.IsNullOrEmpty(invoice.note))
+                    {
+                        if (invoice.note.Length > 40)
+                        {
+                            cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", invoice.note.Substring(0, 38));
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", invoice.note);
+                        }
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", " ");
+                    }
                     cmd.Parameters.AddWithValue("@KASAHIZKOD", "");  // Bos gönderileiblir.
                     cmd.Parameters.AddWithValue("@KASAHIZMET", SqlDbType.TinyInt).SqlValue = 0;
                     // (0 gelecek -- 0:Carimiz 1:Cari Personelimiz 2:Bankamız 3:Hizmetimiz 4:Kasamız 5:Giderimiz 6:Muhasebe                     
@@ -454,6 +469,7 @@ namespace invoiceIntegration.repository
                     foreach (var detail in invoice.details)
                     {
                         cmd.Parameters.Clear();
+
                         if (invoice.invoiceType == InvoiceType.SELLING || invoice.invoiceType == InvoiceType.BUYING)
                         {
                             cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", "NORMAL");  //0:Normal 1:İade
@@ -503,9 +519,28 @@ namespace invoiceIntegration.repository
                         {
                             cmd.Parameters.AddWithValue("@EbillCustomer", "");
                         }
+
+                        cmd.Parameters.AddWithValue("@STH_NUMBER_LINE", numberLine);
+                        numberLine++;
                         cmd.Parameters.AddWithValue("@WAREHOUSE_CODE", invoice.wareHouseCode); //Depo Kod
                         cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date);
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                        if (!string.IsNullOrEmpty(invoice.note))
+                        {
+                            if (invoice.note.Length > 40)
+                            {
+                                cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", invoice.note.Substring(0, 38));
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", invoice.note);
+                            }
+
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@TAX_EXEMPTION_REASON", " ");
+                        }
                         cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
                         if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
@@ -515,7 +550,15 @@ namespace invoiceIntegration.repository
                         }
                         else
                         {
-                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
+                            if (getProductConversionFactor(detail.code) > 0)
+                            {
+                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
+                            }
+                            else
+                            {
+                                MessageBox.Show("Hata Mesajı ", "Birim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, MessageBoxButtons.OK);
+                                return null;
+                            }
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
                         }
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
@@ -574,6 +617,7 @@ namespace invoiceIntegration.repository
                     {
                         MessageBox.Show("Tip:" + ex2.GetType().ToString() + ",  Hata Mesajı:" + ex2.Message, "Rolll Back Hatası", MessageBoxButtons.OK);
                     }
+                    return null;
                 }
                 finally
                 {
