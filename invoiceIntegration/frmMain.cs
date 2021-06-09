@@ -32,7 +32,7 @@ namespace invoiceIntegration
             }
             this.FormBorderStyle = FormBorderStyle.None;
         }
-        int distributorId = Configuration.getDistributorId();
+
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
@@ -99,57 +99,7 @@ namespace invoiceIntegration
             public T data { get; set; }
             public int responseStatus { get; set; }
             public model.order.Message message { get; set; }
-        }
-        public void GetWaybills()
-        {
-            GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/waybills?", Method.POST)
-            {
-                RequestFormat = DataFormat.Json
-            };
-            GetTransferableWaybillsRequest req = new GetTransferableWaybillsRequest()
-            {
-                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                waybillTypes = new List<string>()
-            };
-            req.waybillTypes.Add(invoiceType.ToString());
-            restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
-            restRequest.AddJsonBody(req);
-            var requestResponse = restClient.Execute<LogoWaybill>(restRequest);
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-            jsonWaybills = JsonConvert.DeserializeObject<GenericResponse<List<LogoWaybillJson>>>(requestResponse.Content, settings);
-            gridHelper.FillGrid(jsonWaybills.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoWaybillJson);
-        }
-        public void GetOrders()
-        {
-            GridHelper gridHelper = new GridHelper();
-            RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/orders/", Method.POST)
-            {
-                RequestFormat = DataFormat.Json
-            };
-            GetTransferableOrdersRequest req = new GetTransferableOrdersRequest()
-            {
-                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                distributorId = distributorId
-            };
-            restRequest.AddJsonBody(req);
-            var requestResponse = restClient.Execute<OrderResponse>(restRequest);
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore
-            };
-            jsonOrders = JsonConvert.DeserializeObject<GenericResponse<OrderResponse>>(requestResponse.Content, settings);
-            gridHelper.FillOrdersToGrid(jsonOrders.data, dataGridInvoice);
-        }
+        }   
         private void btnXML_Click(object sender, EventArgs e)
         {
             if (dataGridInvoice.Rows.Count > 0)
@@ -194,9 +144,9 @@ namespace invoiceIntegration
             dataGridInvoice.Rows.Clear();
             chkSelectAll.Checked = false;
             if (chkDispatch.Checked)
-                GetWaybills();
+                jsonWaybills = apiHelper.GetWaybills(startDate,endDate,invoiceType,dataGridInvoice);
             else if (Configuration.getOrderTransferToLogoInfo())
-                GetOrders();
+              jsonOrders= apiHelper.GetOrders(startDate, endDate,dataGridInvoice);
             else jsonInvoices = apiHelper.GetInvoices(startDate,endDate,invoiceType,dataGridInvoice);
             btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
             btnCheckLogoConnection.Enabled = (dataGridInvoice.Rows.Count > 0 && !isLoggedIn) ? true : false;
