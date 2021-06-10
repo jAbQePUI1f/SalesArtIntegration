@@ -382,7 +382,15 @@ namespace invoiceIntegration.repository
                     string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "SP_InsertInvoice_SCJ";
-                    cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                    if (getCustomerFromMicro(invoice.customerCode) == invoice.customerCode)
+                    {
+                        cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                    }
+                    else
+                    {
+                        MessageBox.Show("ERP'ye girilmemiş cari mevcut. Cari kodu :" + invoice.customerCode, "Cari Hata Mesajı ", MessageBoxButtons.OK);
+                        return null;
+                    }
                     if (invoice.customerBranchName != null)
                     {
                         cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
@@ -556,7 +564,7 @@ namespace invoiceIntegration.repository
                             }
                             else
                             {
-                                MessageBox.Show("Hata Mesajı ", "Birim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, MessageBoxButtons.OK);
+                                MessageBox.Show("Birim değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, "Ürün Hata Mesajı ",  MessageBoxButtons.OK);
                                 return null;
                             }
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
@@ -627,7 +635,33 @@ namespace invoiceIntegration.repository
             }
             return remoteRef;
         }
+        public string getCustomerFromMicro(string code)
+        {
+            string customerCode = null;
+            try
+            {
+                String Qry = "SELECT cari_sektor_kodu ";
+                Qry += " FROM CARI_HESAPLAR  WITH (NOLOCK) ";
+                Qry += " WHERE cari_sektor_kodu = '" + code + "'";
+                SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+                conn.Open();
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    customerCode = dr["cari_sektor_kodu"].ToString();
+                }
+                conn.Close();
+            }
+            catch (Exception)
+            {
 
+            }
+            return customerCode;
+        }
         public decimal getProductConversionFactor(string code)
         {
             decimal conversionFactor = 0;

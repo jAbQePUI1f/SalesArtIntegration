@@ -56,6 +56,10 @@ namespace invoiceIntegration
                 btnSendToLogo.Visible = false;
                 btnSendOrderToLogo.Visible = false;
                 btnXML.Visible = true;
+                if (Configuration.getXMLTransferForOrder())
+                {
+                    btnXML.Text = "Siparişleri XML'e Aktar";
+                }
             }
 
             if (integrationForMikroERP)
