@@ -551,24 +551,29 @@ namespace invoiceIntegration.repository
                         }
                         cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
+
+
                         if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
                         {
-                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;
-                            cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 1;
+                            decimal conversionFactor = getProductConversionFactor(detail.code) * -1;
+                            if (conversionFactor > 0)
+                            {
+                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity * conversionFactor);
+                                cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 1;
+                            }
+
+                            else
+                            {
+                                MessageBox.Show("Birim Çevrim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, "Ürün Hata Mesajı ", MessageBoxButtons.OK);
+                                return null;
+                            }
                         }
                         else
                         {
-                            if (getProductConversionFactor(detail.code) > 0)
-                            {
-                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
-                            }
-                            else
-                            {
-                                MessageBox.Show("Birim değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, "Ürün Hata Mesajı ",  MessageBoxButtons.OK);
-                                return null;
-                            }
+
+                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity);
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
-                        }
+                        }                      
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
