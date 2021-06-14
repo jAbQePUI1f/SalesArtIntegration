@@ -382,7 +382,15 @@ namespace invoiceIntegration.repository
                     string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "SP_InsertInvoice_SCJ";
-                    cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                    if (getCustomerFromMicro(invoice.customerCode) == invoice.customerCode)
+                    {
+                        cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                    }
+                    else
+                    {
+                        MessageBox.Show("ERP'ye girilmemiş cari mevcut. Cari kodu :" + invoice.customerCode, "Cari Hata Mesajı ", MessageBoxButtons.OK);
+                        return null;
+                    }
                     if (invoice.customerBranchName != null)
                     {
                         cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", invoice.customerBranchName);
@@ -543,24 +551,29 @@ namespace invoiceIntegration.repository
                         }
                         cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
+
+
                         if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
                         {
-                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = detail.quantity;
-                            cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 1;
+                            decimal conversionFactor = getProductConversionFactor(detail.code) * -1;
+                            if (conversionFactor > 0)
+                            {
+                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity * conversionFactor);
+                                cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 1;
+                            }
+
+                            else
+                            {
+                                MessageBox.Show("Birim Çevrim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, "Ürün Hata Mesajı ", MessageBoxButtons.OK);
+                                return null;
+                            }
                         }
                         else
                         {
-                            if (getProductConversionFactor(detail.code) > 0)
-                            {
-                                cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity / getProductConversionFactor(detail.code));
-                            }
-                            else
-                            {
-                                MessageBox.Show("Hata Mesajı ", "Birim Değeri girilmemiş ürün mevcut. Ürün kodu :" + detail.code, MessageBoxButtons.OK);
-                                return null;
-                            }
+
+                            cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity);
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
-                        }
+                        }                      
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
@@ -627,7 +640,33 @@ namespace invoiceIntegration.repository
             }
             return remoteRef;
         }
+        public string getCustomerFromMicro(string code)
+        {
+            string customerCode = null;
+            try
+            {
+                String Qry = "SELECT cari_sektor_kodu ";
+                Qry += " FROM CARI_HESAPLAR  WITH (NOLOCK) ";
+                Qry += " WHERE cari_sektor_kodu = '" + code + "'";
+                SqlConnection conn = new SqlConnection(conString);
+                SqlCommand sqlCmd = new SqlCommand();
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = Qry;
+                sqlCmd.Connection = conn;
+                conn.Open();
+                SqlDataReader dr = sqlCmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    customerCode = dr["cari_sektor_kodu"].ToString();
+                }
+                conn.Close();
+            }
+            catch (Exception)
+            {
 
+            }
+            return customerCode;
+        }
         public decimal getProductConversionFactor(string code)
         {
             decimal conversionFactor = 0;
