@@ -400,13 +400,13 @@ namespace invoiceIntegration.repository
                     {
                         cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", "Şube Adı Boş");
                     }
-                    if (invoice.customerBranchCode != null)
+                    try
                     {
-                        cmd.Parameters.AddWithValue("@Customer_Branch_code", invoice.customerBranchCode);
+                        cmd.Parameters.AddWithValue("@Customer_Branch_code", Convert.ToInt32(invoice.customerBranchCode));
                     }
-                    else
+                    catch (Exception)
                     {
-                        cmd.Parameters.AddWithValue("@Customer_Branch_code", "Şube Kodu Boş");
+                        cmd.Parameters.AddWithValue("@Customer_Branch_code", 1);
                     }
 
                     if (invoice.salesmanCode != null)
@@ -544,13 +544,13 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@PAYMENT_CODE", "-" + invoice.paymentCode);
                         cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date);
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
-                        if (invoice.customerBranchCode != null)
+                        try
                         {
-                            cmd.Parameters.AddWithValue("@Customer_Branch_code", invoice.customerBranchCode);
+                            cmd.Parameters.AddWithValue("@Customer_Branch_code", Convert.ToInt32(invoice.customerBranchCode));
                         }
-                        else
+                        catch (Exception)
                         {
-                            cmd.Parameters.AddWithValue("@Customer_Branch_code", "Şube Kodu Boş");
+                            cmd.Parameters.AddWithValue("@Customer_Branch_code", 1);
                         }
                         if (!string.IsNullOrEmpty(invoice.note))
                         {
