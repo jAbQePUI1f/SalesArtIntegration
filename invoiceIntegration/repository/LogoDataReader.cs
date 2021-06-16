@@ -382,13 +382,14 @@ namespace invoiceIntegration.repository
                     string profileID = getProfileIDFromCustomerCodeMikro(invoice.customerCode).ToString();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "SP_InsertInvoice_SCJ";
+
                     if (getCustomerFromMicro(invoice.customerCode) == invoice.customerCode)
                     {
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
                     }
                     else
                     {
-                        MessageBox.Show("ERP'ye girilmemiş cari mevcut. Cari kodu :" + invoice.customerCode, "Cari Hata Mesajı ", MessageBoxButtons.OK);
+                        MessageBox.Show("Microda girilmemiş cari mevcut. Cari kodu :" + invoice.customerCode, "Cari Hata Mesajı ", MessageBoxButtons.OK);
                         return null;
                     }
                     if (invoice.customerBranchName != null)
@@ -398,6 +399,14 @@ namespace invoiceIntegration.repository
                     else
                     {
                         cmd.Parameters.AddWithValue("@ERP_CARI_SUBE_ADI", "Şube Adı Boş");
+                    }
+                    try
+                    {
+                        cmd.Parameters.AddWithValue("@Customer_Branch_code", Convert.ToInt32(invoice.customerBranchCode));
+                    }
+                    catch (Exception)
+                    {
+                        cmd.Parameters.AddWithValue("@Customer_Branch_code", 1);
                     }
 
                     if (invoice.salesmanCode != null)
@@ -428,6 +437,7 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);   // 0:Ticari Fatura 1:Temel Fatura
                     cmd.Parameters.AddWithValue("@INVOICE_TYPE_CODE", ((invoice.invoiceType == InvoiceType.BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_BUYING_RETURN || invoice.invoiceType == InvoiceType.DAMAGED_SELLING_RETURN || invoice.invoiceType == InvoiceType.SELLING_RETURN) ? 1 : 0).ToString());  //0:Normal 1:İade
                     cmd.Parameters.AddWithValue("@INVOICE_NUMBER", invoice.number);
+                    cmd.Parameters.AddWithValue("@PAYMENT_CODE", "-" + invoice.paymentCode);
                     cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date); //fat. tarihi
                     cmd.Parameters.AddWithValue("@PAYMENT_DUE_DATE", invoice.date);  // vade tarihi
                     cmd.Parameters.AddWithValue("@TAX_EXCLUSIVE_AMOUNT", invoice.grossTotal);  // toplam tutarı kdv siz
@@ -531,8 +541,17 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@STH_NUMBER_LINE", numberLine);
                         numberLine++;
                         cmd.Parameters.AddWithValue("@WAREHOUSE_CODE", invoice.wareHouseCode); //Depo Kod
+                        cmd.Parameters.AddWithValue("@PAYMENT_CODE", "-" + invoice.paymentCode);
                         cmd.Parameters.AddWithValue("@ISSUE_DATE", invoice.date);
                         cmd.Parameters.AddWithValue("@ERP_CARI_KOD", invoice.customerCode);
+                        try
+                        {
+                            cmd.Parameters.AddWithValue("@Customer_Branch_code", Convert.ToInt32(invoice.customerBranchCode));
+                        }
+                        catch (Exception)
+                        {
+                            cmd.Parameters.AddWithValue("@Customer_Branch_code", 1);
+                        }
                         if (!string.IsNullOrEmpty(invoice.note))
                         {
                             if (invoice.note.Length > 40)
@@ -551,8 +570,6 @@ namespace invoiceIntegration.repository
                         }
                         cmd.Parameters.AddWithValue("@ERP_PRODUCT_STOK_KOD", detail.code);
                         cmd.Parameters.AddWithValue("@QUANTITY_AMOUNT", SqlDbType.Decimal).SqlValue = detail.grossTotal; // Quantity * Price
-
-
                         if (detail.unitCode == constants.UnitCodeType.KOLI || detail.unitCode == constants.UnitCodeType.KL)
                         {
                             decimal conversionFactor = getProductConversionFactor(detail.code) * -1;
@@ -573,7 +590,7 @@ namespace invoiceIntegration.repository
 
                             cmd.Parameters.AddWithValue("@QUANTITY", SqlDbType.Decimal).SqlValue = (detail.quantity);
                             cmd.Parameters.AddWithValue("@UNIT_CODE", SqlDbType.Decimal).SqlValue = 2;
-                        }                      
+                        }
                         cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", detail.vatRate);
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
