@@ -1,14 +1,9 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
-using invoiceIntegration.repository;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using UnityObjects;
-using RestSharp;
-using System.Linq;
-using System.Data;
 using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
 using invoiceIntegration.model.order;
@@ -33,12 +28,9 @@ namespace invoiceIntegration
             this.FormBorderStyle = FormBorderStyle.None;
         }
 
-        bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
- 
-        UnityApplication unity = LogoApplication.getApplication();
         Helper helper = new Helper();
         bool isLoggedIn = false;
         string invoiceType;
@@ -62,7 +54,7 @@ namespace invoiceIntegration
                 }
             }
 
-            if (integrationForMikroERP)
+            if (Configuration.getIntegrationForMikroERP())
             {
                 btnSendToLogo.Text = "Faturaları Mikroya Aktar";
                 isLoggedIn = true;
@@ -81,7 +73,7 @@ namespace invoiceIntegration
         void CheckLogin()
         {
             Cursor.Current = Cursors.WaitCursor;
-            isLoggedIn = unity.Login(Configuration.getLogoUserName(), Configuration.getLogoPassword(), int.Parse(Configuration.getCompanyCode()), int.Parse(Configuration.getSeason()));
+            isLoggedIn = LogoApplication.getApplication().Login(Configuration.getLogoUserName(), Configuration.getLogoPassword(), int.Parse(Configuration.getCompanyCode()), int.Parse(Configuration.getSeason()));
             if (isLoggedIn)
             {
                 lblLogoConnectionInfo.ForeColor = System.Drawing.Color.Green;
@@ -136,8 +128,8 @@ namespace invoiceIntegration
         {
             if (isLoggedIn)
             {
-                unity.UserLogout();
-                unity.Disconnect();
+                LogoApplication.getApplication().UserLogout();
+                LogoApplication.getApplication().Disconnect();
             }
             System.Windows.Forms.Application.Exit();
         }
@@ -168,13 +160,13 @@ namespace invoiceIntegration
                 {
                     List<LogoInvoiceJson> selectedInvoicesForMikro = new List<LogoInvoiceJson>();
                     List<LogoInvoice> selectedInvoices = new List<LogoInvoice>();
-                    if (integrationForMikroERP)
+                    if (Configuration.getIntegrationForMikroERP())
                         selectedInvoicesForMikro = selectionHelper.GetSelectedInvoicesForMikro(dataGridInvoice, jsonInvoices);
                     else
                         selectedInvoices = selectionHelper.GetSelectedInvoices(dataGridInvoice, jsonInvoices);
                     Cursor.Current = Cursors.WaitCursor;
                     helper.LogFile("Fatura Aktarım Basladı", "-", "-", "-", "-");
-                    if (integrationForMikroERP)
+                    if (Configuration.getIntegrationForMikroERP())
                         integratedInvoices = integratedHelper.sendMultipleInvoicesForMikro(selectedInvoicesForMikro);
                     else
                         integratedInvoices = integratedHelper.sendMultipleInvoice(selectedInvoices);
