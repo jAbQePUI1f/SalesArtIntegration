@@ -335,7 +335,7 @@
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(223, 74);
+            this.btnSendToLogo.Location = new System.Drawing.Point(223, 72);
             this.btnSendToLogo.Name = "btnSendToLogo";
             this.btnSendToLogo.Size = new System.Drawing.Size(359, 43);
             this.btnSendToLogo.TabIndex = 37;

@@ -24,6 +24,7 @@ namespace invoiceIntegration.model
         public decimal netTotal { get; set; }
         public string barcode { get; set; }
         public int invoiceDetailLineOrder { get; set; }
-        public List<DiscountJson> discounts { get; set; }
+        public string lineType { get; set; }
+        public List<DiscountJson> campaignRewards { get; set; }
     }
 }
