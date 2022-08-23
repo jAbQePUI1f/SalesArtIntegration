@@ -26,6 +26,6 @@ namespace invoiceIntegration.model.waybill
         public decimal netTotal { get; set; }
         public string barcode { get; set; }
         public int waybillDetailLineOrder { get; set; }
-        public List<Discount> discounts { get; set; }
+        public List<Discount> campaignRewards { get; set; }
     }
 }
