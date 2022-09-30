@@ -26,37 +26,37 @@ namespace invoiceIntegration
             if ( progressBar.Value >= 5 & progressBar.Value <= 25 )
             {
                 lblLoading2.Show();
-                lblLoading.Visible = false;
+                lblLoading.Hide();
             }
 
             else if (progressBar.Value > 25 & progressBar.Value <= 35)
             {
                 lblLoading.Show();
-                lblLoading2.Visible = false;
+                lblLoading2.Hide();
             }
 
             else if (progressBar.Value > 35 & progressBar.Value <= 45)
             {
                 lblLoading2.Show();
-                lblLoading.Visible = false;
+                lblLoading.Hide();
             }
 
             else if (progressBar.Value > 45 & progressBar.Value <= 65)
             {
                 lblLoading.Show();
-                lblLoading2.Visible = false;
+                lblLoading2.Hide();
             }
 
             else if (progressBar.Value > 65 & progressBar.Value <= 85)
             {
                 lblLoading2.Show();
-                lblLoading.Visible = false;
+                lblLoading.Hide();
             }
 
             else if (progressBar.Value > 85)
             {
                 lblLoading.Show();
-                lblLoading2.Visible = false;
+                lblLoading2.Hide();
             }
 
             if (progressBar.Value == 100)
@@ -66,11 +66,6 @@ namespace invoiceIntegration
                 frmmain.Show();
                 this.Hide();
             }
-        }
-
-        private void frmSplashScreen_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -182,6 +182,7 @@
             // 
             // cmbInvoice
             // 
+            this.cmbInvoice.Cursor = System.Windows.Forms.Cursors.Hand;
             this.cmbInvoice.FormattingEnabled = true;
             this.cmbInvoice.ItemHeight = 23;
             this.cmbInvoice.Items.AddRange(new object[] {
@@ -287,14 +288,24 @@
             // 
             // startDate
             // 
+            this.startDate.AllowDrop = true;
+            this.startDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.startDate.CalendarMonthBackground = System.Drawing.SystemColors.InactiveCaption;
+            this.startDate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.startDate.DisplayFocus = true;
+            this.startDate.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.startDate.Location = new System.Drawing.Point(223, 33);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 29);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(178, 29);
             this.startDate.TabIndex = 32;
+            this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
             // endDate
             // 
+            this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.endDate.Location = new System.Drawing.Point(407, 33);
             this.endDate.MinimumSize = new System.Drawing.Size(0, 29);
             this.endDate.Name = "endDate";
@@ -345,6 +356,7 @@
             // 
             // frmMain
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1301, 730);
@@ -370,6 +382,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.Name = "frmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultLocation;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
             this.Load += new System.EventHandler(this.frmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).EndInit();

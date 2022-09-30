@@ -30,6 +30,7 @@ namespace invoiceIntegration
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSplashScreen));
             this.progressBar = new MetroFramework.Controls.MetroProgressBar();
             this.lblLoading = new MetroFramework.Controls.MetroLabel();
             this.timerSplashScreen = new System.Windows.Forms.Timer(this.components);
@@ -65,11 +66,11 @@ namespace invoiceIntegration
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lblVersion.Location = new System.Drawing.Point(191, 373);
+            this.lblVersion.Location = new System.Drawing.Point(417, 376);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(63, 15);
             this.lblVersion.TabIndex = 3;
-            this.lblVersion.Text = "V . 1 .  2 .  7";
+            this.lblVersion.Text = "V . 1 .  2 .  8";
             this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // metroPanel1
@@ -101,7 +102,7 @@ namespace invoiceIntegration
             this.lblLoading2.FontWeight = MetroFramework.MetroLabelWeight.Bold;
             this.lblLoading2.Location = new System.Drawing.Point(191, 252);
             this.lblLoading2.Name = "lblLoading2";
-            this.lblLoading2.Size = new System.Drawing.Size(111, 25);
+            this.lblLoading2.Size = new System.Drawing.Size(87, 19);
             this.lblLoading2.TabIndex = 5;
             this.lblLoading2.Text = "Yükleniyor..";
             this.lblLoading2.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -118,13 +119,13 @@ namespace invoiceIntegration
             this.Controls.Add(this.lblLoading);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.metroPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSplashScreen";
             this.Resizable = false;
             this.ShadowType = MetroFramework.Forms.MetroFormShadowType.SystemShadow;
             this.Theme = MetroFramework.MetroThemeStyle.Default;
-            this.Load += new System.EventHandler(this.frmSplashScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

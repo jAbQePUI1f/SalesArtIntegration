@@ -184,10 +184,12 @@ namespace invoiceIntegration
                 {
                     MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
                 }
+                btnSendToLogo.Enabled = true;
             }
             else
             {
                 MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
+                btnSendToLogo.Enabled = true;
             }
         }
         private void btnLastLog_Click(object sender, EventArgs e)
