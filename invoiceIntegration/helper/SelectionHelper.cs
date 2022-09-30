@@ -66,7 +66,7 @@ namespace invoiceIntegration
                         invDetail.invoiceDetailLineOrder = selectedInvoiceDetail.invoiceDetailLineOrder;
                         invDetail.grossTotal = selectedInvoiceDetail.grossTotal;
                         List<InvoiceDetail> invoiceDetailDiscountDetails = new List<InvoiceDetail>();
-                        foreach (var discount in selectedInvoiceDetail.discounts)
+                        foreach (var discount in selectedInvoiceDetail.campaignRewards)
                         {
                             InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
                             invDetailDiscountDetail.type = 2;

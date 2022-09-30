@@ -22,6 +22,43 @@ namespace invoiceIntegration
         {
             timerSplashScreen.Enabled = true;
             progressBar.Increment(5);
+            label1.Text = "%" + progressBar.Value.ToString();
+            if ( progressBar.Value >= 5 & progressBar.Value <= 25 )
+            {
+                lblLoading2.Show();
+                lblLoading.Hide();
+            }
+
+            else if (progressBar.Value > 25 & progressBar.Value <= 35)
+            {
+                lblLoading.Show();
+                lblLoading2.Hide();
+            }
+
+            else if (progressBar.Value > 35 & progressBar.Value <= 45)
+            {
+                lblLoading2.Show();
+                lblLoading.Hide();
+            }
+
+            else if (progressBar.Value > 45 & progressBar.Value <= 65)
+            {
+                lblLoading.Show();
+                lblLoading2.Hide();
+            }
+
+            else if (progressBar.Value > 65 & progressBar.Value <= 85)
+            {
+                lblLoading2.Show();
+                lblLoading.Hide();
+            }
+
+            else if (progressBar.Value > 85)
+            {
+                lblLoading.Show();
+                lblLoading2.Hide();
+            }
+
             if (progressBar.Value == 100)
             {
                 timerSplashScreen.Enabled = false;

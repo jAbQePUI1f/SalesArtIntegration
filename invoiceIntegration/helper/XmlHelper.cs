@@ -39,6 +39,7 @@ namespace invoiceIntegration
             AddNode(output, outputOrderNode, "PAYMENT_CODE", invoice.paymentCode);
             AddNode(output, outputOrderNode, "NOTES1", " " + invoice.note);
             AddNode(output, outputOrderNode, "SHIPPING_AGENT", getShipAgentCode());
+            AddNode(output, outputOrderNode, "AFFECT_RISK","1");
             if (getUseShipCode())
                 AddNode(output, outputOrderNode, "SHIPLOC_CODE", invoice.customerBranchCode);
             if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN)
@@ -87,6 +88,7 @@ namespace invoiceIntegration
                     AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
                     AddNode(output, outputTransaction, "SOURCE_WH", invoice.wareHouseCode);
                     AddNode(output, outputTransaction, "SOURCE_COST_GRP", invoice.wareHouseCode);
+                    AddNode(output, outputTransaction, "AFFECT_RISK", "1");
                     if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN)
                         AddNode(output, outputTransaction, "SALESMAN_CODE", invoice.salesmanCode);
                 }
@@ -184,6 +186,7 @@ namespace invoiceIntegration
                 AddNode(output, outputInvoiceNode, "SOURCE_COST_GRP", invoice.wareHouseCode);
                 AddNode(output, outputInvoiceNode, "SALESMAN_CODE", invoice.salesmanCode);
                 AddNode(output, outputInvoiceNode, "EINVOICE", invoice.ebillCustomer ? "1" : "2");
+                AddNode(output, outputInvoiceNode, "AFFECT_RISK", "1");
                 return outputInvoiceNode;
             }
             else
@@ -250,6 +253,7 @@ namespace invoiceIntegration
                     AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
                     AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
                     AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                    AddNode(output, outputTransaction, "AFFECT_RISK", "1");
                     // efaturalarda istiyor olabilri
                     // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
                     if (invoice.type == (int)InvoiceType.SELLING_RETURN)

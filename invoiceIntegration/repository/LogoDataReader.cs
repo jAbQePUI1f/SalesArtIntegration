@@ -442,8 +442,30 @@ namespace invoiceIntegration.repository
                     cmd.Parameters.AddWithValue("@PAYMENT_DUE_DATE", invoice.date);  // vade tarihi
                     cmd.Parameters.AddWithValue("@TAX_EXCLUSIVE_AMOUNT", invoice.grossTotal);  // toplam tutarı kdv siz
                     cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", invoice.discountTotal);  // indirim tutarı
+                    cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT2", invoice.discountTotal);  // indirim tutarı
+                    cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT3", invoice.discountTotal);  // indirim tutarı
+                    //cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT4", invoice.discountTotal);  // indirim tutarı
                     cmd.Parameters.AddWithValue("@TAX_PERCENTAGE", Convert.ToDecimal(0.00));  // 0 gelecek hep ?? 
-                    cmd.Parameters.AddWithValue("@TAX_AMOUNT1", invoice.vatTotal);  // vergi tutarı
+                    cmd.Parameters.AddWithValue("@TAX_AMOUNT1", invoice.vatTotal);  // 0 vergi tutarı
+                    cmd.Parameters.AddWithValue("@TAX_AMOUNT2", invoice.vatTotal);  // 0 vergi tutarı
+                    // selam
+                    decimal eightTaxSum = 0;
+                    decimal eighteenTaxSum = 0;
+                    foreach (var detail in invoice.details)
+                    {
+                        if (detail.vatRate==8)
+                        {
+                            eightTaxSum += detail.vatAmount;
+                        }
+                        else if (detail.vatRate == 18)
+                        {
+                            eighteenTaxSum += detail.vatAmount;
+                        }
+                    }
+                    cmd.Parameters.AddWithValue("@TAX_AMOUNT3", eightTaxSum);  // 8 vergi tutarı
+
+                    cmd.Parameters.AddWithValue("@TAX_AMOUNT4", eighteenTaxSum);  // 18 vergi tutarı
+
                     cmd.Parameters.AddWithValue("@PAYABLE_AMOUNT", invoice.netTotal);  // vergi dahil toplam tutar
                     cmd.Parameters.AddWithValue("@DOCUMENT_CURRENCY_CODE", "0");  // 0: TL  , 1: Dolar                   
                     cmd.Parameters.AddWithValue("@NOTE1", "" + invoice.note);
@@ -595,29 +617,29 @@ namespace invoiceIntegration.repository
                         cmd.Parameters.AddWithValue("@TAX_AMOUNT", detail.vatAmount);  // vergi tutarı
                         cmd.Parameters.AddWithValue("@ITEM_NOTE", "");
                         cmd.Parameters.AddWithValue("@PROFILE_ID", profileID);
-                        if (detail.discounts != null && detail.discounts.Count > 0)
+                        if (detail.campaignRewards != null && detail.campaignRewards.Count > 0)
                         {
-                            for (int i = 0; i < detail.discounts.Count; i++)
+                            for (int i = 0; i < detail.campaignRewards.Count; i++)
                             {
                                 switch (i)
                                 {
                                     case 0:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT1", detail.campaignRewards[i].discountTotal);
                                         break;
                                     case 1:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT2", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT2", detail.campaignRewards[i].discountTotal);
                                         break;
                                     case 2:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT3", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT3", detail.campaignRewards[i].discountTotal);
                                         break;
                                     case 3:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT4", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT4", detail.campaignRewards[i].discountTotal);
                                         break;
                                     case 4:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT5", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT5", detail.campaignRewards[i].discountTotal);
                                         break;
                                     case 5:
-                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", detail.discounts[i].discountTotal);
+                                        cmd.Parameters.AddWithValue("@DISCOUNT_AMOUNT6", detail.campaignRewards[i].discountTotal);
                                         break;
                                 }
                             }

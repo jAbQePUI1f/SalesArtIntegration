@@ -23,7 +23,6 @@ namespace invoiceIntegration.helper
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
         string campaignLineNo = Configuration.getCampaignLineNo();
-        UnityApplication unity = LogoApplication.getApplication();
         LogoDataReader reader = new LogoDataReader();
         Helper helper = new Helper();
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
@@ -31,6 +30,8 @@ namespace invoiceIntegration.helper
         IntegratedOrderStatus integratedOrders = new IntegratedOrderStatus();
         public IntegratedInvoiceStatus sendMultipleInvoice(List<LogoInvoice> invoices)
         {
+            UnityApplication unity = LogoApplication.getApplication();
+
             string remoteInvoiceNumber = "";
             string message = "";
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
@@ -83,6 +84,7 @@ namespace invoiceIntegration.helper
                         newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
+                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
                         if (Configuration.getUseShipCode())
                         {
                             newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
@@ -145,6 +147,7 @@ namespace invoiceIntegration.helper
                                 dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                                 dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                                 dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
+                                dispatches_lines[0].FieldByName("AFFECT_RISK").Value = 1;
                                 dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode;
                             }
                         }
@@ -161,6 +164,7 @@ namespace invoiceIntegration.helper
                                     newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                     newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
                                     newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
+                                    newInvoiceLines[i].FieldByName("AFFECT_RISK").Value = 1;
                                     if (campaignLineNo.Length > 0)
                                     {
                                         Lines newCampaignInfoLine = newInvoiceLines[i].FieldByName("CAMPAIGN_INFOS").Lines;
@@ -255,7 +259,7 @@ namespace invoiceIntegration.helper
                         Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
                         newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
                         newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
-                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 0;
+                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
                         newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
                         newInvoice.DataFields.FieldByName("EXIMVAT").Value = 0;
                         newInvoice.FillAccCodes();
@@ -311,6 +315,8 @@ namespace invoiceIntegration.helper
         }
         public IntegratedWaybillStatus sendMultipleDespatch(List<LogoWaybill> despatches)
         {
+            UnityApplication unity = LogoApplication.getApplication();
+
             string remoteDespatchNumber = "";
             string message = "";
             List<IntegratedWaybillDto> receivedWaybills = new List<IntegratedWaybillDto>();
@@ -421,7 +427,7 @@ namespace invoiceIntegration.helper
                             }
                         }
                         newDespatch.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(despatch.customerCode);
-                        newDespatch.DataFields.FieldByName("AFFECT_RISK").Value = 0;
+                        newDespatch.DataFields.FieldByName("AFFECT_RISK").Value = 1;
                         newDespatch.DataFields.FieldByName("DOC_DATE").Value = despatch.documentDate.ToShortDateString();
                         newDespatch.FillAccCodes();
                         newDespatch.CreateCompositeLines();
@@ -495,6 +501,8 @@ namespace invoiceIntegration.helper
         }
         public IntegratedOrderStatus sendMultipleOrder(List<Order> orders)
         {
+            UnityApplication unity = LogoApplication.getApplication();
+
             string message = "";
             long remoteOrderId = 0;
             List<IntegratedOrderDto> receivedOrders = new List<IntegratedOrderDto>();
