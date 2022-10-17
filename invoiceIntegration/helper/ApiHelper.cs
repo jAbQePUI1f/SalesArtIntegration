@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
+using invoiceIntegration.model.Collection;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using MetroFramework.Controls;
@@ -17,6 +18,7 @@ namespace invoiceIntegration.helper
         int distributorId = Configuration.getDistributorId();
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
         GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
+        GenericResponse<List<LogoCollectionModel>> jsonCollection = new GenericResponse<List<LogoCollectionModel>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
         public GenericResponse<List<LogoInvoiceJson>> GetInvoices(MetroDateTime startDate, MetroDateTime endDate, string invoiceType, DataGridView dataGridInvoice)
         {
@@ -71,6 +73,33 @@ namespace invoiceIntegration.helper
             jsonWaybills = JsonConvert.DeserializeObject<GenericResponse<List<LogoWaybillJson>>>(requestResponse.Content, settings);
             gridHelper.FillGrid(jsonWaybills.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoWaybillJson);
             return jsonWaybills;
+        }
+        public GenericResponse<List<LogoCollectionModel>> GetCollection(MetroDateTime startDate, MetroDateTime endDate, string collectionType, DataGridView dataGridInvoice)
+        {
+            GridHelper gridHelper = new GridHelper();
+            RestClient restClient = new RestClient(Configuration.getUrl());
+            RestRequest restRequest = new RestRequest("/integration/collection?", Method.POST)
+            {
+                RequestFormat = DataFormat.Json
+            };
+            GetTransferableCollectionRequest req = new GetTransferableCollectionRequest()
+            {
+                startDate = startDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                endDate = endDate.Value.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+                collectionTypes = new List<string>()
+            };
+            req.collectionTypes.Add(collectionType.ToString());
+            restRequest.AddParameter("distributorId", distributorId, ParameterType.QueryString);
+            restRequest.AddJsonBody(req);
+            var requestResponse = restClient.Execute<LogoWaybill>(restRequest);
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            jsonCollection = JsonConvert.DeserializeObject<GenericResponse<List<LogoCollectionModel>>>(requestResponse.Content, settings);
+            gridHelper.FillGrid(jsonCollection.data.Cast<dynamic>().ToList(), dataGridInvoice, constants.ListType.LogoCollectionModel);
+            return jsonCollection;
         }
         public GenericResponse<OrderResponse> GetOrders(MetroDateTime startDate, MetroDateTime endDate, DataGridView dataGridInvoice)
         {

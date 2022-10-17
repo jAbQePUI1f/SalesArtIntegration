@@ -13,6 +13,7 @@ namespace invoiceIntegration.model.waybill
         public DateTime date { get; set; }
         public string documentNumber { get; set; }
         public string wareHouseCode { get; set; }
+
         //public decimal vatRate { get; set; }
         //public string shipLocCode { get; set; } // şube codu        
         public string customerCode { get; set; }

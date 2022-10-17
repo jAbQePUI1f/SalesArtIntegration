@@ -8,7 +8,6 @@ using invoiceIntegration.model.waybill;
 using invoiceIntegration.helper;
 using invoiceIntegration.model.order;
 using MetroFramework.Forms;
-using System.Threading;
 
 namespace invoiceIntegration
 {
@@ -18,19 +17,12 @@ namespace invoiceIntegration
         public frmMain()
         {
             InitializeComponent();
-            bool programRunningControl;
-            Mutex mutex = new Mutex(true, System.Windows.Forms.Application.ProductName, out programRunningControl);
-            if (!programRunningControl)
-            {
-                MessageBox.Show("Program Zaten Çalışıyor", "UYARI!!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Environment.Exit(0);
-            }
-            this.FormBorderStyle = FormBorderStyle.None;
+            //this.FormBorderStyle = FormBorderStyle.None;
         }
 
         GenericResponse<List<LogoInvoiceJson>> jsonInvoices = new GenericResponse<List<LogoInvoiceJson>>();
-        GenericResponse<List<LogoWaybillJson>> jsonWaybills = new GenericResponse<List<LogoWaybillJson>>();
         GenericResponse<OrderResponse> jsonOrders = new GenericResponse<OrderResponse>();
+
         Helper helper = new Helper();
         bool isLoggedIn = false;
         string invoiceType;
@@ -39,9 +31,7 @@ namespace invoiceIntegration
             cmbInvoice.SelectedIndex = 0;
             lblLogoConnectionInfo.Text = "";
             startDate.Value = DateTime.Now.AddDays(-1);
-            if (Configuration.getUseDispatch())
-                chkDispatch.Visible = true;
-
+           
             if (Configuration.getXMLTransferInfo())
             {
                 btnCheckLogoConnection.Visible = false;
@@ -78,7 +68,6 @@ namespace invoiceIntegration
             {
                 lblLogoConnectionInfo.ForeColor = System.Drawing.Color.Green;
                 lblLogoConnectionInfo.Text = "Logo Bağlantısı Başarılı";
-                btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn && chkDispatch.Checked != true) ? true : false;
                 btnCheckLogoConnection.Enabled = false;
             }
             else
@@ -139,12 +128,10 @@ namespace invoiceIntegration
             Cursor.Current = Cursors.WaitCursor;
             dataGridInvoice.Rows.Clear();
             chkSelectAll.Checked = false;
-            if (chkDispatch.Checked)
-                jsonWaybills = apiHelper.GetWaybills(startDate,endDate,invoiceType,dataGridInvoice);
-            else if (Configuration.getOrderTransferToLogoInfo())
-              jsonOrders= apiHelper.GetOrders(startDate, endDate,dataGridInvoice);
+            if (Configuration.getOrderTransferToLogoInfo())
+              jsonOrders = apiHelper.GetOrders(startDate, endDate,dataGridInvoice);
             else jsonInvoices = apiHelper.GetInvoices(startDate,endDate,invoiceType,dataGridInvoice);
-            btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 && isLoggedIn) ? true : false;
+            btnSendToLogo.Enabled = (dataGridInvoice.Rows.Count > 0 ) ? true : false;
             btnCheckLogoConnection.Enabled = (dataGridInvoice.Rows.Count > 0 && !isLoggedIn) ? true : false;
             Cursor.Current = Cursors.Default;
         }
@@ -227,87 +214,6 @@ namespace invoiceIntegration
                     break;
             }
         }
-        private void cmbDispatch_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (cmbDispatch.SelectedIndex)
-            {
-                case 0:
-                    invoiceType = "SELLING";
-                    break;
-                case 1:
-                    invoiceType = "DAMAGED_SELLING_RETURN";
-                    break;
-                case 2:
-                    invoiceType = "SELLING_RETURN";
-                    break;
-                case 3:
-                    invoiceType = "BUYING";
-                    break;
-                case 4:
-                    invoiceType = "DAMAGED_BUYING_RETURN";
-                    break;
-                case 5:
-                    invoiceType = "BUYING_RETURN";
-                    break;
-            }
-        }
-        private void chkDispatch_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkDispatch.Checked)
-            {
-                cmbInvoice.Enabled = false;
-                lblInvoice.Enabled = false;
-                cmbDispatch.Visible = true;
-                cmbDispatch.Enabled = true;
-                btnWaybill.Visible = true;
-                btnWaybill.Enabled = true;
-                btnSendToLogo.Enabled = false;
-                dataGridInvoice.Rows.Clear();
-                cmbDispatch.SelectedIndex = 0;
-            }
-            else
-            {
-                cmbInvoice.Enabled = true;
-                lblInvoice.Enabled = true;
-                cmbDispatch.Enabled = false;
-                btnWaybill.Enabled = false;
-                cmbInvoice.SelectedIndex = 0;
-                cmbInvoice_SelectedIndexChanged(0, EventArgs.Empty);
-            }
-        }
-        private void btnWaybill_Click(object sender, EventArgs e)
-        {
-            SelectionHelper selectionHelper = new SelectionHelper();
-            ResponseHelper responseHelper = new ResponseHelper();
-            IntegratedHelper integratedHelper = new IntegratedHelper();
-            if (dataGridInvoice.Rows.Count > 0)
-            {
-                if (isLoggedIn)
-                {
-                    List<LogoWaybill> selectedWaybills = selectionHelper.GetSelectedWaybills(dataGridInvoice, jsonWaybills);
-                    Cursor.Current = Cursors.WaitCursor;
-                    helper.LogFile("İrsaliye Aktarım Basladı", "-", "-", "-", "-");
-                    IntegratedWaybillStatus status = integratedHelper.sendMultipleDespatch(selectedWaybills);
-                    responseHelper.SendResponse(status);
-                    helper.ShowMessages(status);
-                    helper.LogFile("İrsaliye Aktarım Bitti", "-", "-", "-", "-");
-                    dataGridInvoice.Rows.Clear();
-                    btnSendToLogo.Enabled = false;
-                    btnCheckLogoConnection.Enabled = false;
-                    lblLogoConnectionInfo.Text = "";
-                    isLoggedIn = false;
-                    Cursor.Current = Cursors.Default;
-                }
-                else
-                {
-                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
-                }
-            }
-            else
-            {
-                MessageBox.Show("İrsaliye Seçmelisiniz..", "İrsaliye Seçim", MessageBoxButtons.OK);
-            }
-        }
         private void chkSelectAll_CheckedChanged(object sender, EventArgs e)
         {
             if (chkSelectAll.Checked)
@@ -358,6 +264,26 @@ namespace invoiceIntegration
                 MessageBox.Show("Sipariş Seçmelisiniz..", "Sipariş Seçim", MessageBoxButtons.OK);
             }
         }
-    }
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Aktarım programı kapatılacaktır", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
+            if (dialogResult == DialogResult.Yes)
+            {
+                LogoApplication.getApplication().UserLogout();
+                LogoApplication.getApplication().Disconnect();
+                System.Windows.Forms.Application.Exit();
+            }
+        }
+        private void menüToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Ana Ekrana geçiş yapıyorsunuz..", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                frmSplashScreen splsh = new frmSplashScreen();
+                this.Hide();
+                splsh.Show();
+            }
+        }
+    }
 }

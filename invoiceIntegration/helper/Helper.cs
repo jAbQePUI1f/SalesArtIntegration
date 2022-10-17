@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
+using invoiceIntegration.model.Collection;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using System;
@@ -185,6 +186,46 @@ namespace invoiceIntegration.helper
             if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan Sipariş Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
             { Clipboard.SetText(msj); }
         }
-       
+
+        public void ShowMessages(IntegratedCollectionStatus integratedCollections)
+        {
+            string basarili = "";
+            string basarisiz = "";
+            foreach (var item in integratedCollections.collections)
+            {
+                if (item.successfullyIntegrated)
+                {
+                    LogFile("Aktarım Bilgisi", item.Number, item.remoteNumber, "AKTARIM BAŞARILI", item.errorMessage);
+                    basarili += " Tahsilat Numarası   : ";
+                    basarili += integrationForMikroERP ? item.Number : item.remoteNumber;
+                }
+                else
+                {
+                    LogFile("Aktarım Bilgisi", item.Number, item.remoteNumber, "AKTARIM BAŞARISIZ..!!!", item.errorMessage);
+                    basarisiz += item.Number + " numaralı tahsilat için : " + item.errorMessage;
+                }
+            }
+            string msj = "Başarılı : " + basarili + "    Başarısız : " + basarisiz;
+            if (MessageBox.Show(msj, "Aktarılan/Aktarılamayan Fatura Bilgileri", MessageBoxButtons.OK) == DialogResult.OK)
+            { Clipboard.SetText(msj); }
+        }
+        public string getCollectionType(int type)
+        {
+            string CollectionType = "";
+            switch (type)
+            {
+                case 8:
+                    CollectionType = "Nakit";
+                    break;
+                case 3:
+                    CollectionType = "Kredi Kartı";
+                    break;
+                case 9:
+                    CollectionType = "Çek";
+                    break;
+            }
+            return CollectionType;
+        }
+
     }
 }

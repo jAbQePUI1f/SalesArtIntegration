@@ -15,7 +15,7 @@ namespace invoiceIntegration.config
         {
             if (unityApplication == null)
                 unityApplication = new UnityApplication();
-            return unityApplication;
+            return unityApplication;           
         }
     }
 }

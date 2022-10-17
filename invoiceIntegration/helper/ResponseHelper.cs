@@ -1,5 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.model;
+using invoiceIntegration.model.Collection;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using Newtonsoft.Json;
@@ -87,6 +88,31 @@ namespace invoiceIntegration.helper
                 MessageBox.Show("Sipariş Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Fatura Statüsünün Gücellenememesi", MessageBoxButtons.OK);
             }
 
-        }       
+        }
+        public void SendResponse(IntegratedCollectionStatus integratedCollections)
+        {
+            try
+            {
+                RestClient restClient = new RestClient(url);
+                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
+                {
+                    RequestFormat = DataFormat.Json
+                };
+                restRequest.AddJsonBody(integratedCollections);
+                var requestResponse = restClient.Execute<StatusResponse>(restRequest);
+                var settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+                GenericResponse<List<StatusResponse>> invResponse =
+                    JsonConvert.DeserializeObject<GenericResponse<List<StatusResponse>>>(requestResponse.Content, settings);
+            }
+            catch
+            {
+                MessageBox.Show("Tahsilat Logoya Aktarıldı Fakat salesArt ' taki durumu güncellenemedi.. ", "Tahsilat Statüsünün Gücellenememesi", MessageBoxButtons.OK);
+            }
+
+        }
     }
 }

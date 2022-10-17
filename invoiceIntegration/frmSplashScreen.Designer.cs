@@ -33,99 +33,197 @@ namespace invoiceIntegration
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSplashScreen));
             this.progressBar = new MetroFramework.Controls.MetroProgressBar();
             this.lblLoading = new MetroFramework.Controls.MetroLabel();
-            this.timerSplashScreen = new System.Windows.Forms.Timer(this.components);
-            this.lblVersion = new MetroFramework.Controls.MetroLabel();
+            this.invoiceTimer = new System.Windows.Forms.Timer(this.components);
             this.metroPanel1 = new MetroFramework.Controls.MetroPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.progressBarLbl = new System.Windows.Forms.Label();
             this.lblLoading2 = new MetroFramework.Controls.MetroLabel();
+            this.invoiceBtn = new MaterialSkin.Controls.MaterialButton();
+            this.dispatchBtn = new MaterialSkin.Controls.MaterialButton();
+            this.collectionBtn = new MaterialSkin.Controls.MaterialButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.waybillTimer = new System.Windows.Forms.Timer(this.components);
+            this.collectionTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(136, 208);
+            this.progressBar.Location = new System.Drawing.Point(142, 212);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(218, 14);
+            this.progressBar.Size = new System.Drawing.Size(255, 22);
             this.progressBar.TabIndex = 1;
             // 
             // lblLoading
             // 
             this.lblLoading.AutoSize = true;
             this.lblLoading.FontWeight = MetroFramework.MetroLabelWeight.Bold;
-            this.lblLoading.Location = new System.Drawing.Point(191, 252);
+            this.lblLoading.Location = new System.Drawing.Point(215, 361);
             this.lblLoading.Name = "lblLoading";
             this.lblLoading.Size = new System.Drawing.Size(91, 19);
             this.lblLoading.TabIndex = 2;
             this.lblLoading.Text = "Yükleniyor...";
             // 
-            // timerSplashScreen
+            // invoiceTimer
             // 
-            this.timerSplashScreen.Enabled = true;
-            this.timerSplashScreen.Tick += new System.EventHandler(this.timerSplashScreen_Tick);
-            // 
-            // lblVersion
-            // 
-            this.lblVersion.AutoSize = true;
-            this.lblVersion.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lblVersion.Location = new System.Drawing.Point(417, 376);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(63, 15);
-            this.lblVersion.TabIndex = 3;
-            this.lblVersion.Text = "V . 1 .  2 .  8";
-            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.invoiceTimer.Enabled = true;
+            this.invoiceTimer.Tick += new System.EventHandler(this.timerSplashScreen_Tick);
             // 
             // metroPanel1
             // 
+            this.metroPanel1.BackColor = System.Drawing.Color.White;
             this.metroPanel1.BackgroundImage = global::invoiceIntegration.Properties.Resources.logo;
+            this.metroPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.metroPanel1.HorizontalScrollbarBarColor = true;
             this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel1.HorizontalScrollbarSize = 10;
-            this.metroPanel1.Location = new System.Drawing.Point(136, 95);
+            this.metroPanel1.Location = new System.Drawing.Point(142, 123);
             this.metroPanel1.Name = "metroPanel1";
-            this.metroPanel1.Size = new System.Drawing.Size(218, 56);
+            this.metroPanel1.Size = new System.Drawing.Size(255, 52);
             this.metroPanel1.TabIndex = 0;
             this.metroPanel1.VerticalScrollbarBarColor = true;
             this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel1.VerticalScrollbarSize = 10;
             // 
-            // label1
+            // progressBarLbl
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(358, 209);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "label1";
+            this.progressBarLbl.AutoSize = true;
+            this.progressBarLbl.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.progressBarLbl.Location = new System.Drawing.Point(410, 244);
+            this.progressBarLbl.Name = "progressBarLbl";
+            this.progressBarLbl.Size = new System.Drawing.Size(17, 13);
+            this.progressBarLbl.TabIndex = 4;
+            this.progressBarLbl.Text = "lbl";
             // 
             // lblLoading2
             // 
             this.lblLoading2.AutoSize = true;
             this.lblLoading2.FontWeight = MetroFramework.MetroLabelWeight.Bold;
-            this.lblLoading2.Location = new System.Drawing.Point(191, 252);
+            this.lblLoading2.Location = new System.Drawing.Point(215, 361);
             this.lblLoading2.Name = "lblLoading2";
             this.lblLoading2.Size = new System.Drawing.Size(87, 19);
             this.lblLoading2.TabIndex = 5;
             this.lblLoading2.Text = "Yükleniyor..";
             this.lblLoading2.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
+            // invoiceBtn
+            // 
+            this.invoiceBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.invoiceBtn.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.invoiceBtn.Depth = 0;
+            this.invoiceBtn.Enabled = false;
+            this.invoiceBtn.HighEmphasis = true;
+            this.invoiceBtn.Icon = null;
+            this.invoiceBtn.Location = new System.Drawing.Point(31, 281);
+            this.invoiceBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.invoiceBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.invoiceBtn.Name = "invoiceBtn";
+            this.invoiceBtn.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.invoiceBtn.Size = new System.Drawing.Size(148, 36);
+            this.invoiceBtn.TabIndex = 6;
+            this.invoiceBtn.Text = "Fatura Aktarımı";
+            this.invoiceBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.invoiceBtn.UseAccentColor = false;
+            this.invoiceBtn.UseVisualStyleBackColor = true;
+            this.invoiceBtn.Click += new System.EventHandler(this.invoiceBtn_Click);
+            // 
+            // dispatchBtn
+            // 
+            this.dispatchBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.dispatchBtn.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.dispatchBtn.Depth = 0;
+            this.dispatchBtn.Enabled = false;
+            this.dispatchBtn.HighEmphasis = true;
+            this.dispatchBtn.Icon = null;
+            this.dispatchBtn.Location = new System.Drawing.Point(194, 281);
+            this.dispatchBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.dispatchBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.dispatchBtn.Name = "dispatchBtn";
+            this.dispatchBtn.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.dispatchBtn.Size = new System.Drawing.Size(154, 36);
+            this.dispatchBtn.TabIndex = 7;
+            this.dispatchBtn.Text = "İrsaliye Aktarımı";
+            this.dispatchBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.dispatchBtn.UseAccentColor = false;
+            this.dispatchBtn.UseVisualStyleBackColor = true;
+            this.dispatchBtn.Click += new System.EventHandler(this.dispatchBtn_Click);
+            // 
+            // collectionBtn
+            // 
+            this.collectionBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.collectionBtn.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.collectionBtn.Depth = 0;
+            this.collectionBtn.Enabled = false;
+            this.collectionBtn.HighEmphasis = true;
+            this.collectionBtn.Icon = null;
+            this.collectionBtn.Location = new System.Drawing.Point(363, 281);
+            this.collectionBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.collectionBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.collectionBtn.Name = "collectionBtn";
+            this.collectionBtn.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.collectionBtn.Size = new System.Drawing.Size(162, 36);
+            this.collectionBtn.TabIndex = 8;
+            this.collectionBtn.Text = "Tahsilat Aktarımı";
+            this.collectionBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.collectionBtn.UseAccentColor = false;
+            this.collectionBtn.UseVisualStyleBackColor = true;
+            this.collectionBtn.Click += new System.EventHandler(this.collectionBtn_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label2.Location = new System.Drawing.Point(6, 462);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(234, 13);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "© Copyright 2022 SalesArt. All Rights Reserved.";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label1.Location = new System.Drawing.Point(501, 462);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "V . 1 . 2 . 8";
+            // 
+            // waybillTimer
+            // 
+            this.waybillTimer.Enabled = true;
+            this.waybillTimer.Tick += new System.EventHandler(this.waybillTimer_Tick);
+            // 
+            // collectionTimer
+            // 
+            this.collectionTimer.Enabled = true;
+            this.collectionTimer.Tick += new System.EventHandler(this.collectionTimer_Tick);
+            // 
             // frmSplashScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
-            this.ClientSize = new System.Drawing.Size(493, 395);
-            this.Controls.Add(this.lblLoading2);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(566, 485);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.lblVersion);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.collectionBtn);
+            this.Controls.Add(this.dispatchBtn);
+            this.Controls.Add(this.invoiceBtn);
+            this.Controls.Add(this.lblLoading2);
+            this.Controls.Add(this.progressBarLbl);
             this.Controls.Add(this.lblLoading);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.metroPanel1);
+            this.DoubleBuffered = false;
+            this.FormStyle = MaterialSkin.Controls.MaterialForm.FormStyles.ActionBar_64;
+            this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "frmSplashScreen";
-            this.Resizable = false;
-            this.ShadowType = MetroFramework.Forms.MetroFormShadowType.SystemShadow;
-            this.Theme = MetroFramework.MetroThemeStyle.Default;
+            this.Padding = new System.Windows.Forms.Padding(3, 88, 3, 3);
+            this.Sizable = false;
+            this.Text = "SalesArt Integrator";
+            this.Load += new System.EventHandler(this.frmSplashScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -136,9 +234,15 @@ namespace invoiceIntegration
         private MetroFramework.Controls.MetroPanel metroPanel1;
         private MetroFramework.Controls.MetroProgressBar progressBar;
         private MetroFramework.Controls.MetroLabel lblLoading;
-        private System.Windows.Forms.Timer timerSplashScreen;
-        private MetroFramework.Controls.MetroLabel lblVersion;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer invoiceTimer;
+        private System.Windows.Forms.Label progressBarLbl;
         private MetroFramework.Controls.MetroLabel lblLoading2;
+        private MaterialSkin.Controls.MaterialButton invoiceBtn;
+        private MaterialSkin.Controls.MaterialButton dispatchBtn;
+        private MaterialSkin.Controls.MaterialButton collectionBtn;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer waybillTimer;
+        private System.Windows.Forms.Timer collectionTimer;
     }
 }
