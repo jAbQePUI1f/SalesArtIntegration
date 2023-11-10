@@ -9,6 +9,7 @@ using invoiceIntegration.config;
 using invoiceIntegration.model.waybill;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.Collection;
+using System.Configuration;
 
 namespace invoiceIntegration.helper
 {
@@ -25,6 +26,7 @@ namespace invoiceIntegration.helper
         bool integrationForMikroERP = Configuration.getIntegrationForMikroERP();
         string shipAgentCode = Configuration.getShipAgentCode();
         string campaignLineNo = Configuration.getCampaignLineNo();
+        string affectRisk = Configuration.getAffectRisk();
         LogoDataReader reader = new LogoDataReader();
         Helper helper = new Helper();
         IntegratedInvoiceStatus integratedInvoices = new IntegratedInvoiceStatus();
@@ -87,7 +89,7 @@ namespace invoiceIntegration.helper
                         newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                         if (Configuration.getUseShipCode())
                         {
                             newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
@@ -150,7 +152,7 @@ namespace invoiceIntegration.helper
                                 dispatches_lines[0].FieldByName("TOTAL_VAT").Value = invoice.vatTotal;
                                 dispatches_lines[0].FieldByName("TOTAL_GROSS").Value = invoice.grossTotal;
                                 dispatches_lines[0].FieldByName("TOTAL_NET").Value = invoice.netTotal;
-                                dispatches_lines[0].FieldByName("AFFECT_RISK").Value = 1;
+                                dispatches_lines[0].FieldByName("AFFECT_RISK").Value = affectRisk;
                                 dispatches_lines[0].FieldByName("NOTES1").Value = "ST Notu: " + invoice.note + " Sevk :" + invoice.customerBranchCode;
                             }
                         }
@@ -167,7 +169,7 @@ namespace invoiceIntegration.helper
                                     newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                     newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
                                     newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
-                                    newInvoiceLines[i].FieldByName("AFFECT_RISK").Value = 1;
+                                    newInvoiceLines[i].FieldByName("AFFECT_RISK").Value = affectRisk;
                                     if (campaignLineNo.Length > 0)
                                     {
                                         Lines newCampaignInfoLine = newInvoiceLines[i].FieldByName("CAMPAIGN_INFOS").Lines;
@@ -181,7 +183,7 @@ namespace invoiceIntegration.helper
                                 else
                                 {
                                     newInvoiceLines[i].FieldByName("TYPE").Value = detail.type;
-                                    if (isProducerCode) // bazı distlerde üürn kodları producerCode a yazılı ,
+                                    if (isProducerCode) 
                                     {
                                         string productCodeByProducer = reader.getProductCodeByProducerCode(detail.code);
                                         if (productCodeByProducer != "" && productCodeByProducer != null)
@@ -197,7 +199,7 @@ namespace invoiceIntegration.helper
                                             return integratedInvoices;
                                         }
                                     }
-                                    else if (Configuration.getIsBarcode())   //sümerde ürün kodları barkoda göre getirilecek
+                                    else if (Configuration.getIsBarcode())
                                     {
                                         string productCodeByBarcode = reader.getProductCodeByBarcode(detail.barcode);
                                         if (productCodeByBarcode != "" && productCodeByBarcode != null)
@@ -243,7 +245,7 @@ namespace invoiceIntegration.helper
                                     newInvoiceLines[i].FieldByName("MONTH").Value = DateTime.Now.Month;
                                     newInvoiceLines[i].FieldByName("YEAR").Value = DateTime.Now.Year;
                                     newInvoiceLines[i].FieldByName("BARCODE").Value = detail.barcode;
-                                    // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
+                                   
                                     if (invoice.type == (int)InvoiceType.SELLING || invoice.type == (int)InvoiceType.SELLING_RETURN || invoice.type == (int)InvoiceType.SELLING_SERVICE)
                                     {
                                         newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 2;
@@ -252,7 +254,7 @@ namespace invoiceIntegration.helper
                                     {
                                         newInvoiceLines[i].FieldByName("PRCLISTTYPE").Value = 1;
                                     }
-                                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)  // iade faturaları 
+                                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)
                                     {
                                         newInvoiceLines[i].FieldByName("RET_COST_TYPE").Value = 1;
                                     }
@@ -262,7 +264,7 @@ namespace invoiceIntegration.helper
                         Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
                         newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
                         newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
-                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                         newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
                         newInvoice.DataFields.FieldByName("EXIMVAT").Value = 0;
                         newInvoice.FillAccCodes();
@@ -338,7 +340,7 @@ namespace invoiceIntegration.helper
                     }
                     newDespatch.New();
                     newDespatch.DataFields.FieldByName("TYPE").Value = despatch.type;
-                    newDespatch.DataFields.FieldByName("NUMBER").Value = despatch.number; // düzenlecek
+                    newDespatch.DataFields.FieldByName("NUMBER").Value = despatch.number; 
                     newDespatch.DataFields.FieldByName("DOC_NUMBER").Value = despatch.documentNumber;
                     if (useShortDate)
                     {
@@ -422,7 +424,7 @@ namespace invoiceIntegration.helper
                                     newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 1;
                                 }
 
-                                if (despatch.type == (int)InvoiceType.SELLING_RETURN)  // iade faturaları 
+                                if (despatch.type == (int)InvoiceType.SELLING_RETURN) 
                                 {
                                     newWaybillLines[i].FieldByName("RET_COST_TYPE").Value = 1;
                                 }
@@ -430,7 +432,7 @@ namespace invoiceIntegration.helper
                         }
                     }
                     newDespatch.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(despatch.customerCode);
-                    newDespatch.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                    newDespatch.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                     newDespatch.DataFields.FieldByName("DOC_DATE").Value = despatch.documentDate.ToShortDateString();
                     newDespatch.FillAccCodes();
                     newDespatch.CreateCompositeLines();
@@ -750,11 +752,11 @@ namespace invoiceIntegration.helper
                         {
                             bankHavaleDetail.Add(paymentDetail);
                         }
-                        else if (paymentDetail.PaymentType == "10") //test alacak
+                        else if (paymentDetail.PaymentType == "10") 
                         {
                             alacakDekontDetail.Add(paymentDetail);
                         }
-                        else if (paymentDetail.PaymentType == "11") //test borc
+                        else if (paymentDetail.PaymentType == "11")
                         {
                             borcDekontDetail.Add(paymentDetail);
                         }
@@ -1062,11 +1064,11 @@ namespace invoiceIntegration.helper
 
                         tranLines[a].FieldByName("AMOUNT").Value = detail.Amount;
                         tranLines[a].FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
-                        tranLines[a].FieldByName("AFFECT_RISK").Value = "";
+                        tranLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
 
                         a++;
                     }
-                    paymentData.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                    paymentData.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
 
                     ValidateErrors err = paymentData.ValidateErrors;
                     helper.LogFile("Post İşlemi Basladı", "-", "-", "-", "-");
@@ -1125,20 +1127,6 @@ namespace invoiceIntegration.helper
 
                 paymentData.DataFields.FieldByName("TYPE").Value = "11";
 
-                //if (LogoObjectSettings.CashCode == "")
-                //{
-                //    if (LogoObjectSettings.PaymentToSalemanCase)
-                //    {
-                //        paymentData.DataFields.FieldByName("SD_CODE").Value = orderPayment.Salesman.BankCode;
-                //    }
-                //    else if (orderPayment.Salesman.No != null)
-                //    {
-                //        paymentData.DataFields.FieldByName("SD_CODE").Value = orderPayment.Salesman.No;
-
-                //    }
-
-                //}
-                //else
                 paymentData.DataFields.FieldByName("SD_CODE").Value = cashCode;
 
                 if (useShortDate)
@@ -1179,7 +1167,7 @@ namespace invoiceIntegration.helper
                     paymentLines[a].FieldByName("DISCOUNT_DUEDATE").Value = tarih1;
                     paymentLines[a].FieldByName("DESCRIPTION").Value = detail.PaymentTypeName + " - Tahsilat";
 
-                    paymentLines[a].FieldByName("AFFECT_RISK").Value = 1;
+                    paymentLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
                     paymentLines[a].FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
 
                     a++;
@@ -1276,7 +1264,7 @@ namespace invoiceIntegration.helper
 
                     paymentLines[a].FieldByName("BANK_PROC_TYPE").Value = 2;
 
-                    paymentLines[a].FieldByName("AFFECT_RISK").Value = 1;
+                    paymentLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
                     paymentData.DataFields.FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
                 }
 
@@ -1349,7 +1337,7 @@ namespace invoiceIntegration.helper
 
                     paymentData.DataFields.FieldByName("TOTAL_CREDIT").Value = item.collectionModelHeader.Amount.ToString().Replace(",", ".");
 
-                    paymentData.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                    paymentData.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
 
                     Lines paymentLines = paymentData.DataFields.FieldByName("TRANSACTIONS").Lines;
 
@@ -1366,7 +1354,7 @@ namespace invoiceIntegration.helper
 
                         paymentLines[a].FieldByName("CREDIT").Value = detail.Amount.ToString().Replace(",", ".");
                         paymentLines[a].FieldByName("TC_AMOUNT").Value = detail.Amount.ToString().Replace(",", ".");
-                        paymentLines[a].FieldByName("AFFECT_RISK").Value = 1;
+                        paymentLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
                         paymentData.DataFields.FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
                     }
 
@@ -1446,7 +1434,7 @@ namespace invoiceIntegration.helper
 
                         paymentLines[a].FieldByName("DESCRIPTION").Value = detail.PaymentTypeName + " - Tahsilat";
 
-                        paymentLines[a].FieldByName("AFFECT_RISK").Value = 1;
+                        paymentLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
                         paymentData.DataFields.FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
 
                         a++;
@@ -1525,7 +1513,7 @@ namespace invoiceIntegration.helper
                     paymentLines[a].FieldByName("TC_AMOUNT").Value = detail.Amount.ToString().Replace(".", ",");
                     paymentLines[a].FieldByName("DEBIT").Value = detail.Amount.ToString().Replace(".", ",");
                     paymentLines[a].FieldByName("TRANNO").Value = detail.DocNumber;
-                    paymentLines[a].FieldByName("AFFECT_RISK").Value = 1;
+                    paymentLines[a].FieldByName("AFFECT_RISK").Value = affectRisk;
                     paymentLines[a].FieldByName("SALESMAN_CODE").Value = item.collectionModelHeader.SalesmanCode;
 
                     a++;
