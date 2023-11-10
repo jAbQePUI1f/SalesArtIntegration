@@ -14,7 +14,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>C:\Users\mc-0409\source\repos\SArtIntegration\SalesArtIntegration\publish\</PublishUrl>
+    <PublishUrl>C:\Users\rapor\source\repos\SArtIntegration\SalesArtIntegration\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -27,12 +27,9 @@
     <TargetCulture>tr-TR</TargetCulture>
     <ProductName>SArtIntegration</ProductName>
     <PublisherName>jAbQePUI1f</PublisherName>
-    <TrustUrlParameters>true</TrustUrlParameters>
     <ApplicationRevision>22</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -309,7 +306,18 @@
     <Content Include="resources\salesart.ico" />
     <Content Include="salesart.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PublishFile Include="SalesArtIntegration.pdb">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
