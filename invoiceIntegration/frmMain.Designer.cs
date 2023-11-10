@@ -354,7 +354,7 @@
             // 
             // btnLastLog
             // 
-            this.btnLastLog.BackgroundImage = global::invoiceIntegration.Properties.Resources._1button_logs;
+            this.btnLastLog.BackgroundImage = global::SalesArtIntegration.Properties.Resources._1button_logs;
             this.btnLastLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnLastLog.Location = new System.Drawing.Point(1070, 42);
             this.btnLastLog.Name = "btnLastLog";
