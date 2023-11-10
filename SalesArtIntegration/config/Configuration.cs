@@ -117,5 +117,9 @@ namespace invoiceIntegration.config
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["orderTransferToLogo"]);
         }
+        public static string getAffectRisk()
+        {
+            return Convert.ToString(ConfigurationManager.AppSettings["affectRisk"]);
+        }
     }
 }

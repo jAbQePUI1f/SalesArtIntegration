@@ -41,16 +41,6 @@
             this.btnCheckLogoConnection = new System.Windows.Forms.Button();
             this.lblLogoConnectionInfo = new System.Windows.Forms.Label();
             this.dataGridInvoice = new System.Windows.Forms.DataGridView();
-            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chkSelectAll = new System.Windows.Forms.CheckBox();
             this.cmbInvoice = new MetroFramework.Controls.MetroComboBox();
             this.lblInvoice = new MetroFramework.Controls.MetroLabel();
@@ -68,6 +58,16 @@
             this.anaMenüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.materialCard1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -77,7 +77,7 @@
             // 
             this.btnCheckLogoConnection.Enabled = false;
             this.btnCheckLogoConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnCheckLogoConnection.Location = new System.Drawing.Point(932, 66);
+            this.btnCheckLogoConnection.Location = new System.Drawing.Point(995, 66);
             this.btnCheckLogoConnection.Name = "btnCheckLogoConnection";
             this.btnCheckLogoConnection.Size = new System.Drawing.Size(149, 46);
             this.btnCheckLogoConnection.TabIndex = 10;
@@ -89,7 +89,7 @@
             // 
             this.lblLogoConnectionInfo.AutoSize = true;
             this.lblLogoConnectionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(924, 48);
+            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(987, 48);
             this.lblLogoConnectionInfo.Name = "lblLogoConnectionInfo";
             this.lblLogoConnectionInfo.Size = new System.Drawing.Size(20, 15);
             this.lblLogoConnectionInfo.TabIndex = 11;
@@ -117,121 +117,8 @@
             this.dataGridInvoice.Name = "dataGridInvoice";
             this.dataGridInvoice.ReadOnly = true;
             this.dataGridInvoice.RowHeadersWidth = 51;
-            this.dataGridInvoice.Size = new System.Drawing.Size(1096, 379);
+            this.dataGridInvoice.Size = new System.Drawing.Size(1154, 379);
             this.dataGridInvoice.TabIndex = 12;
-            // 
-            // chk
-            // 
-            this.chk.FillWeight = 45F;
-            this.chk.Frozen = true;
-            this.chk.HeaderText = "     ";
-            this.chk.MinimumWidth = 6;
-            this.chk.Name = "chk";
-            this.chk.ReadOnly = true;
-            this.chk.ToolTipText = "Tümünü Seçiniz..";
-            this.chk.Width = 25;
-            // 
-            // Column9
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column9.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Column9.Frozen = true;
-            this.Column9.HeaderText = "Fatura Tipi";
-            this.Column9.MinimumWidth = 6;
-            this.Column9.Name = "Column9";
-            this.Column9.ReadOnly = true;
-            this.Column9.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Column9.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column9.Width = 85;
-            // 
-            // number
-            // 
-            this.number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.number.DefaultCellStyle = dataGridViewCellStyle2;
-            this.number.Frozen = true;
-            this.number.HeaderText = "Fatura No";
-            this.number.MinimumWidth = 6;
-            this.number.Name = "number";
-            this.number.ReadOnly = true;
-            // 
-            // Column11
-            // 
-            this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column11.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column11.Frozen = true;
-            this.Column11.HeaderText = "Fatura Tarihi";
-            this.Column11.MinimumWidth = 6;
-            this.Column11.Name = "Column11";
-            this.Column11.ReadOnly = true;
-            // 
-            // Column12
-            // 
-            this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
-            this.Column12.Frozen = true;
-            this.Column12.HeaderText = "Belge No";
-            this.Column12.MinimumWidth = 6;
-            this.Column12.Name = "Column12";
-            this.Column12.ReadOnly = true;
-            // 
-            // Column13
-            // 
-            this.Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Column13.DefaultCellStyle = dataGridViewCellStyle5;
-            this.Column13.Frozen = true;
-            this.Column13.HeaderText = "Müşteri Kodu";
-            this.Column13.MinimumWidth = 6;
-            this.Column13.Name = "Column13";
-            this.Column13.ReadOnly = true;
-            this.Column13.Width = 110;
-            // 
-            // customerName
-            // 
-            this.customerName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.customerName.DefaultCellStyle = dataGridViewCellStyle6;
-            this.customerName.HeaderText = "Müşteri Ünvanı";
-            this.customerName.MinimumWidth = 6;
-            this.customerName.Name = "customerName";
-            this.customerName.ReadOnly = true;
-            this.customerName.Width = 160;
-            // 
-            // Column14
-            // 
-            this.Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column14.DefaultCellStyle = dataGridViewCellStyle7;
-            this.Column14.HeaderText = "Toplam İnd. Tutarı";
-            this.Column14.MinimumWidth = 6;
-            this.Column14.Name = "Column14";
-            this.Column14.ReadOnly = true;
-            this.Column14.Width = 120;
-            // 
-            // Column15
-            // 
-            this.Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column15.DefaultCellStyle = dataGridViewCellStyle8;
-            this.Column15.HeaderText = "KDV Tutarı";
-            this.Column15.MinimumWidth = 6;
-            this.Column15.Name = "Column15";
-            this.Column15.ReadOnly = true;
-            // 
-            // Column16
-            // 
-            this.Column16.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column16.DefaultCellStyle = dataGridViewCellStyle9;
-            this.Column16.HeaderText = "KDV Hariç Tutar";
-            this.Column16.MinimumWidth = 6;
-            this.Column16.Name = "Column16";
-            this.Column16.ReadOnly = true;
-            this.Column16.Width = 120;
             // 
             // chkSelectAll
             // 
@@ -239,12 +126,12 @@
             this.chkSelectAll.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkSelectAll.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkSelectAll.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.chkSelectAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.chkSelectAll.Location = new System.Drawing.Point(27, 233);
+            this.chkSelectAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chkSelectAll.Location = new System.Drawing.Point(17, 234);
             this.chkSelectAll.Name = "chkSelectAll";
-            this.chkSelectAll.Size = new System.Drawing.Size(45, 19);
+            this.chkSelectAll.Size = new System.Drawing.Size(91, 17);
             this.chkSelectAll.TabIndex = 22;
-            this.chkSelectAll.Text = "Seç";
+            this.chkSelectAll.Text = "Tümünü Seç  ";
             this.chkSelectAll.UseVisualStyleBackColor = true;
             this.chkSelectAll.CheckedChanged += new System.EventHandler(this.chkSelectAll_CheckedChanged);
             // 
@@ -296,18 +183,19 @@
             this.lblStartDate.AutoSize = true;
             this.lblStartDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblStartDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblStartDate.Location = new System.Drawing.Point(232, 5);
+            this.lblStartDate.Location = new System.Drawing.Point(292, 5);
             this.lblStartDate.Name = "lblStartDate";
             this.lblStartDate.Size = new System.Drawing.Size(88, 15);
             this.lblStartDate.TabIndex = 30;
             this.lblStartDate.Text = "Başlangıç Tarihi";
+            this.lblStartDate.Click += new System.EventHandler(this.lblStartDate_Click);
             // 
             // lblEndDate
             // 
             this.lblEndDate.AutoSize = true;
             this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblEndDate.Location = new System.Drawing.Point(396, 5);
+            this.lblEndDate.Location = new System.Drawing.Point(477, 5);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(60, 15);
             this.lblEndDate.TabIndex = 31;
@@ -324,10 +212,10 @@
             this.startDate.DisplayFocus = true;
             this.startDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
             this.startDate.ImeMode = System.Windows.Forms.ImeMode.Alpha;
-            this.startDate.Location = new System.Drawing.Point(232, 26);
+            this.startDate.Location = new System.Drawing.Point(292, 26);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(158, 25);
+            this.startDate.Size = new System.Drawing.Size(179, 25);
             this.startDate.TabIndex = 32;
             this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
@@ -335,15 +223,16 @@
             // 
             this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.endDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.endDate.Location = new System.Drawing.Point(396, 26);
+            this.endDate.Location = new System.Drawing.Point(477, 27);
             this.endDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(151, 25);
+            this.endDate.Size = new System.Drawing.Size(170, 25);
             this.endDate.TabIndex = 33;
+            this.endDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
             // btnXML
             // 
-            this.btnXML.Location = new System.Drawing.Point(733, 66);
+            this.btnXML.Location = new System.Drawing.Point(796, 66);
             this.btnXML.Name = "btnXML";
             this.btnXML.Size = new System.Drawing.Size(180, 43);
             this.btnXML.TabIndex = 34;
@@ -356,7 +245,7 @@
             // 
             this.btnLastLog.BackgroundImage = global::SalesArtIntegration.Properties.Resources._1button_logs;
             this.btnLastLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnLastLog.Location = new System.Drawing.Point(1070, 42);
+            this.btnLastLog.Location = new System.Drawing.Point(1128, 43);
             this.btnLastLog.Name = "btnLastLog";
             this.btnLastLog.Size = new System.Drawing.Size(38, 41);
             this.btnLastLog.TabIndex = 35;
@@ -365,7 +254,7 @@
             // 
             // btnSendOrderToLogo
             // 
-            this.btnSendOrderToLogo.Location = new System.Drawing.Point(733, 17);
+            this.btnSendOrderToLogo.Location = new System.Drawing.Point(796, 17);
             this.btnSendOrderToLogo.Name = "btnSendOrderToLogo";
             this.btnSendOrderToLogo.Size = new System.Drawing.Size(180, 43);
             this.btnSendOrderToLogo.TabIndex = 36;
@@ -376,7 +265,7 @@
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(364, 66);
+            this.btnSendToLogo.Location = new System.Drawing.Point(463, 66);
             this.btnSendToLogo.Name = "btnSendToLogo";
             this.btnSendToLogo.Size = new System.Drawing.Size(183, 43);
             this.btnSendToLogo.TabIndex = 37;
@@ -407,7 +296,7 @@
             this.materialCard1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard1.Name = "materialCard1";
             this.materialCard1.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard1.Size = new System.Drawing.Size(1096, 123);
+            this.materialCard1.Size = new System.Drawing.Size(1154, 123);
             this.materialCard1.TabIndex = 51;
             // 
             // menuStrip1
@@ -419,7 +308,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(20, 60);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(1077, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1176, 24);
             this.menuStrip1.TabIndex = 52;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -447,11 +336,124 @@
             this.menüToolStripMenuItem.ToolTipText = "Ana Ekrana yönlendireleceksiniz..";
             this.menüToolStripMenuItem.Click += new System.EventHandler(this.menüToolStripMenuItem_Click);
             // 
+            // chk
+            // 
+            this.chk.FillWeight = 45F;
+            this.chk.Frozen = true;
+            this.chk.HeaderText = "     ";
+            this.chk.MinimumWidth = 50;
+            this.chk.Name = "chk";
+            this.chk.ReadOnly = true;
+            this.chk.ToolTipText = "Tümünü Seçiniz..";
+            this.chk.Width = 50;
+            // 
+            // Column9
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column9.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Column9.Frozen = true;
+            this.Column9.HeaderText = "Fatura Tipi";
+            this.Column9.MinimumWidth = 120;
+            this.Column9.Name = "Column9";
+            this.Column9.ReadOnly = true;
+            this.Column9.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Column9.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Column9.Width = 120;
+            // 
+            // number
+            // 
+            this.number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.number.DefaultCellStyle = dataGridViewCellStyle2;
+            this.number.Frozen = true;
+            this.number.HeaderText = "Fatura No";
+            this.number.MinimumWidth = 100;
+            this.number.Name = "number";
+            this.number.ReadOnly = true;
+            // 
+            // Column11
+            // 
+            this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column11.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column11.Frozen = true;
+            this.Column11.HeaderText = "Fatura Tarihi";
+            this.Column11.MinimumWidth = 100;
+            this.Column11.Name = "Column11";
+            this.Column11.ReadOnly = true;
+            // 
+            // Column12
+            // 
+            this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            this.Column12.Frozen = true;
+            this.Column12.HeaderText = "Belge No";
+            this.Column12.MinimumWidth = 50;
+            this.Column12.Name = "Column12";
+            this.Column12.ReadOnly = true;
+            // 
+            // Column13
+            // 
+            this.Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Column13.DefaultCellStyle = dataGridViewCellStyle5;
+            this.Column13.Frozen = true;
+            this.Column13.HeaderText = "Müşteri Kodu";
+            this.Column13.MinimumWidth = 100;
+            this.Column13.Name = "Column13";
+            this.Column13.ReadOnly = true;
+            this.Column13.Width = 110;
+            // 
+            // customerName
+            // 
+            this.customerName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.customerName.DefaultCellStyle = dataGridViewCellStyle6;
+            this.customerName.HeaderText = "Müşteri Ünvanı";
+            this.customerName.MinimumWidth = 100;
+            this.customerName.Name = "customerName";
+            this.customerName.ReadOnly = true;
+            this.customerName.Width = 160;
+            // 
+            // Column14
+            // 
+            this.Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column14.DefaultCellStyle = dataGridViewCellStyle7;
+            this.Column14.HeaderText = "Toplam İnd. Tutarı";
+            this.Column14.MinimumWidth = 100;
+            this.Column14.Name = "Column14";
+            this.Column14.ReadOnly = true;
+            this.Column14.Width = 120;
+            // 
+            // Column15
+            // 
+            this.Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column15.DefaultCellStyle = dataGridViewCellStyle8;
+            this.Column15.HeaderText = "KDV Tutarı";
+            this.Column15.MinimumWidth = 100;
+            this.Column15.Name = "Column15";
+            this.Column15.ReadOnly = true;
+            // 
+            // Column16
+            // 
+            this.Column16.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column16.DefaultCellStyle = dataGridViewCellStyle9;
+            this.Column16.HeaderText = "KDV Hariç Tutar";
+            this.Column16.MinimumWidth = 100;
+            this.Column16.Name = "Column16";
+            this.Column16.ReadOnly = true;
+            this.Column16.Width = 120;
+            // 
             // frmMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
-            this.ClientSize = new System.Drawing.Size(1117, 626);
+            this.ClientSize = new System.Drawing.Size(1216, 626);
             this.Controls.Add(this.btnLastLog);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.chkSelectAll);

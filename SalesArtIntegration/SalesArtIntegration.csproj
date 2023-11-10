@@ -13,7 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\mc-0409\source\repos\invoiceintegration\invoiceIntegration\publish\</PublishUrl>
+    <TargetFrameworkProfile />
+    <PublishUrl>C:\Users\mc-0409\source\repos\SArtIntegration\SalesArtIntegration\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,12 +24,17 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>20</ApplicationRevision>
+    <TargetCulture>tr-TR</TargetCulture>
+    <ProductName>SArtIntegration</ProductName>
+    <PublisherName>jAbQePUI1f</PublisherName>
+    <TrustUrlParameters>true</TrustUrlParameters>
+    <ApplicationRevision>22</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,10 +63,10 @@
     </Win32Resource>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>08331AF71A21FEEEA2AC51279AC18D45C4B5A85F</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>B149B9FE1A18542CF69AE64BB77F06C0CF3A2BA2</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>invoiceIntegration_2_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>SalesArtIntegration_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -226,8 +232,6 @@
       <DependentUpon>Waybills.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="database.config" />
-    <None Include="invoiceIntegration_2_TemporaryKey.pfx" />
-    <None Include="invoiceIntegration_TemporaryKey.pfx" />
     <None Include="logoInfo.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -239,6 +243,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SalesArtIntegration_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
