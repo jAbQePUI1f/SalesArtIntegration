@@ -71,7 +71,7 @@ namespace invoiceIntegration
             // metroPanel1
             // 
             this.metroPanel1.BackColor = System.Drawing.Color.White;
-            this.metroPanel1.BackgroundImage = global::invoiceIntegration.Properties.Resources.logo;
+            this.metroPanel1.BackgroundImage = global::SalesArtIntegration.Properties.Resources.logo;
             this.metroPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.metroPanel1.HorizontalScrollbarBarColor = true;
             this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
@@ -186,7 +186,7 @@ namespace invoiceIntegration
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 10;
-            this.label1.Text = "V . 1 . 2 . 8";
+            this.label1.Text = "V . 1 . 4 . 1";
             // 
             // waybillTimer
             // 

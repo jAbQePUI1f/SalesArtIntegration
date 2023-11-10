@@ -394,7 +394,7 @@ namespace invoiceIntegration
             // 
             // btnLastLog
             // 
-            this.btnLastLog.BackgroundImage = global::invoiceIntegration.Properties.Resources._1button_logs;
+            
             this.btnLastLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnLastLog.Location = new System.Drawing.Point(1063, 44);
             this.btnLastLog.Name = "btnLastLog";

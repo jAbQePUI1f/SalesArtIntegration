@@ -7,8 +7,8 @@
     <ProjectGuid>{98A192B4-41FB-418C-B641-0F37DECAA98A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>invoiceIntegration</RootNamespace>
-    <AssemblyName>invoiceIntegration</AssemblyName>
+    <RootNamespace>SalesArtIntegration</RootNamespace>
+    <AssemblyName>SalesArtIntegration</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -57,10 +57,10 @@
     </Win32Resource>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A27FBE434D41AF1FEA1D9CB93610EED9A4D78D83</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>08331AF71A21FEEEA2AC51279AC18D45C4B5A85F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>invoiceIntegration_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>invoiceIntegration_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -226,6 +226,7 @@
       <DependentUpon>Waybills.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="database.config" />
+    <None Include="invoiceIntegration_2_TemporaryKey.pfx" />
     <None Include="invoiceIntegration_TemporaryKey.pfx" />
     <None Include="logoInfo.config" />
     <None Include="packages.config" />
