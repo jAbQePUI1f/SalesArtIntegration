@@ -20,7 +20,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.POST)
+                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.Post)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -44,7 +44,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.POST)
+                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.Post)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -69,7 +69,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
+                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.Put)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -94,7 +94,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
+                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.Put)
                 {
                     RequestFormat = DataFormat.Json
                 };
