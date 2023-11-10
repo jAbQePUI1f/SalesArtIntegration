@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesArtIntegration", "invoiceIntegration\SalesArtIntegration.csproj", "{98A192B4-41FB-418C-B641-0F37DECAA98A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesArtIntegration", "SalesArtIntegration\SalesArtIntegration.csproj", "{98A192B4-41FB-418C-B641-0F37DECAA98A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E35B042-EC63-4759-912A-0B414F30D2AC}
 	EndGlobalSection
 EndGlobal
