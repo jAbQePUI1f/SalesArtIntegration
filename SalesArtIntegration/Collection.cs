@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using MetroFramework.Forms;
-using System.Windows.Forms;
-using invoiceIntegration.config;
-using invoiceIntegration.model;
-using UnityObjects;
-using invoiceIntegration.model.waybill;
+﻿using invoiceIntegration.config;
 using invoiceIntegration.helper;
-using static invoiceIntegration.Collection;
-using invoiceIntegration.model.Collection;
+using MetroFramework.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace invoiceIntegration
 {
@@ -19,9 +13,9 @@ namespace invoiceIntegration
             InitializeComponent();
         }
 
-        string collectioneType;
+        //string collectioneType;
         bool isLoggedIn;
-        private frmMain.GenericResponse<List<LogoCollectionModel>> logoCollectionModels;
+        //private frmMain.GenericResponse<List<LogoCollectionModel>> logoCollectionModels;
         Helper helper = new Helper();
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -45,59 +39,65 @@ namespace invoiceIntegration
                 splsh.Show();
             }
         }
-        private void btnGetCollection_Click(object sender, EventArgs e)
-        {
-            ApiHelper apiHelper = new ApiHelper();
-            Cursor.Current = Cursors.WaitCursor;
-            dataGridCollection.Rows.Clear();
-            chkSelectAll.Checked = false;
-            if (Configuration.getUseCollection())
-                logoCollectionModels = apiHelper.GetCollection(startDate, endDate, collectioneType, dataGridCollection);
-            else 
-                logoCollectionModels = apiHelper.GetCollection(startDate, endDate, collectioneType, dataGridCollection);
+        #region -- paymentButton
+        //private void btnGetCollection_Click(object sender, EventArgs e)
+        //{
+        //    ApiHelper apiHelper = new ApiHelper();
+        //    Cursor.Current = Cursors.WaitCursor;
+        //    dataGridCollection.Rows.Clear();
+        //    chkSelectAll.Checked = false;
+        //    if (Configuration.getUseCollection())
+        //        logoCollectionModels = apiHelper.GetCollection(startDate, endDate, collectioneType, dataGridCollection);
+        //    else 
+        //        logoCollectionModels = apiHelper.GetCollection(startDate, endDate, collectioneType, dataGridCollection);
 
-            btnSendCollection.Enabled = (dataGridCollection.Rows.Count > 0) ? true : false;
-            btnCheckLogoConnection.Enabled = (dataGridCollection.Rows.Count > 0 && !isLoggedIn) ? true : false;
-            Cursor.Current = Cursors.Default;
-        }
-        private void btnSendCollection_Click(object sender, EventArgs e)
-        {
-            IntegratedHelper integratedHelper = new IntegratedHelper();
-            ResponseHelper responseHelper = new ResponseHelper();
-            SelectionHelper selectionHelper = new SelectionHelper();
-            IntegratedCollectionStatus integratedCollection = new IntegratedCollectionStatus();
-            if (dataGridCollection.Rows.Count > 0)
-            {
-                if (isLoggedIn)
-                {
-                    List<LogoCollectionModel> selectedCollection = new List<LogoCollectionModel>();
-                    integratedCollection = integratedHelper.sendMultipleCollections(selectedCollection);
-                    responseHelper.SendResponse(integratedCollection);
-                    helper.ShowMessages(integratedCollection);
-                    helper.LogFile("Tahsilat Aktarımı Bitti", "-", "-", "-", "-");
-                    dataGridCollection.Rows.Clear();
-                    btnSendCollection.Enabled = false;
-                    btnCheckLogoConnection.Enabled = false;
-                    isLoggedIn = false;
-                    lblLogoConnectionInfo.Text = "";
-                    Cursor.Current = Cursors.Default;
-                }
-                else
-                {
-                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Tahsilat Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Tahsilat Seçmelisiniz..", "Tahsilat Seçim", MessageBoxButtons.OK);
-            }
-        }
-        private void Collection_Load(object sender, EventArgs e)
-        {
-            cmbCollection.SelectedIndex = 0;
-            lblLogoConnectionInfo.Text = "";
-            startDate.Value = DateTime.Now.AddDays(-1);
-        }
+        //    btnSendCollection.Enabled = (dataGridCollection.Rows.Count > 0) ? true : false;
+        //    btnCheckLogoConnection.Enabled = (dataGridCollection.Rows.Count > 0 && !isLoggedIn) ? true : false;
+        //    Cursor.Current = Cursors.Default;
+        //}
+        #endregion
+        #region -- paymentSendButton
+        //private void btnSendCollection_Click(object sender, EventArgs e)
+        //{
+        //    IntegratedHelper integratedHelper = new IntegratedHelper();
+        //    ResponseHelper responseHelper = new ResponseHelper();
+        //    SelectionHelper selectionHelper = new SelectionHelper();
+        //    IntegratedCollectionStatus integratedCollection = new IntegratedCollectionStatus();
+        //    if (dataGridCollection.Rows.Count > 0)
+        //    {
+        //        if (isLoggedIn)
+        //        {
+        //            List<LogoCollectionModel> selectedCollection = new List<LogoCollectionModel>();
+        //            integratedCollection = integratedHelper.sendMultipleCollections(selectedCollection);
+        //            responseHelper.SendResponse(integratedCollection);
+        //            helper.ShowMessages(integratedCollection);
+        //            helper.LogFile("Tahsilat Aktarımı Bitti", "-", "-", "-", "-");
+        //            dataGridCollection.Rows.Clear();
+        //            btnSendCollection.Enabled = false;
+        //            btnCheckLogoConnection.Enabled = false;
+        //            isLoggedIn = false;
+        //            lblLogoConnectionInfo.Text = "";
+        //            Cursor.Current = Cursors.Default;
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Tahsilat Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Tahsilat Seçmelisiniz..", "Tahsilat Seçim", MessageBoxButtons.OK);
+        //    }
+        //}
+        #endregion
+        #region -- paymentLoadInterface
+        //private void Collection_Load(object sender, EventArgs e)
+        //{
+        //    cmbCollection.SelectedIndex = 0;
+        //    lblLogoConnectionInfo.Text = "";
+        //    startDate.Value = DateTime.Now.AddDays(-1);
+        //}
+        #endregion
         private void btnCheckLogoConnection_Click(object sender, EventArgs e)
         {
             helper.LogFile("Login Kontolü Basladı", "-", "-", "-", "-");
@@ -130,36 +130,40 @@ namespace invoiceIntegration
             }
             Cursor.Current = Cursors.Default;
         }
-        private void cmbCollection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (cmbCollection.SelectedIndex)
-            {
-                case 0:
-                    collectioneType = "CASH";
-                    break;
-                case 1:
-                    collectioneType = "CREDIT_CARD";
-                    break;
-                case 2:
-                    collectioneType = "PAYMENT_CHECK";
-                    break;
-            }
-        }
-        public class GenericResponse<T>
-        {
-            public T data { get; set; }
-            public int responseStatus { get; set; }
-            public model.order.Message message { get; set; }
-        }
-        private void Collection_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (isLoggedIn)
-            {
-                LogoApplication.getApplication().UserLogout();
-                LogoApplication.getApplication().Disconnect();
-            }
-            System.Windows.Forms.Application.Exit();
-        }
+        #region -- paymentType
+        //private void cmbCollection_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    switch (cmbCollection.SelectedIndex)
+        //    {
+        //        case 0:
+        //            collectioneType = "CASH";
+        //            break;
+        //        case 1:
+        //            collectioneType = "CREDIT_CARD";
+        //            break;
+        //        case 2:
+        //            collectioneType = "PAYMENT_CHECK";
+        //            break;
+        //    }
+        //}
+        #endregion
+        #region --irresponsableCode
+        //public class GenericResponse<T>
+        //{
+        //    public T data { get; set; }
+        //    public int responseStatus { get; set; }
+        //    public model.order.Message message { get; set; }
+        //}
+        //private void Collection_FormClosed(object sender, FormClosedEventArgs e)
+        //{
+        //    if (isLoggedIn)
+        //    {
+        //        LogoApplication.getApplication().UserLogout();
+        //        LogoApplication.getApplication().Disconnect();
+        //    }
+        //    System.Windows.Forms.Application.Exit();
+        //}
+        #endregion
         private void Collection_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (isLoggedIn)
