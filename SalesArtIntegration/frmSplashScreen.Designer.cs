@@ -176,7 +176,7 @@ namespace invoiceIntegration
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(234, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "© Copyright 2022 SalesArt. All Rights Reserved.";
+            this.label2.Text = "© Copyright 2023 SalesArt. All Rights Reserved.";
             // 
             // label1
             // 

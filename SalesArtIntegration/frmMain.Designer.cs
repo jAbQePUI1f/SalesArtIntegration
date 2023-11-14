@@ -41,6 +41,16 @@
             this.btnCheckLogoConnection = new System.Windows.Forms.Button();
             this.lblLogoConnectionInfo = new System.Windows.Forms.Label();
             this.dataGridInvoice = new System.Windows.Forms.DataGridView();
+            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chkSelectAll = new System.Windows.Forms.CheckBox();
             this.cmbInvoice = new MetroFramework.Controls.MetroComboBox();
             this.lblInvoice = new MetroFramework.Controls.MetroLabel();
@@ -58,16 +68,6 @@
             this.anaMenüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chk = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customerName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.materialCard1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -115,10 +115,112 @@
             this.Column16});
             this.dataGridInvoice.Location = new System.Drawing.Point(12, 231);
             this.dataGridInvoice.Name = "dataGridInvoice";
-            this.dataGridInvoice.ReadOnly = true;
             this.dataGridInvoice.RowHeadersWidth = 51;
             this.dataGridInvoice.Size = new System.Drawing.Size(1154, 379);
             this.dataGridInvoice.TabIndex = 12;
+            // 
+            // chk
+            // 
+            this.chk.FillWeight = 45F;
+            this.chk.Frozen = true;
+            this.chk.HeaderText = "     ";
+            this.chk.MinimumWidth = 50;
+            this.chk.Name = "chk";
+            this.chk.ToolTipText = "Tümünü Seçiniz..";
+            this.chk.Width = 50;
+            // 
+            // Column9
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column9.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Column9.Frozen = true;
+            this.Column9.HeaderText = "Fatura Tipi";
+            this.Column9.MinimumWidth = 120;
+            this.Column9.Name = "Column9";
+            this.Column9.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Column9.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Column9.Width = 120;
+            // 
+            // number
+            // 
+            this.number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.number.DefaultCellStyle = dataGridViewCellStyle2;
+            this.number.Frozen = true;
+            this.number.HeaderText = "Fatura No";
+            this.number.MinimumWidth = 100;
+            this.number.Name = "number";
+            // 
+            // Column11
+            // 
+            this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column11.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column11.Frozen = true;
+            this.Column11.HeaderText = "Fatura Tarihi";
+            this.Column11.MinimumWidth = 100;
+            this.Column11.Name = "Column11";
+            // 
+            // Column12
+            // 
+            this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            this.Column12.Frozen = true;
+            this.Column12.HeaderText = "Belge No";
+            this.Column12.MinimumWidth = 50;
+            this.Column12.Name = "Column12";
+            // 
+            // Column13
+            // 
+            this.Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Column13.DefaultCellStyle = dataGridViewCellStyle5;
+            this.Column13.Frozen = true;
+            this.Column13.HeaderText = "Müşteri Kodu";
+            this.Column13.MinimumWidth = 100;
+            this.Column13.Name = "Column13";
+            this.Column13.Width = 110;
+            // 
+            // customerName
+            // 
+            this.customerName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.customerName.DefaultCellStyle = dataGridViewCellStyle6;
+            this.customerName.HeaderText = "Müşteri Ünvanı";
+            this.customerName.MinimumWidth = 100;
+            this.customerName.Name = "customerName";
+            this.customerName.Width = 160;
+            // 
+            // Column14
+            // 
+            this.Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column14.DefaultCellStyle = dataGridViewCellStyle7;
+            this.Column14.HeaderText = "Toplam İnd. Tutarı";
+            this.Column14.MinimumWidth = 100;
+            this.Column14.Name = "Column14";
+            this.Column14.Width = 120;
+            // 
+            // Column15
+            // 
+            this.Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column15.DefaultCellStyle = dataGridViewCellStyle8;
+            this.Column15.HeaderText = "KDV Tutarı";
+            this.Column15.MinimumWidth = 100;
+            this.Column15.Name = "Column15";
+            // 
+            // Column16
+            // 
+            this.Column16.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Column16.DefaultCellStyle = dataGridViewCellStyle9;
+            this.Column16.HeaderText = "KDV Hariç Tutar";
+            this.Column16.MinimumWidth = 100;
+            this.Column16.Name = "Column16";
+            this.Column16.Width = 120;
             // 
             // chkSelectAll
             // 
@@ -203,15 +305,9 @@
             // 
             // startDate
             // 
-            this.startDate.AllowDrop = true;
-            this.startDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.startDate.CalendarMonthBackground = System.Drawing.SystemColors.InactiveCaption;
             this.startDate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.startDate.DisplayFocus = true;
             this.startDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.startDate.ImeMode = System.Windows.Forms.ImeMode.Alpha;
+            this.startDate.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.startDate.Location = new System.Drawing.Point(292, 26);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.startDate.Name = "startDate";
@@ -335,119 +431,6 @@
             this.menüToolStripMenuItem.Text = "Ana Ekran";
             this.menüToolStripMenuItem.ToolTipText = "Ana Ekrana yönlendireleceksiniz..";
             this.menüToolStripMenuItem.Click += new System.EventHandler(this.menüToolStripMenuItem_Click);
-            // 
-            // chk
-            // 
-            this.chk.FillWeight = 45F;
-            this.chk.Frozen = true;
-            this.chk.HeaderText = "     ";
-            this.chk.MinimumWidth = 50;
-            this.chk.Name = "chk";
-            this.chk.ReadOnly = true;
-            this.chk.ToolTipText = "Tümünü Seçiniz..";
-            this.chk.Width = 50;
-            // 
-            // Column9
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column9.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Column9.Frozen = true;
-            this.Column9.HeaderText = "Fatura Tipi";
-            this.Column9.MinimumWidth = 120;
-            this.Column9.Name = "Column9";
-            this.Column9.ReadOnly = true;
-            this.Column9.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Column9.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Column9.Width = 120;
-            // 
-            // number
-            // 
-            this.number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.number.DefaultCellStyle = dataGridViewCellStyle2;
-            this.number.Frozen = true;
-            this.number.HeaderText = "Fatura No";
-            this.number.MinimumWidth = 100;
-            this.number.Name = "number";
-            this.number.ReadOnly = true;
-            // 
-            // Column11
-            // 
-            this.Column11.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column11.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column11.Frozen = true;
-            this.Column11.HeaderText = "Fatura Tarihi";
-            this.Column11.MinimumWidth = 100;
-            this.Column11.Name = "Column11";
-            this.Column11.ReadOnly = true;
-            // 
-            // Column12
-            // 
-            this.Column12.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
-            this.Column12.Frozen = true;
-            this.Column12.HeaderText = "Belge No";
-            this.Column12.MinimumWidth = 50;
-            this.Column12.Name = "Column12";
-            this.Column12.ReadOnly = true;
-            // 
-            // Column13
-            // 
-            this.Column13.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Column13.DefaultCellStyle = dataGridViewCellStyle5;
-            this.Column13.Frozen = true;
-            this.Column13.HeaderText = "Müşteri Kodu";
-            this.Column13.MinimumWidth = 100;
-            this.Column13.Name = "Column13";
-            this.Column13.ReadOnly = true;
-            this.Column13.Width = 110;
-            // 
-            // customerName
-            // 
-            this.customerName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.customerName.DefaultCellStyle = dataGridViewCellStyle6;
-            this.customerName.HeaderText = "Müşteri Ünvanı";
-            this.customerName.MinimumWidth = 100;
-            this.customerName.Name = "customerName";
-            this.customerName.ReadOnly = true;
-            this.customerName.Width = 160;
-            // 
-            // Column14
-            // 
-            this.Column14.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column14.DefaultCellStyle = dataGridViewCellStyle7;
-            this.Column14.HeaderText = "Toplam İnd. Tutarı";
-            this.Column14.MinimumWidth = 100;
-            this.Column14.Name = "Column14";
-            this.Column14.ReadOnly = true;
-            this.Column14.Width = 120;
-            // 
-            // Column15
-            // 
-            this.Column15.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column15.DefaultCellStyle = dataGridViewCellStyle8;
-            this.Column15.HeaderText = "KDV Tutarı";
-            this.Column15.MinimumWidth = 100;
-            this.Column15.Name = "Column15";
-            this.Column15.ReadOnly = true;
-            // 
-            // Column16
-            // 
-            this.Column16.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Column16.DefaultCellStyle = dataGridViewCellStyle9;
-            this.Column16.HeaderText = "KDV Hariç Tutar";
-            this.Column16.MinimumWidth = 100;
-            this.Column16.Name = "Column16";
-            this.Column16.ReadOnly = true;
-            this.Column16.Width = 120;
             // 
             // frmMain
             // 
