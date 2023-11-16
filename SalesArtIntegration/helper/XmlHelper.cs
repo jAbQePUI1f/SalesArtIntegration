@@ -354,477 +354,401 @@ namespace invoiceIntegration
                 MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
             }
         }
+        #region -- paymentCodeStartLine
+        //public IntegratedCollectionStatus ExportPaymentsToXml(List<LogoCollectionModel> logoCollections)
+        //{
+        //    List<IntegratedCollectionDto> ıntegratedCollectionDtos = new List<IntegratedCollectionDto>();
+        //    IntegratedCollectionStatus IntegratedCollectionStatus = new IntegratedCollectionStatus();
+        //    List<LogoCollectionModel> otherPaymentList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> otherPaymentDetail = new List<LogoCollectionModelDetail>();
 
-        public IntegratedCollectionStatus ExportPaymentsToXml(List<LogoCollectionModel> logoCollections)
-        {
-            List<IntegratedCollectionDto> ıntegratedCollectionDtos = new List<IntegratedCollectionDto>();
-            IntegratedCollectionStatus IntegratedCollectionStatus = new IntegratedCollectionStatus();
-            List<LogoCollectionModel> otherPaymentList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> otherPaymentDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> cashPaymentList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> cashPaymentDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> cashPaymentList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> cashPaymentDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> creditPaymentList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> creditPaymentDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> creditPaymentList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> creditPaymentDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> iadePaymentList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> iadePaymentDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> iadePaymentList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> iadePaymentDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> senetPaymentList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> senetPaymentDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> senetPaymentList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> senetPaymentDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> bankHavaleList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> bankHavaleDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> bankHavaleList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> bankHavaleDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> alacakDekontList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> alacakDekontDetail = new List<LogoCollectionModelDetail>();
 
-            List<LogoCollectionModel> alacakDekontList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> alacakDekontDetail = new List<LogoCollectionModelDetail>();
+        //    List<LogoCollectionModel> borcDekontList = new List<LogoCollectionModel>();
+        //    List<LogoCollectionModelDetail> borcDekontDetail = new List<LogoCollectionModelDetail>();
+            
+        //    otherPaymentDetail.Clear();
+        //    cashPaymentDetail.Clear();
+        //    creditPaymentDetail.Clear();
+        //    senetPaymentDetail.Clear();
+        //    iadePaymentDetail.Clear();
+        //    otherPaymentList.Clear();
+        //    cashPaymentList.Clear();
+        //    creditPaymentList.Clear();
+        //    senetPaymentList.Clear();
+        //    iadePaymentList.Clear();
+        //    bankHavaleList.Clear();
+        //    bankHavaleDetail.Clear();
+        //    alacakDekontList.Clear();
+        //    alacakDekontDetail.Clear();
+        //    borcDekontList.Clear();
+        //    borcDekontDetail.Clear();
 
-            List<LogoCollectionModel> borcDekontList = new List<LogoCollectionModel>();
-            List<LogoCollectionModelDetail> borcDekontDetail = new List<LogoCollectionModelDetail>();
-            // listeyi temizledim
-            otherPaymentDetail.Clear();
-            cashPaymentDetail.Clear();
-            creditPaymentDetail.Clear();
-            senetPaymentDetail.Clear();
-            iadePaymentDetail.Clear();
-            otherPaymentList.Clear();
-            cashPaymentList.Clear();
-            creditPaymentList.Clear();
-            senetPaymentList.Clear();
-            iadePaymentList.Clear();
-            bankHavaleList.Clear();
-            bankHavaleDetail.Clear();
-            alacakDekontList.Clear();
-            alacakDekontDetail.Clear();
-            borcDekontList.Clear();
-            borcDekontDetail.Clear();
+            
+        //    foreach (var item in logoCollections)
+        //    {
+        //        otherPaymentDetail.Clear();
+        //        cashPaymentDetail.Clear();
+        //        creditPaymentDetail.Clear();
+        //        senetPaymentDetail.Clear();
+        //        iadePaymentDetail.Clear();
+        //        bankHavaleDetail.Clear();
 
-            // tüm tahsilatları tarar
-            foreach (var item in logoCollections)
-            {
-                otherPaymentDetail.Clear();
-                cashPaymentDetail.Clear();
-                creditPaymentDetail.Clear();
-                senetPaymentDetail.Clear();
-                iadePaymentDetail.Clear();
-                bankHavaleDetail.Clear();
+        //        IntegratedCollectionDto trCash = null;
+        //        IntegratedCollectionDto trCredit = null;
+        //        IntegratedCollectionDto trSenet = null;
+        //        IntegratedCollectionDto trOther = null;
+        //        IntegratedCollectionDto trIade = null;
+        //        IntegratedCollectionDto trAlacak = null;
+        //        IntegratedCollectionDto trBorc = null;
 
-                IntegratedCollectionDto trCash = null;
-                IntegratedCollectionDto trCredit = null;
-                IntegratedCollectionDto trSenet = null;
-                IntegratedCollectionDto trOther = null;
-                IntegratedCollectionDto trIade = null;
-                IntegratedCollectionDto trAlacak = null;
-                IntegratedCollectionDto trBorc = null;
+        //        foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
+        //        {
+        //            if (paymentDetail.PaymentType == "2")
+        //                creditPaymentDetail.Add(paymentDetail);
+        //            else if (paymentDetail.PaymentType == "5")
+        //            {
+        //                senetPaymentDetail.Add(paymentDetail);
+        //            }
+        //            else if (paymentDetail.PaymentType == "3")
+        //            {
+        //                otherPaymentDetail.Add(paymentDetail);
+        //            }
+        //            else if (paymentDetail.PaymentType == "6")
+        //            {
+        //                iadePaymentDetail.Add(paymentDetail);
+        //            }
+        //            else if (paymentDetail.PaymentType == "4")
+        //            {
+        //                bankHavaleDetail.Add(paymentDetail);
+        //            }
+        //            else if (paymentDetail.PaymentType == "10") 
+        //            {
+        //                alacakDekontDetail.Add(paymentDetail);
+        //            }
+        //            else if (paymentDetail.PaymentType == "11")
+        //            {
+        //                borcDekontDetail.Add(paymentDetail);
+        //            }
+        //            else
+        //                cashPaymentDetail.Add(paymentDetail);
+        //        }
 
-                //OrderPayment orderPayment = new OrderPayment();
-                //orderPayment = ObjectCopier.Clone(orjOrderPayment);
+        //        if (otherPaymentDetail.Count > 0)
+        //        {
+        //            item.collectionModelHeader.Amount = 0;
+        //            foreach (LogoCollectionModelDetail paymentDetail in otherPaymentDetail)
+        //                item.collectionModelHeader.Amount += paymentDetail.Amount;
+        //            item.collectionModelDetail = otherPaymentDetail;
+        //            otherPaymentList.Add(item);
+        //        }
+        //        if (otherPaymentList.Count > 0)
+        //        {
+        //            trOther = ExportCekSenetToXml(otherPaymentList, "1");
+        //        }
 
-                // tüm detayları tarar
-                foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
-                {
-                    if (paymentDetail.PaymentType == "2")
-                        creditPaymentDetail.Add(paymentDetail);
-                    else if (paymentDetail.PaymentType == "5")
-                    {
-                        senetPaymentDetail.Add(paymentDetail);
-                    }
-                    else if (paymentDetail.PaymentType == "3")
-                    {
-                        otherPaymentDetail.Add(paymentDetail);
-                    }
-                    else if (paymentDetail.PaymentType == "6")
-                    {
-                        iadePaymentDetail.Add(paymentDetail);
-                    }
-                    else if (paymentDetail.PaymentType == "4")
-                    {
-                        bankHavaleDetail.Add(paymentDetail);
-                    }
-                    else if (paymentDetail.PaymentType == "10") //test alacak
-                    {
-                        alacakDekontDetail.Add(paymentDetail);
-                    }
-                    else if (paymentDetail.PaymentType == "11") //test borc
-                    {
-                        borcDekontDetail.Add(paymentDetail);
-                    }
-                    else
-                        cashPaymentDetail.Add(paymentDetail);
-                }
+        //        if (cashPaymentDetail.Count > 0)
+        //        {
+        //            item.collectionModelHeader.Amount = 0;
+        //            foreach (LogoCollectionModelDetail paymentDetail in cashPaymentDetail)
+        //                item.collectionModelHeader.Amount += paymentDetail.Amount;
+        //            item.collectionModelDetail = cashPaymentDetail;
+        //            cashPaymentList.Add(item);
+        //        }
+        //        if (cashPaymentList.Count > 0)
+        //        {
+        //            trCash = ExportPaymentsKasaHarToXml(cashPaymentList);
+        //        }
 
-                if (otherPaymentDetail.Count > 0)
-                {
-                    item.collectionModelHeader.Amount = 0;
-                    foreach (LogoCollectionModelDetail paymentDetail in otherPaymentDetail)
-                        item.collectionModelHeader.Amount += paymentDetail.Amount;
-                    item.collectionModelDetail = otherPaymentDetail;
-                    otherPaymentList.Add(item);
-                }
-                if (otherPaymentList.Count > 0)
-                {
-                    trOther = ExportCekSenetToXml(otherPaymentList, "1");
-                }
+        //        string ErrorMessage = "";
 
-                if (cashPaymentDetail.Count > 0)
-                {
-                    item.collectionModelHeader.Amount = 0;
-                    foreach (LogoCollectionModelDetail paymentDetail in cashPaymentDetail)
-                        item.collectionModelHeader.Amount += paymentDetail.Amount;
-                    item.collectionModelDetail = cashPaymentDetail;
-                    cashPaymentList.Add(item);
-                }
-                if (cashPaymentList.Count > 0)
-                {
-                    trCash = ExportPaymentsKasaHarToXml(cashPaymentList);
-                }
+        //        if (!trCash.successfullyIntegrated)
+        //        {
+        //            ErrorMessage += "Nakit Error:" + trCash.errorMessage;
+        //        }
+        //        if (!trOther.successfullyIntegrated)
+        //        {
+        //            ErrorMessage += "Cek Error:" + trOther.errorMessage;
+        //        }
 
-                //if (bankHavaleDetail.Count > 0)
-                //{
-                //    OrderPayment neworderPayment = new OrderPayment();
-                //    neworderPayment = ObjectCopier.Clone(orderPayment);
+        //        try
+        //        {
+        //            if (ErrorMessage.Trim().Length > 0)
+        //            {
+        //                IntegratedCollectionDto recievedInvoice = new IntegratedCollectionDto(item.collectionModelHeader.Number + " belge numaralı tahsilat, sistemde zaten mevcut. Kontrol Ediniz", item.collectionModelHeader.Number, "", false);
+        //                ıntegratedCollectionDtos.Add(recievedInvoice);
+        //            }
+        //            else
+        //            {
+        //                IntegratedCollectionDto recievedInvoice = new IntegratedCollectionDto(ErrorMessage, item.collectionModelHeader.Number, item.collectionModelHeader.Number, true);
+        //                ıntegratedCollectionDtos.Add(recievedInvoice);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //        }
+        //    }
+        //    IntegratedCollectionStatus.collections = ıntegratedCollectionDtos;
+        //    IntegratedCollectionStatus.distributorId = distributorId;
+        //    return IntegratedCollectionStatus;
 
-                //    neworderPayment.TotalCost = 0;
+        //    return null;
+        //}
 
-                //    foreach (OrderPaymentDetail paymentDetail in bankHavaleDetail)
-                //        neworderPayment.TotalCost += paymentDetail.Amount;
-                //    neworderPayment.OrderPaymentDetails = bankHavaleDetail.ToArray();
-                //    bankHavaleList.Add(neworderPayment);
+        //public IntegratedCollectionDto ExportCekSenetToXml(List<LogoCollectionModel> paymentList, string belgeTipi)
+        //{
+        //    XmlDocument output = new XmlDocument();
+        //    XmlNode outputSD = null;
+        //    XmlNode outputSDDbop = null;
+        //    XmlNode outputAtachmentArp = null;
+        //    XmlNode outputCHQPNTransaction = null;
+        //    XmlNode outputTransaction = null;
+        //    XmlNode outputTransaction1 = null;
 
-                //}
+        //    DateTime Tarih;
+        //    string docNumber = "";
+        //    XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
+        //    output.InsertBefore(xmlDeclaration, output.DocumentElement);
 
+        //    outputSD = output.CreateNode(XmlNodeType.Element, "CQPN_ROLLS", "");
+        //    output.AppendChild(outputSD);
 
-                //if (creditPaymentDetail.Count > 0)
-                //{
-                //    OrderPayment neworderPayment = new OrderPayment();
-                //    neworderPayment = ObjectCopier.Clone(orderPayment);
+        //    try
+        //    {
 
-                //    neworderPayment.TotalCost = 0;
-                //    foreach (OrderPaymentDetail paymentDetail in creditPaymentDetail)
-                //        neworderPayment.TotalCost += paymentDetail.Amount;
-                //    neworderPayment.OrderPaymentDetails = creditPaymentDetail.ToArray();
-                //    creditPaymentList.Add(neworderPayment);
-                //}
+        //        foreach (var item in paymentList)
+        //        {
+        //            docNumber = item.collectionModelHeader.Number;
+        //            outputSDDbop = output.CreateNode(XmlNodeType.Element, "CHQPN_ROLL", "");
+        //            XmlAttribute newAttr = output.CreateAttribute("DBOP");
+        //            newAttr.Value = "INS";
+        //            outputSDDbop.Attributes.Append(newAttr);
+        //            outputSD.AppendChild(outputSDDbop);
+        //            AddNode(output, outputSDDbop, "TYPE", belgeTipi);
+        //            AddNode(output, outputSDDbop, "MASTER_MODULE", "5");
 
-                //if (iadePaymentDetail.Count > 0)
-                //{
-                //    OrderPayment neworderPayment = new OrderPayment();
-                //    neworderPayment = ObjectCopier.Clone(orderPayment);
+        //            AddNode(output, outputSDDbop, "MASTER_CODE", item.collectionModelHeader.CustomerCode);
+        //            AddNode(output, outputSDDbop, "NUMBER", item.collectionModelHeader.Number);
 
-                //    orderPayment.TotalCost = 0;
-                //    foreach (OrderPaymentDetail paymentDetail in iadePaymentDetail)
-                //        neworderPayment.TotalCost += paymentDetail.Amount;
-                //    neworderPayment.OrderPaymentDetails = iadePaymentDetail.ToArray();
-                //    iadePaymentList.Add(neworderPayment);
-                //}
-
-                //if (senetPaymentDetail.Count > 0)
-                //{
-                //    OrderPayment neworderPayment = new OrderPayment();
-                //    neworderPayment = ObjectCopier.Clone(orderPayment);
-
-                //    neworderPayment.TotalCost = 0;
-                //    foreach (OrderPaymentDetail paymentDetail in senetPaymentDetail)
-                //        neworderPayment.TotalCost += paymentDetail.Amount;
-                //    neworderPayment.OrderPaymentDetails = senetPaymentDetail.ToArray();
-                //    senetPaymentList.Add(neworderPayment);
-                //}
-
-                string ErrorMessage = "";
-
-                if (!trCash.successfullyIntegrated)
-                {
-                    ErrorMessage += "Nakit Error:" + trCash.errorMessage;
-                }
-                if (!trOther.successfullyIntegrated)
-                {
-                    ErrorMessage += "Cek Error:" + trOther.errorMessage;
-                }
-
-                try
-                {
-
-                    if (ErrorMessage.Trim().Length > 0)
-                    {
-                        IntegratedCollectionDto recievedInvoice = new IntegratedCollectionDto(item.collectionModelHeader.Number + " belge numaralı tahsilat, sistemde zaten mevcut. Kontrol Ediniz", item.collectionModelHeader.Number, "", false);
-                        ıntegratedCollectionDtos.Add(recievedInvoice);
-                    }
-                    else
-                    {
-                        IntegratedCollectionDto recievedInvoice = new IntegratedCollectionDto(ErrorMessage, item.collectionModelHeader.Number, item.collectionModelHeader.Number, true);
-                        ıntegratedCollectionDtos.Add(recievedInvoice);
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-            IntegratedCollectionStatus.collections = ıntegratedCollectionDtos;
-            IntegratedCollectionStatus.distributorId = distributorId;
-            return IntegratedCollectionStatus;
-
-            //if (otherPaymentList.Count > 0)
-            //    ExportCekSenet(otherPaymentList, "1");
-            //if (senetPaymentList.Count > 0)
-            //    ExportCekSenet(senetPaymentList, "2");
-            //if (cashPaymentList.Count > 0)
-            //    ExportPaymentsKasaHar(cashPaymentList);
-            //if (creditPaymentList.Count > 0)
-            //    ExportPaymentCariFisXML(creditPaymentList, "70");
-            //if (iadePaymentList.Count > 0)
-            //    ExportPaymentCariFisXML(iadePaymentList, "1");
-            //if (bankHavaleList.Count > 0)
-            //    ExportBankHavalesNew(bankHavaleList);
-
-            return null;
-        }
+        //            if (item.collectionModelHeader.Number != null)
+        //            {
+        //                Tarih = DateTime.Parse(item.collectionModelHeader.Number.ToString());
+        //                string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                AddNode(output, outputSDDbop, "DATE", tarih1);
+        //            }
 
 
-        public IntegratedCollectionDto ExportCekSenetToXml(List<LogoCollectionModel> paymentList, string belgeTipi)
-        {
-            XmlDocument output = new XmlDocument();
-            XmlNode outputSD = null;
-            XmlNode outputSDDbop = null;
-            XmlNode outputAtachmentArp = null;
-            XmlNode outputCHQPNTransaction = null;
-            XmlNode outputTransaction = null;
-            XmlNode outputTransaction1 = null;
-
-            DateTime Tarih;
-            string docNumber = "";
-            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);
-
-            outputSD = output.CreateNode(XmlNodeType.Element, "CQPN_ROLLS", "");
-            output.AppendChild(outputSD);
-
-            try
-            {
-
-                foreach (var item in paymentList)
-                {
-                    docNumber = item.collectionModelHeader.Number;
-                    outputSDDbop = output.CreateNode(XmlNodeType.Element, "CHQPN_ROLL", "");
-                    XmlAttribute newAttr = output.CreateAttribute("DBOP");
-                    newAttr.Value = "INS";
-                    outputSDDbop.Attributes.Append(newAttr);
-                    outputSD.AppendChild(outputSDDbop);
-                    AddNode(output, outputSDDbop, "TYPE", belgeTipi);
-                    AddNode(output, outputSDDbop, "MASTER_MODULE", "5");
-
-                    AddNode(output, outputSDDbop, "MASTER_CODE", item.collectionModelHeader.CustomerCode);
-                    AddNode(output, outputSDDbop, "NUMBER", item.collectionModelHeader.Number);
-
-                    if (item.collectionModelHeader.Number != null)
-                    {
-                        Tarih = DateTime.Parse(item.collectionModelHeader.Number.ToString());
-                        string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                        AddNode(output, outputSDDbop, "DATE", tarih1);
-                    }
+        //            AddNode(output, outputSDDbop, "NOTES1", item.collectionModelHeader.Desc.ToString() + " - TAHSİLAT");
 
 
-                    AddNode(output, outputSDDbop, "NOTES1", item.collectionModelHeader.Desc.ToString() + " - TAHSİLAT");
+        //            AddNode(output, outputSDDbop, "TOTAL", item.collectionModelHeader.Amount.ToString());
 
+        //            if (item.collectionModelDetail != null && item.collectionModelDetail.Count > 0)
+        //            {
+        //                outputAtachmentArp = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
+        //                outputSDDbop.AppendChild(outputAtachmentArp);
+        //            }
 
-                    AddNode(output, outputSDDbop, "TOTAL", item.collectionModelHeader.Amount.ToString());
+        //            foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
+        //            {
+        //                outputCHQPNTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
+        //                outputAtachmentArp.AppendChild(outputCHQPNTransaction);
 
-                    if (item.collectionModelDetail != null && item.collectionModelDetail.Count > 0)
-                    {
-                        outputAtachmentArp = output.CreateNode(XmlNodeType.Element, "TRANSACTIONS", "");
-                        outputSDDbop.AppendChild(outputAtachmentArp);
-                    }
+        //                AddNode(output, outputCHQPNTransaction, "TYPE", belgeTipi);
+        //                AddNode(output, outputCHQPNTransaction, "CURRENT_STATUS", "1");
+        //                if (item.collectionModelHeader.Number != null) AddNode(output, outputCHQPNTransaction, "NUMBER", item.collectionModelHeader.Number.ToString());
+        //                if (item.collectionModelHeader.CustomerName != null) AddNode(output, outputCHQPNTransaction, "OWING", item.collectionModelHeader.CustomerName);
 
-                    foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
-                    {
-                        outputCHQPNTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
-                        outputAtachmentArp.AppendChild(outputCHQPNTransaction);
+        //                if (paymentDetail.OrderDate != null)
+        //                {
+        //                    Tarih = DateTime.Parse(paymentDetail.OrderDate.ToString());
+        //                    string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                    AddNode(output, outputCHQPNTransaction, "DUE_DATE", tarih1);
+        //                }
 
-                        AddNode(output, outputCHQPNTransaction, "TYPE", belgeTipi);
-                        AddNode(output, outputCHQPNTransaction, "CURRENT_STATUS", "1");
-                        if (item.collectionModelHeader.Number != null) AddNode(output, outputCHQPNTransaction, "NUMBER", item.collectionModelHeader.Number.ToString());
-                        if (item.collectionModelHeader.CustomerName != null) AddNode(output, outputCHQPNTransaction, "OWING", item.collectionModelHeader.CustomerName);
+        //                if (paymentDetail.PaymentDate != null)
+        //                {
+        //                    Tarih = DateTime.Parse(paymentDetail.PaymentDate.ToString());
+        //                    string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                    AddNode(output, outputCHQPNTransaction, "DATE", tarih1);
+        //                }
 
-                        if (paymentDetail.OrderDate != null)
-                        {
-                            Tarih = DateTime.Parse(paymentDetail.OrderDate.ToString());
-                            string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                            AddNode(output, outputCHQPNTransaction, "DUE_DATE", tarih1);
-                        }
-
-                        if (paymentDetail.PaymentDate != null)
-                        {
-                            Tarih = DateTime.Parse(paymentDetail.PaymentDate.ToString());
-                            string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                            AddNode(output, outputCHQPNTransaction, "DATE", tarih1);
-                        }
-
-                        if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
-                        if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
+        //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
 
                        
-                            AddNode(output, outputCHQPNTransaction, "CREDIT_FLAG", "1");
+        //                    AddNode(output, outputCHQPNTransaction, "CREDIT_FLAG", "1");
                         
 
-                        AddNode(output, outputCHQPNTransaction, "SERIAL_NR", "99999999999999");
-                    }
+        //                AddNode(output, outputCHQPNTransaction, "SERIAL_NR", "99999999999999");
+        //            }
 
 
-                   AddNode(output, outputSDDbop, "ARP_TRANSACTIONS", "");
-                   AddNode(output, outputSDDbop, "BANK_TRANSACTIONS", "");
+        //           AddNode(output, outputSDDbop, "ARP_TRANSACTIONS", "");
+        //           AddNode(output, outputSDDbop, "BANK_TRANSACTIONS", "");
 
 
-                    outputTransaction = output.CreateNode(XmlNodeType.Element, "PAYMENT_LIST", "");
-                    outputSDDbop.AppendChild(outputTransaction);
+        //            outputTransaction = output.CreateNode(XmlNodeType.Element, "PAYMENT_LIST", "");
+        //            outputSDDbop.AppendChild(outputTransaction);
 
-                    foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
-                    {
-                        outputTransaction1 = output.CreateNode(XmlNodeType.Element, "PAYMENT", "");
-                        outputTransaction.AppendChild(outputTransaction1);
-                        if (item.collectionModelHeader.PaymentDate != null)
-                        {
-                            Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
-                            string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                            AddNode(output, outputTransaction1, "DATE", tarih1);
+        //            foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
+        //            {
+        //                outputTransaction1 = output.CreateNode(XmlNodeType.Element, "PAYMENT", "");
+        //                outputTransaction.AppendChild(outputTransaction1);
+        //                if (item.collectionModelHeader.PaymentDate != null)
+        //                {
+        //                    Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
+        //                    string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                    AddNode(output, outputTransaction1, "DATE", tarih1);
 
-                        }
-                       AddNode(output, outputTransaction1, "MODULENR", "6");
-                       AddNode(output, outputTransaction1, "SIGN", "1");
-                       AddNode(output, outputTransaction1, "TRCODE", "1");
+        //                }
+        //               AddNode(output, outputTransaction1, "MODULENR", "6");
+        //               AddNode(output, outputTransaction1, "SIGN", "1");
+        //               AddNode(output, outputTransaction1, "TRCODE", "1");
 
-                        if (paymentDetail.Amount != null) AddNode(output, outputTransaction1, "TOTAL", paymentDetail.Amount.ToString().Replace(",", "."));
-                        AddNode(output, outputTransaction1, "TRRATE", "1");
-                        AddNode(output, outputTransaction1, "PAYMENT_TYPE", "2");
-                        AddNode(output, outputTransaction1, "DISCTRLIST", "");
-                        AddNode(output, outputTransaction1, "DISCTRDELLIST", "");
-                        if (paymentDetail.Amount != null) AddNode(output, outputTransaction1, "TRNET", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputTransaction1, "TOTAL", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                AddNode(output, outputTransaction1, "TRRATE", "1");
+        //                AddNode(output, outputTransaction1, "PAYMENT_TYPE", "2");
+        //                AddNode(output, outputTransaction1, "DISCTRLIST", "");
+        //                AddNode(output, outputTransaction1, "DISCTRDELLIST", "");
+        //                if (paymentDetail.Amount != null) AddNode(output, outputTransaction1, "TRNET", paymentDetail.Amount.ToString().Replace(",", "."));
 
-                        if (item.collectionModelHeader.PaymentDate != null)
-                        {
-                            Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
-                            string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                            AddNode(output, outputTransaction1, "PROCDATE", tarih1);
-                        }
+        //                if (item.collectionModelHeader.PaymentDate != null)
+        //                {
+        //                    Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
+        //                    string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                    AddNode(output, outputTransaction1, "PROCDATE", tarih1);
+        //                }
 
-                    }
+        //            }
 
-                }
+        //        }
 
-                string fileName = "cekSenet_"+DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
-                //string saveFilePath = filePath + "\\" + fileName;
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
-                output.Save(filePath);
-                IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto("", docNumber, "", true);
-                return recievedCollection;
-
-
-            }
-            catch (Exception ex)
-            {
-                IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto(ex.Message.ToString(), docNumber, "", false);
-                return recievedCollection;
-            }
-        }
-
-        public IntegratedCollectionDto ExportPaymentsKasaHarToXml(List<LogoCollectionModel> paymentList)
-        {
-
-            XmlDocument output = new XmlDocument();
-            XmlNode outputSD = null;
-            XmlNode outputSDDbop = null;
-            XmlNode outputAtachmentArp = null;
-            XmlNode outputCHQPNTransaction = null;
-            XmlNode outputTransaction = null;
-            XmlNode outputTransaction1 = null;
-            string payNote = "";
-            DateTime Tarih;
-
-            XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
-            output.InsertBefore(xmlDeclaration, output.DocumentElement);
-
-            outputSD = output.CreateNode(XmlNodeType.Element, "SD_TRANSACTIONS", "");
-            output.AppendChild(outputSD);
-            string docNumber = "";
-            try
-            {
-
-                foreach (var item in paymentList)
-                {
-                    payNote = "";
-
-                    docNumber = item.collectionModelHeader.Number;
-                    foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
-                    {
-                        payNote = " - " + paymentDetail.PaymentTypeName;
-
-                        outputSDDbop = output.CreateNode(XmlNodeType.Element, "SD_TRANSACTION", "");
-                        XmlAttribute newAttr = output.CreateAttribute("DBOP");
-                        newAttr.Value = "INS";
-                        outputSDDbop.Attributes.Append(newAttr);
-                        outputSD.AppendChild(outputSDDbop);
-                        AddNode(output, outputSDDbop, "TYPE", "11");
+        //        string fileName = "cekSenet_"+DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
+        //        //string saveFilePath = filePath + "\\" + fileName;
+        //        string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+        //        output.Save(filePath);
+        //        IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto("", docNumber, "", true);
+        //        return recievedCollection;
 
 
-                                AddNode(output, outputSDDbop, "SD_CODE", item.collectionModelHeader.SalesmanCode);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto(ex.Message.ToString(), docNumber, "", false);
+        //        return recievedCollection;
+        //    }
+        //}
+
+        //public IntegratedCollectionDto ExportPaymentsKasaHarToXml(List<LogoCollectionModel> paymentList)
+        //{
+
+        //    XmlDocument output = new XmlDocument();
+        //    XmlNode outputSD = null;
+        //    XmlNode outputSDDbop = null;
+        //    XmlNode outputAtachmentArp = null;
+        //    XmlNode outputCHQPNTransaction = null;
+        //    XmlNode outputTransaction = null;
+        //    XmlNode outputTransaction1 = null;
+        //    string payNote = "";
+        //    DateTime Tarih;
+
+        //    XmlDeclaration xmlDeclaration = output.CreateXmlDeclaration("1.0", "ISO-8859-9", null);
+        //    output.InsertBefore(xmlDeclaration, output.DocumentElement);
+
+        //    outputSD = output.CreateNode(XmlNodeType.Element, "SD_TRANSACTIONS", "");
+        //    output.AppendChild(outputSD);
+        //    string docNumber = "";
+        //    try
+        //    {
+
+        //        foreach (var item in paymentList)
+        //        {
+        //            payNote = "";
+
+        //            docNumber = item.collectionModelHeader.Number;
+        //            foreach (LogoCollectionModelDetail paymentDetail in item.collectionModelDetail)
+        //            {
+        //                payNote = " - " + paymentDetail.PaymentTypeName;
+
+        //                outputSDDbop = output.CreateNode(XmlNodeType.Element, "SD_TRANSACTION", "");
+        //                XmlAttribute newAttr = output.CreateAttribute("DBOP");
+        //                newAttr.Value = "INS";
+        //                outputSDDbop.Attributes.Append(newAttr);
+        //                outputSD.AppendChild(outputSDDbop);
+        //                AddNode(output, outputSDDbop, "TYPE", "11");
 
 
-                        if (item.collectionModelHeader.PaymentDate != null)
-                        {
-                            Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
-                            string tarih1 = Tarih.ToString("dd.MM.yyyy");
-                            AddNode(output, outputSDDbop, "DATE", tarih1);
-                        }
+        //                        AddNode(output, outputSDDbop, "SD_CODE", item.collectionModelHeader.SalesmanCode);
 
-                        AddNode(output, outputSDDbop, "NUMBER", item.collectionModelHeader.Number.ToString());
-                        if (item.collectionModelHeader.CustomerName != null) AddNode(output, outputSDDbop, "MASTER_TITLE", item.collectionModelHeader.CustomerName.ToString());
+
+        //                if (item.collectionModelHeader.PaymentDate != null)
+        //                {
+        //                    Tarih = DateTime.Parse(item.collectionModelHeader.PaymentDate.ToString());
+        //                    string tarih1 = Tarih.ToString("dd.MM.yyyy");
+        //                    AddNode(output, outputSDDbop, "DATE", tarih1);
+        //                }
+
+        //                AddNode(output, outputSDDbop, "NUMBER", item.collectionModelHeader.Number.ToString());
+        //                if (item.collectionModelHeader.CustomerName != null) AddNode(output, outputSDDbop, "MASTER_TITLE", item.collectionModelHeader.CustomerName.ToString());
                
-                        if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "RC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        //if (orderPayment.TotalCost != null) Common.AddNode(output, outputSDDbop, "AMOUNT", orderPayment.TotalCost.ToString().Replace(",", Settings.Delimiter));
-                        //if (orderPayment.TotalCost != null) Common.AddNode(output, outputSDDbop, "RC_AMOUNT", orderPayment.TotalCost.ToString().Replace(",", Settings.Delimiter));
-                        //if (orderPayment.TotalCost != null) Common.AddNode(output, outputSDDbop, "TC_AMOUNT", orderPayment.TotalCost.ToString().Replace(",", Settings.Delimiter));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "RC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
 
-
-
-                            outputAtachmentArp = output.CreateNode(XmlNodeType.Element, "ATTACHMENT_ARP", "");
-                            outputSDDbop.AppendChild(outputAtachmentArp);
+        //                    outputAtachmentArp = output.CreateNode(XmlNodeType.Element, "ATTACHMENT_ARP", "");
+        //                    outputSDDbop.AppendChild(outputAtachmentArp);
                         
 
-                        outputCHQPNTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
-                        outputAtachmentArp.AppendChild(outputCHQPNTransaction);
+        //                outputCHQPNTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
+        //                outputAtachmentArp.AppendChild(outputCHQPNTransaction);
 
-                        if (item.collectionModelHeader.CustomerCode != null) AddNode(output, outputCHQPNTransaction, "ARP_CODE", item.collectionModelHeader.CustomerCode);
-                        if (item.collectionModelHeader.Number != null) AddNode(output, outputCHQPNTransaction, "TRANNO", item.collectionModelHeader.Number);
+        //                if (item.collectionModelHeader.CustomerCode != null) AddNode(output, outputCHQPNTransaction, "ARP_CODE", item.collectionModelHeader.CustomerCode);
+        //                if (item.collectionModelHeader.Number != null) AddNode(output, outputCHQPNTransaction, "TRANNO", item.collectionModelHeader.Number);
                        
                 
-                       AddNode(output, outputCHQPNTransaction, "DESCRIPTION", item.collectionModelHeader.Desc+" - " + paymentDetail.PaymentTypeName);
+        //               AddNode(output, outputCHQPNTransaction, "DESCRIPTION", item.collectionModelHeader.Desc+" - " + paymentDetail.PaymentTypeName);
                         
-                        if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "CREDIT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
-                        //Common.AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
+        //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "CREDIT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
+        //                //Common.AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
 
                       
-                            AddNode(output, outputCHQPNTransaction, "AFFECT_RISK", "1");
+        //                    AddNode(output, outputCHQPNTransaction, "AFFECT_RISK", "1");
                         
-                    }
-                }
-                string fileName = "kasaHareketi_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
-                //string saveFilePath = filePath + "\\" + fileName;
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
-                output.Save(filePath);
-                IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto("", docNumber, "", true);
-                return recievedCollection;
-            }
-            catch (Exception ex)
-            {
-                IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto(ex.Message.ToString(), docNumber, "", false);
-                return recievedCollection;
-            }
+        //            }
+        //        }
+        //        string fileName = "kasaHareketi_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";
+        //        //string saveFilePath = filePath + "\\" + fileName;
+        //        string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+        //        output.Save(filePath);
+        //        IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto("", docNumber, "", true);
+        //        return recievedCollection;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IntegratedCollectionDto recievedCollection = new IntegratedCollectionDto(ex.Message.ToString(), docNumber, "", false);
+        //        return recievedCollection;
+        //    }
 
-        }
-
-
+        //}
+        #endregion
     }
 }

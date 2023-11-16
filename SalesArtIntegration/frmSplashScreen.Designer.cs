@@ -88,7 +88,7 @@ namespace invoiceIntegration
             // 
             this.progressBarLbl.AutoSize = true;
             this.progressBarLbl.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.progressBarLbl.Location = new System.Drawing.Point(410, 244);
+            this.progressBarLbl.Location = new System.Drawing.Point(403, 221);
             this.progressBarLbl.Name = "progressBarLbl";
             this.progressBarLbl.Size = new System.Drawing.Size(17, 13);
             this.progressBarLbl.TabIndex = 4;
@@ -113,14 +113,14 @@ namespace invoiceIntegration
             this.invoiceBtn.Enabled = false;
             this.invoiceBtn.HighEmphasis = true;
             this.invoiceBtn.Icon = null;
-            this.invoiceBtn.Location = new System.Drawing.Point(31, 281);
+            this.invoiceBtn.Location = new System.Drawing.Point(59, 281);
             this.invoiceBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.invoiceBtn.MouseState = MaterialSkin.MouseState.HOVER;
             this.invoiceBtn.Name = "invoiceBtn";
             this.invoiceBtn.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.invoiceBtn.Size = new System.Drawing.Size(148, 36);
+            this.invoiceBtn.Size = new System.Drawing.Size(127, 36);
             this.invoiceBtn.TabIndex = 6;
-            this.invoiceBtn.Text = "Fatura Aktarımı";
+            this.invoiceBtn.Text = "Fatura Aktar";
             this.invoiceBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.invoiceBtn.UseAccentColor = false;
             this.invoiceBtn.UseVisualStyleBackColor = true;
@@ -139,9 +139,9 @@ namespace invoiceIntegration
             this.dispatchBtn.MouseState = MaterialSkin.MouseState.HOVER;
             this.dispatchBtn.Name = "dispatchBtn";
             this.dispatchBtn.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.dispatchBtn.Size = new System.Drawing.Size(154, 36);
+            this.dispatchBtn.Size = new System.Drawing.Size(133, 36);
             this.dispatchBtn.TabIndex = 7;
-            this.dispatchBtn.Text = "İrsaliye Aktarımı";
+            this.dispatchBtn.Text = "İrsaliye Aktar";
             this.dispatchBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.dispatchBtn.UseAccentColor = false;
             this.dispatchBtn.UseVisualStyleBackColor = true;
@@ -155,14 +155,14 @@ namespace invoiceIntegration
             this.collectionBtn.Enabled = false;
             this.collectionBtn.HighEmphasis = true;
             this.collectionBtn.Icon = null;
-            this.collectionBtn.Location = new System.Drawing.Point(363, 281);
+            this.collectionBtn.Location = new System.Drawing.Point(335, 281);
             this.collectionBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.collectionBtn.MouseState = MaterialSkin.MouseState.HOVER;
             this.collectionBtn.Name = "collectionBtn";
             this.collectionBtn.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.collectionBtn.Size = new System.Drawing.Size(162, 36);
+            this.collectionBtn.Size = new System.Drawing.Size(140, 36);
             this.collectionBtn.TabIndex = 8;
-            this.collectionBtn.Text = "Tahsilat Aktarımı";
+            this.collectionBtn.Text = "Tahsilat Aktar";
             this.collectionBtn.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.collectionBtn.UseAccentColor = false;
             this.collectionBtn.UseVisualStyleBackColor = true;
@@ -186,7 +186,7 @@ namespace invoiceIntegration
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 10;
-            this.label1.Text = "V . 1 . 4 . 1";
+            this.label1.Text = "V . 1 . 4 . 7";
             // 
             // waybillTimer
             // 
@@ -202,6 +202,7 @@ namespace invoiceIntegration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(566, 485);
             this.Controls.Add(this.label1);
@@ -214,6 +215,7 @@ namespace invoiceIntegration
             this.Controls.Add(this.lblLoading);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.metroPanel1);
+            this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DoubleBuffered = false;
             this.FormStyle = MaterialSkin.Controls.MaterialForm.FormStyles.ActionBar_64;
             this.HelpButton = true;
@@ -223,6 +225,8 @@ namespace invoiceIntegration
             this.Padding = new System.Windows.Forms.Padding(3, 88, 3, 3);
             this.Sizable = false;
             this.Text = "SalesArt Integrator";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSplashScreen_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmSplashScreen_FormClosed);
             this.Load += new System.EventHandler(this.frmSplashScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
