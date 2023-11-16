@@ -112,13 +112,11 @@ namespace invoiceIntegration
             // 
             // btnGetCollection
             // 
-            //this.btnGetCollection.Location = new System.Drawing.Point(15, 57);
-            //this.btnGetCollection.Name = "btnGetCollection";
-            //this.btnGetCollection.Size = new System.Drawing.Size(194, 43);
-            //this.btnGetCollection.TabIndex = 37;
-            //this.btnGetCollection.Text = "Tahsilatları Getir";
-            //this.btnGetCollection.UseSelectable = true;
-            //this.btnGetCollection.Click += new System.EventHandler(this.btnGetCollection_Click);
+            this.btnGetCollection.Location = new System.Drawing.Point(0, 0);
+            this.btnGetCollection.Name = "btnGetCollection";
+            this.btnGetCollection.Size = new System.Drawing.Size(75, 23);
+            this.btnGetCollection.TabIndex = 59;
+            this.btnGetCollection.UseSelectable = true;
             // 
             // lblStartDate
             // 
@@ -146,7 +144,7 @@ namespace invoiceIntegration
             // 
             // btnLastLog
             // 
-            
+            this.btnLastLog.BackgroundImage = global::SalesArtIntegration.Properties.Resources._1button_logs;
             this.btnLastLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnLastLog.Location = new System.Drawing.Point(1076, 43);
             this.btnLastLog.Name = "btnLastLog";
@@ -175,20 +173,12 @@ namespace invoiceIntegration
             // 
             // cmbCollection
             // 
-            //this.cmbCollection.FontSize = MetroFramework.MetroComboBoxSize.Small;
-            //this.cmbCollection.FormattingEnabled = true;
-            //this.cmbCollection.ItemHeight = 19;
-            //this.cmbCollection.Items.AddRange(new object[] {
-            //"Nakit",
-            //"Kredi Kartı",
-            //"Çek"});
-            //this.cmbCollection.Location = new System.Drawing.Point(15, 26);
-            //this.cmbCollection.Name = "cmbCollection";
-            //this.cmbCollection.Size = new System.Drawing.Size(194, 25);
-            //this.cmbCollection.TabIndex = 51;
-            //this.cmbCollection.Theme = MetroFramework.MetroThemeStyle.Light;
-            //this.cmbCollection.UseSelectable = true;
-            //this.cmbCollection.SelectedIndexChanged += new System.EventHandler(this.cmbCollection_SelectedIndexChanged);
+            this.cmbCollection.ItemHeight = 23;
+            this.cmbCollection.Location = new System.Drawing.Point(0, 0);
+            this.cmbCollection.Name = "cmbCollection";
+            this.cmbCollection.Size = new System.Drawing.Size(121, 29);
+            this.cmbCollection.TabIndex = 58;
+            this.cmbCollection.UseSelectable = true;
             // 
             // btnCheckLogoConnection
             // 
@@ -224,13 +214,11 @@ namespace invoiceIntegration
             // 
             // btnSendCollection
             // 
-            //this.btnSendCollection.Location = new System.Drawing.Point(366, 57);
-            //this.btnSendCollection.Name = "btnSendCollection";
-            //this.btnSendCollection.Size = new System.Drawing.Size(189, 43);
-            //this.btnSendCollection.TabIndex = 40;
-            //this.btnSendCollection.Text = "Tahsilatları Aktar";
-            //this.btnSendCollection.UseSelectable = true;
-            //this.btnSendCollection.Click += new System.EventHandler(this.btnSendCollection_Click);
+            this.btnSendCollection.Location = new System.Drawing.Point(0, 0);
+            this.btnSendCollection.Name = "btnSendCollection";
+            this.btnSendCollection.Size = new System.Drawing.Size(75, 23);
+            this.btnSendCollection.TabIndex = 57;
+            this.btnSendCollection.UseSelectable = true;
             // 
             // materialCard1
             // 
@@ -264,7 +252,7 @@ namespace invoiceIntegration
             this.chkSelectAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.chkSelectAll.Location = new System.Drawing.Point(10, 222);
             this.chkSelectAll.Name = "chkSelectAll";
-            this.chkSelectAll.Size = new System.Drawing.Size(51, 20);
+            this.chkSelectAll.Size = new System.Drawing.Size(50, 20);
             this.chkSelectAll.TabIndex = 59;
             this.chkSelectAll.Text = "Seç";
             this.chkSelectAll.UseVisualStyleBackColor = false;
@@ -405,8 +393,6 @@ namespace invoiceIntegration
             this.Name = "Collection";
             this.Text = "Tahsilat Aktarımı";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Collection_FormClosing);
-            //this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Collection_FormClosed);
-            //this.Load += new System.EventHandler(this.Collection_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.materialCard1.ResumeLayout(false);
