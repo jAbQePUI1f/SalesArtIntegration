@@ -5,7 +5,6 @@ using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using Newtonsoft.Json;
 using RestSharp;
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using static invoiceIntegration.frmMain;
@@ -20,7 +19,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.Post)
+                RestRequest restRequest = new RestRequest("/integration/invoices/sync-statuses?", Method.POST)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -44,7 +43,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.Post)
+                RestRequest restRequest = new RestRequest("/integration/waybills/sync-statuses?", Method.POST)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -69,7 +68,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.Put)
+                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -94,7 +93,7 @@ namespace invoiceIntegration.helper
             try
             {
                 RestClient restClient = new RestClient(url);
-                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.Put)
+                RestRequest restRequest = new RestRequest("/integration/orders/sync", Method.PUT)
                 {
                     RequestFormat = DataFormat.Json
                 };

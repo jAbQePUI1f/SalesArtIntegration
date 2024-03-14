@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace invoiceIntegration.model
 {
@@ -33,7 +30,7 @@ namespace invoiceIntegration.model
         public string salesmanCode { get; set; }
         public List<InvoiceDetail> details { get; set; }
         //public string customerTradingGroup { get; set; }
-        public string distributorBranchCode { get; set; }
+        //public string distributorBranchCode { get; set; }
     }
     public class LogoDespatch : LogoInvoice
     {

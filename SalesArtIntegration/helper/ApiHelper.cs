@@ -24,7 +24,7 @@ namespace invoiceIntegration.helper
         {
             GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/invoices?", Method.Post)
+            RestRequest restRequest = new RestRequest("/integration/invoices?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
@@ -51,7 +51,7 @@ namespace invoiceIntegration.helper
         {
             GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/waybills?", Method.Post)
+            RestRequest restRequest = new RestRequest("/integration/waybills?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
@@ -78,7 +78,7 @@ namespace invoiceIntegration.helper
         {
             GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/collection?", Method.Post)
+            RestRequest restRequest = new RestRequest("/integration/collection?", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };
@@ -105,7 +105,7 @@ namespace invoiceIntegration.helper
         {
             GridHelper gridHelper = new GridHelper();
             RestClient restClient = new RestClient(Configuration.getUrl());
-            RestRequest restRequest = new RestRequest("/integration/orders/", Method.Post)
+            RestRequest restRequest = new RestRequest("/integration/orders/", Method.POST)
             {
                 RequestFormat = DataFormat.Json
             };

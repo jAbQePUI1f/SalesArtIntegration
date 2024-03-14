@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace invoiceIntegration.model.order
+﻿namespace invoiceIntegration.model.order
 {
     public class BaseOrderDto
     {
@@ -13,7 +7,6 @@ namespace invoiceIntegration.model.order
         public long orderId { get; set; }
         public string message { get; set; }
 
-
         public BaseOrderDto(int _code, long _remoteOrderId, long _orderId, string _message)
         {
             code = _code;
@@ -21,7 +14,6 @@ namespace invoiceIntegration.model.order
             orderId = _orderId;
             message = _message;
         }
-
         public BaseOrderDto()
         {
 
