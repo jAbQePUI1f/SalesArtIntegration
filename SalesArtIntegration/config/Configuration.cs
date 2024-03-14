@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace invoiceIntegration.config
 {
@@ -61,9 +57,17 @@ namespace invoiceIntegration.config
         {
             return ConfigurationManager.AppSettings["Department"];
         }
-        public static bool getIsProducerCode()
+        public static string getDivision()
         {
-            return Convert.ToBoolean(ConfigurationManager.AppSettings["isProducerCode"]);
+            return ConfigurationManager.AppSettings["Division"];
+        }
+        public static bool getUseProducerCode()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["useProducerCode"]);
+        }
+        public static string getUsePersonaProductCode()
+        {
+            return ConfigurationManager.AppSettings["usePersonaProductCode"];
         }
         public static bool getIsBarcode()
         {

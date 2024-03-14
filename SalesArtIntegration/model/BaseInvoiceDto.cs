@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace invoiceIntegration.model
+﻿namespace invoiceIntegration.model
 {
     public class BaseInvoiceDto
     {
@@ -12,8 +6,6 @@ namespace invoiceIntegration.model
         public string remoteInvoiceNumber { get; set; }
         public string invoiceNumber { get; set; }
         public string message { get; set; }
-
-
         public BaseInvoiceDto(int _code, string _remoteInvoiceNumber, string _invoiceNumber, string _message)
         {
             code = _code;
@@ -21,7 +13,6 @@ namespace invoiceIntegration.model
             invoiceNumber = _invoiceNumber;
             message = _message;
         }
-
         public BaseInvoiceDto()
         {
 

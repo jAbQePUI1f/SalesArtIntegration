@@ -1,5 +1,4 @@
-﻿using invoiceIntegration.helper;
-using invoiceIntegration.model.order;
+﻿using invoiceIntegration.model.order;
 using System.Collections.Generic;
 using System.Windows.Forms;
 namespace invoiceIntegration.helper

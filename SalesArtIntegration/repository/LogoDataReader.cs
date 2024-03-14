@@ -2,14 +2,9 @@
 using invoiceIntegration.helper;
 using invoiceIntegration.model;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using UnityObjects;
 
 namespace invoiceIntegration.repository
 {
@@ -308,7 +303,7 @@ namespace invoiceIntegration.repository
                 sqlCmd.CommandType = CommandType.Text;
                 sqlCmd.CommandText = Qry;
                 sqlCmd.Connection = conn;
-
+                helper.LogFile("Qry", "", "", "", Qry);
                 conn.Open();
 
                 SqlDataReader dr = sqlCmd.ExecuteReader();
