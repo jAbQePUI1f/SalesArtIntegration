@@ -183,6 +183,7 @@ namespace invoiceIntegration
                 AddNode(output, outputInvoiceNode, "NOTES1", invoice.note);
                 AddNode(output, outputInvoiceNode, "DIVISION", invoice.distributorBranchCode);
                 AddNode(output, outputInvoiceNode, "DEPARTMENT", helper.getDepartment());
+                AddNode(output, outputInvoiceNode, "DIVISION", helper.getDivision());
                 AddNode(output, outputInvoiceNode, "AUXIL_CODE", invoice.salesmanCode);
                 AddNode(output, outputInvoiceNode, "SOURCE_WH", invoice.wareHouseCode);
                 AddNode(output, outputInvoiceNode, "SOURCE_COST_GRP", invoice.wareHouseCode);

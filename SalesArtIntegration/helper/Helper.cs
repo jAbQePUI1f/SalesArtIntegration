@@ -47,6 +47,10 @@ namespace invoiceIntegration.helper
         {
             return Configuration.getDepartment();
         }
+        public string getDivision()
+        {
+            return Configuration.getDivision();
+        }
         public string getInvoiceType(int type)
         {
             string invoiceType = "";

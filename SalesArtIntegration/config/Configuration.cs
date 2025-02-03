@@ -33,6 +33,10 @@ namespace invoiceIntegration.config
         {
             return Convert.ToInt32(ConfigurationManager.AppSettings["DistributorId"]);
         }
+        public static string getDistributorName()
+        {
+            return ConfigurationManager.AppSettings["DistributorName"];
+        }
         public static bool getTransferCreditCartToCase()
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["TransferCreditCartToCase"]);
@@ -60,6 +64,10 @@ namespace invoiceIntegration.config
         public static string getDepartment()
         {
             return ConfigurationManager.AppSettings["Department"];
+        }
+        public static string getDivision()
+        {
+            return ConfigurationManager.AppSettings["Division"];
         }
         public static bool getIsProducerCode()
         {

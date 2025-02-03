@@ -176,7 +176,8 @@ namespace invoiceIntegration
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(234, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "© Copyright 2023 SalesArt. All Rights Reserved.";
+            this.label2.Text = "© Copyright 2025 SalesArt. All Rights Reserved.";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -186,7 +187,7 @@ namespace invoiceIntegration
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 10;
-            this.label1.Text = "V . 1 . 4 . 7";
+            this.label1.Text = "V . 1 . 7 . 5";
             // 
             // waybillTimer
             // 

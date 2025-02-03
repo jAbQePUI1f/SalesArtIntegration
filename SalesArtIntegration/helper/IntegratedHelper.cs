@@ -88,6 +88,7 @@ namespace invoiceIntegration.helper
                         newInvoice.DataFields.FieldByName("SOURCE_WH").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
+                        newInvoice.DataFields.FieldByName("DIVISION").Value = helper.getDivision();
                         newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                         if (Configuration.getUseShipCode())
                         {
@@ -355,6 +356,7 @@ namespace invoiceIntegration.helper
                     newDespatch.DataFields.FieldByName("SOURCE_WH").Value = despatch.wareHouseCode;
                     newDespatch.DataFields.FieldByName("SOURCE_COST_GRP").Value = despatch.wareHouseCode;
                     newDespatch.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
+                    newDespatch.DataFields.FieldByName("DIVISION").Value = helper.getDivision();
                     newDespatch.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
                     newDespatch.DataFields.FieldByName("SHIP_DATE").Value = despatch.date.AddDays(2).ToString("dd.MM.yyyy");
                     newDespatch.DataFields.FieldByName("SHIP_TIME").Value = helper.Hour(despatch.date.AddDays(2)).ToString();
