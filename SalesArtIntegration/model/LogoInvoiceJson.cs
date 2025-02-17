@@ -13,8 +13,6 @@ namespace invoiceIntegration.model
         public DateTime date { get; set; }
         public string documentNumber { get; set; }
         public string wareHouseCode { get; set; }
-        //public decimal vatRate { get; set; }
-        //public string shipLocCode { get; set; } // şube codu        
         public string customerCode { get; set; }
         public string customerName { get; set; }
         public string customerBranchCode { get; set; }
@@ -29,10 +27,8 @@ namespace invoiceIntegration.model
         public decimal netTotal { get; set; }  // indirim düşülmüş , kdv eklenmiş tutar , son fatura tutarı yani
         public string paymentCode { get; set; } // ödeme planı kodu
         public string note { get; set; }
-        //public int createdBy { get; set; }
         public string salesmanCode { get; set; }
         public List<InvoiceDetailJson> details { get; set; }
-        //public string customerTradingGroup { get; set; }
         public string distributorBranchCode { get; set; }
     }
 }

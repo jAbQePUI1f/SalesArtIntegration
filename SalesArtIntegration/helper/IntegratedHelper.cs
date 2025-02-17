@@ -38,6 +38,7 @@ namespace invoiceIntegration.helper
 
             string remoteInvoiceNumber = "";
             string message = "";
+
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
             try
             {
@@ -45,6 +46,7 @@ namespace invoiceIntegration.helper
                 {
                     Data newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
                     remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(invoice.number);
+                    int accepteInv = reader.getEInvoiceByCustomerCode(invoice.customerCode);
 
                     if (remoteInvoiceNumber != "")
                     {
@@ -262,7 +264,10 @@ namespace invoiceIntegration.helper
                             }
                         }
                         Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
-                        newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
+                                                
+                        // ACCEPTEINV değeri 1 ise EINVOICE = 1, 0 ise EINVOICE = 2 olarak ayarlanıyor
+                        newInvoice.DataFields.FieldByName("EINVOICE").Value = (accepteInv == 1) ? 1 : 2;
+
                         newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
                         newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                         newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
