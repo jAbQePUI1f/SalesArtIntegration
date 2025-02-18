@@ -242,26 +242,42 @@ namespace invoiceIntegration
                             AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                         }
                     }
+                    else {
+                        AddNode(output, outputTransaction, "TYPE", "1");
+                        AddNode(output, outputTransaction, "BILLED", "1");
+                        AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
+                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                        AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
+                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
+                        {
+                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                        }
+                    }
                 }
                 else
                 {
-                    AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                    AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
-                    AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                    AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "BILLED", "1");
-                    AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                    AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                    AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
-                    AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
-                    AddNode(output, outputTransaction, "AFFECT_RISK", "1");
-                    // efaturalarda istiyor olabilri
-                    // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
-                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)
+                    if (invoice.details[i].type !=1)
                     {
-                        AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                        AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                        AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                        AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                        AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "BILLED", "1");
+                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                        AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
+                        AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                        AddNode(output, outputTransaction, "AFFECT_RISK", "1");
+                        // efaturalarda istiyor olabilri
+                        // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
+                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
+                        {
+                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                        }
                     }
                 }
             }

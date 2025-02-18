@@ -422,7 +422,6 @@ namespace invoiceIntegration.helper
                                 newWaybillLines[i].FieldByName("BARCODE").Value = detail.barcode;
                                 if (despatch.type == (int)InvoiceType.SELLING_RETURN || despatch.type == (int)InvoiceType.SELLING || despatch.type == (int)InvoiceType.SELLING_SERVICE) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
                                 {
-
                                     newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 2;
                                 }
                                 else
