@@ -3,7 +3,6 @@
     public class DiscountJson
     {
         public string rewardType { get; set; }
-        //public int type { get; set; }
         public string code { get; set; }
         public string name { get; set; }
         public decimal rate { get; set; }
