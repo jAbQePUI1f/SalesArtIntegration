@@ -133,7 +133,7 @@ namespace invoiceIntegration
             Cursor.Current = Cursors.Default;
         }
         private void btnSendToLogo_Click(object sender, EventArgs e)
-        {//selam
+        {
             IntegratedHelper integratedHelper = new IntegratedHelper();
             ResponseHelper responseHelper = new ResponseHelper();
             SelectionHelper selectionHelper = new SelectionHelper();
@@ -284,7 +284,6 @@ namespace invoiceIntegration
             else if (dialogResult == DialogResult.No) 
             {
                 MessageBox.Show("Mevcut ekrandan devam ediliyor..", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
     }
 }

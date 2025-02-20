@@ -43,39 +43,63 @@ namespace invoiceIntegration
                     invoice.customerBranchCode = selectedInvoice.customerBranchCode;
                     invoice.customerBranchName = selectedInvoice.customerBranchName;
                     List<InvoiceDetail> invoiceDetails = new List<model.InvoiceDetail>();
+                    List<InvoiceDetail> invoiceDetailDiscountDetails = new List<InvoiceDetail>();
                     foreach (var selectedInvoiceDetail in selectedInvoice.details)
                     {
                         InvoiceDetail invDetail = new InvoiceDetail();
-                        //if (selectedInvoice.invoiceType == InvoiceType.BUYING_SERVICE || selectedInvoice.invoiceType == InvoiceType.SELLING_SERVICE)
-                        //{
-                        //    invDetail.type = (int)selectedInvoice.invoiceType;
-                        //}
-                        invDetail.type = 0;
-                        invDetail.code = selectedInvoiceDetail.code;
-                        invDetail.quantity = selectedInvoiceDetail.quantity;
-                        invDetail.price = selectedInvoiceDetail.price;
-                        invDetail.total = selectedInvoiceDetail.total;
-                        invDetail.discountTotal = selectedInvoiceDetail.discountTotal;
-                        invDetail.unitCode = selectedInvoiceDetail.unitCode;
-                        invDetail.vatIncluded = selectedInvoiceDetail.vatIncluded;
-                        invDetail.vatRate = selectedInvoiceDetail.vatRate;
-                        invDetail.vatAmount = selectedInvoiceDetail.vatAmount;
-                        invDetail.netTotal = selectedInvoiceDetail.netTotal;
-                        invDetail.barcode = selectedInvoiceDetail.barcode;
-                        invDetail.invoiceDetailLineOrder = selectedInvoiceDetail.invoiceDetailLineOrder;
-                        invDetail.grossTotal = selectedInvoiceDetail.grossTotal;
-                        List<InvoiceDetail> invoiceDetailDiscountDetails = new List<InvoiceDetail>();
-                        foreach (var discount in selectedInvoiceDetail.campaignRewards)
+
+                        if (selectedInvoiceDetail.lineType == "NORMAL")
                         {
-                            InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
-                            invDetailDiscountDetail.type = 2;
-                            invDetailDiscountDetail.rate = discount.rate;
-                            invDetailDiscountDetail.discountTotal = discount.discountTotal;
-                            invDetailDiscountDetail.price = invDetail.price;
-                            invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
-                            invDetailDiscountDetail.name = discount.name;
-                            invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
+                            invDetail.type = 0;
+                            invDetail.code = selectedInvoiceDetail.code;
+                            invDetail.quantity = selectedInvoiceDetail.quantity;
+                            invDetail.price = selectedInvoiceDetail.price;
+                            invDetail.total = selectedInvoiceDetail.total;
+                            invDetail.discountTotal = selectedInvoiceDetail.discountTotal;
+                            invDetail.unitCode = selectedInvoiceDetail.unitCode;
+                            invDetail.vatIncluded = selectedInvoiceDetail.vatIncluded;
+                            invDetail.vatRate = selectedInvoiceDetail.vatRate;
+                            invDetail.vatAmount = selectedInvoiceDetail.vatAmount;
+                            invDetail.netTotal = selectedInvoiceDetail.netTotal;
+                            invDetail.barcode = selectedInvoiceDetail.barcode;
+                            invDetail.invoiceDetailLineOrder = selectedInvoiceDetail.invoiceDetailLineOrder;
+                            invDetail.grossTotal = selectedInvoiceDetail.grossTotal;
+
+                            foreach (var discount in selectedInvoiceDetail.campaignRewards)
+                            {
+                               
+                                    InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
+                                    invDetailDiscountDetail.type = 2;
+                                    invDetailDiscountDetail.rate = discount.rate;
+                                    invDetailDiscountDetail.discountTotal = discount.discountTotal;
+                                    invDetailDiscountDetail.price = invDetail.price;
+                                    invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
+                                    invDetailDiscountDetail.name = discount.name;
+                                    invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
+                                
+
+                            }
+
                         }
+                        else if (selectedInvoiceDetail.lineType == "PROMOTION")
+                        {
+                            foreach (var discount in selectedInvoiceDetail.campaignRewards)
+                            {
+                               
+                                    InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
+                                    invDetailDiscountDetail.type = 1;
+                                    invDetailDiscountDetail.rate = 100;
+                                    //invDetailDiscountDetail.discountTotal = discount.discountTotal;
+                                    //invDetailDiscountDetail.price = invDetail.price;
+                                    //invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
+                                    invDetailDiscountDetail.name = discount.name;
+                                    invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
+                              
+
+                            }
+                        }
+                       
+                        
                         invoiceDetails.Add(invDetail);
                         if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
                         {

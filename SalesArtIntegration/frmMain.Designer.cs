@@ -68,6 +68,7 @@
             this.anaMenüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hakkındaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.materialCard1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -266,7 +267,7 @@
             this.lblInvoice.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.lblInvoice.Location = new System.Drawing.Point(6, 6);
             this.lblInvoice.Name = "lblInvoice";
-            this.lblInvoice.Size = new System.Drawing.Size(62, 15);
+            this.lblInvoice.Size = new System.Drawing.Size(63, 15);
             this.lblInvoice.TabIndex = 25;
             this.lblInvoice.Text = "Tip Seçiniz";
             // 
@@ -287,7 +288,7 @@
             this.lblStartDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.lblStartDate.Location = new System.Drawing.Point(292, 5);
             this.lblStartDate.Name = "lblStartDate";
-            this.lblStartDate.Size = new System.Drawing.Size(88, 15);
+            this.lblStartDate.Size = new System.Drawing.Size(89, 15);
             this.lblStartDate.TabIndex = 30;
             this.lblStartDate.Text = "Başlangıç Tarihi";
             // 
@@ -298,7 +299,7 @@
             this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.lblEndDate.Location = new System.Drawing.Point(494, 5);
             this.lblEndDate.Name = "lblEndDate";
-            this.lblEndDate.Size = new System.Drawing.Size(60, 15);
+            this.lblEndDate.Size = new System.Drawing.Size(61, 15);
             this.lblEndDate.TabIndex = 31;
             this.lblEndDate.Text = "Bitiş Tarihi";
             // 
@@ -417,7 +418,8 @@
             // anaMenüToolStripMenuItem
             // 
             this.anaMenüToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
+            this.exitToolStripMenuItem,
+            this.hakkındaToolStripMenuItem});
             this.anaMenüToolStripMenuItem.Name = "anaMenüToolStripMenuItem";
             this.anaMenüToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.anaMenüToolStripMenuItem.Text = "Menü";
@@ -426,7 +428,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -437,6 +439,12 @@
             this.menüToolStripMenuItem.Text = "Ana Ekran";
             this.menüToolStripMenuItem.ToolTipText = "Ana Ekrana yönlendireleceksiniz..";
             this.menüToolStripMenuItem.Click += new System.EventHandler(this.menüToolStripMenuItem_Click);
+            // 
+            // hakkındaToolStripMenuItem
+            // 
+            this.hakkındaToolStripMenuItem.Name = "hakkındaToolStripMenuItem";
+            this.hakkındaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hakkındaToolStripMenuItem.Text = "Hakkında";
             // 
             // frmMain
             // 
@@ -498,8 +506,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
-        public MetroFramework.Controls.MetroDateTime startDate;
-        public MetroFramework.Controls.MetroDateTime endDate;
     }
 }
 

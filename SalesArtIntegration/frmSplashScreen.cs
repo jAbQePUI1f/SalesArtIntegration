@@ -224,11 +224,9 @@ namespace invoiceIntegration
         {
             Application.Exit();
         }
-
-        private void metroPanel1_MouseClick(object sender, MouseEventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
-            WebBrowser webBrowser = new WebBrowser();
-            webBrowser.Dock = DockStyle.Fill;
+        
         }
     }
 }

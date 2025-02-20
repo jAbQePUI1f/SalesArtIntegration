@@ -188,6 +188,7 @@ namespace invoiceIntegration
                 AddNode(output, outputInvoiceNode, "NOTES1", invoice.note);
                 AddNode(output, outputInvoiceNode, "DIVISION", divisionCode);
                 AddNode(output, outputInvoiceNode, "DEPARTMENT", helper.getDepartment());
+                AddNode(output, outputInvoiceNode, "DIVISION", helper.getDivision());
                 AddNode(output, outputInvoiceNode, "AUXIL_CODE", invoice.salesmanCode);
                 AddNode(output, outputInvoiceNode, "SOURCE_WH", invoice.wareHouseCode);
                 AddNode(output, outputInvoiceNode, "SOURCE_COST_GRP", invoice.wareHouseCode);
@@ -247,67 +248,42 @@ namespace invoiceIntegration
                             AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                         }
                     }
+                    else {
+                        AddNode(output, outputTransaction, "TYPE", "1");
+                        AddNode(output, outputTransaction, "BILLED", "1");
+                        AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
+                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                        AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
+                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
+                        {
+                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
+                        }
+                    }
                 }
                 else
                 {
-                    helper.LogFile("useProducerCode", "", "", "", useProducerCode.ToString());
-                    if (useProducerCode) // bazı distlerde ürün kodları producerCode a yazılı ,
+                    if (invoice.details[i].type !=1)
                     {
-                        string productCodeByProducer = reader.getProductCodeByProducerCode(invoice.details[i].code);
-                        helper.LogFile("productCodeByProducer", "", "", "", productCodeByProducer);
-                        if (productCodeByProducer != "" && productCodeByProducer != null)
-                            AddNode(output, outputTransaction, "MASTER_CODE", productCodeByProducer);
-                        else
+                        AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                        AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                        AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                        AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "BILLED", "1");
+                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                        AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
+                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                        AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
+                        AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                        AddNode(output, outputTransaction, "AFFECT_RISK", "1");
+                        // efaturalarda istiyor olabilri
+                        // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
+                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
                         {
-                            helper.LogFile("producer code hata", "", "", "", productCodeByProducer);
-                            string productDetailMessage = invoice.details[i].code + " Kodlu Ürün Logoda Bulunamadı ";
-                            //IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(productDetailMessage, invoice.number, remoteInvoiceNumber, false);
-                            //receivedInvoices.Add(recievedInvoice);
-                            //integratedInvoices.integratedInvoices = receivedInvoices;
-                            //integratedInvoices.distributorId = distributorId;
-                            //return integratedInvoices;
+                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                         }
-                    }
-                    else if (Configuration.getIsBarcode())   //sümerde ürün kodları barkoda göre getirilecek
-                    {
-                        string productCodeByBarcode = reader.getProductCodeByBarcode(invoice.details[i].barcode);
-                        if (productCodeByBarcode != "" && productCodeByBarcode != null)
-                            AddNode(output, outputTransaction, "MASTER_CODE", productCodeByBarcode);
-                        else
-                        {
-                            string productDetailMessage = invoice.details[i].barcode + " Barkodlu Ürün Logoda bulunamadı ..";
-                            //IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(productDetailMessage, invoice.number, remoteInvoiceNumber, false);
-                            //receivedInvoices.Add(recievedInvoice);
-                            //integratedInvoices.integratedInvoices = receivedInvoices;
-                            //integratedInvoices.distributorId = distributorId;
-                            //return integratedInvoices;
-                        }
-                    }
-                    else if (invoice.type == (int)InvoiceType.SELLING_SERVICE || invoice.type == (int)InvoiceType.BUYING_SERVICE)
-                    {
-                        string code = reader.getServiceCodeBySalesArtServiceCode(invoice.details[i].code, invoice.type == 4 ? 1 : 2);
-                        AddNode(output, outputTransaction, "MASTER_CODE", usePersonaProductCode + code);
-
-                        AddNode(output, outputTransaction, "TYPE", "4");
-                    }
-                    else
-                    AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                    AddNode(output, outputTransaction, "MASTER_CODE", usePersonaProductCode + invoice.details[i].code);
-                    AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                    AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "BILLED", "1");
-                    AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                    AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
-                    AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                    AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
-                    AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
-                    AddNode(output, outputTransaction, "AFFECT_RISK", "1");
-                    // efaturalarda istiyor olabilri
-                    // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
-                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)
-                    {
-                        AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                     }
                 }
             }

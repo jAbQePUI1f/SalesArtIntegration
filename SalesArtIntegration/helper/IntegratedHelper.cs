@@ -39,6 +39,7 @@ namespace invoiceIntegration.helper
 
             string remoteInvoiceNumber = "";
             string message = "";
+
             List<IntegratedInvoiceDto> receivedInvoices = new List<IntegratedInvoiceDto>();
             try
             {
@@ -46,7 +47,7 @@ namespace invoiceIntegration.helper
                 {
                     Data newInvoice = unity.NewDataObject(DataObjectType.doSalesInvoice);
                     remoteInvoiceNumber = reader.getInvoiceNumberByDocumentNumber(invoice.number);
-                    // salesArttaki invoice number , logoda documentNumber alanına yazılıyor.
+                    int accepteInv = reader.getEInvoiceByCustomerCode(invoice.customerCode);
                     if (remoteInvoiceNumber != "")
                     {
                         IntegratedInvoiceDto recievedInvoice = new IntegratedInvoiceDto(invoice.number + " belge numaralı fatura, sistemde zaten mevcut. Kontrol Ediniz", invoice.number, remoteInvoiceNumber, true);
@@ -90,7 +91,7 @@ namespace invoiceIntegration.helper
                         newInvoice.DataFields.FieldByName("SOURCE_COST_GRP").Value = invoice.wareHouseCode;
                         newInvoice.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
                         newInvoice.DataFields.FieldByName("DIVISION").Value = helper.getDivision();
-                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
+                        newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = affectRisk;
                         if (Configuration.getUseShipCode())
                         {
                             newInvoice.DataFields.FieldByName("SHIPLOC_CODE").Value = invoice.customerBranchCode;
@@ -263,7 +264,10 @@ namespace invoiceIntegration.helper
                             }
                         }
                         Lines paymentList = newInvoice.DataFields.FieldByName("PAYMENT_LIST").Lines;
-                        newInvoice.DataFields.FieldByName("EINVOICE").Value = reader.getEInvoiceByCustomerCode(invoice.customerCode);
+                                                
+                        // ACCEPTEINV değeri 1 ise EINVOICE = 1, 0 ise EINVOICE = 2 olarak ayarlanıyor
+                        newInvoice.DataFields.FieldByName("EINVOICE").Value = (accepteInv == 1) ? 1 : 2;
+
                         newInvoice.DataFields.FieldByName("PROFILE_ID").Value = reader.getProfileIDByCustomerCode(invoice.customerCode);
                         newInvoice.DataFields.FieldByName("AFFECT_RISK").Value = 1;
                         newInvoice.DataFields.FieldByName("DOC_DATE").Value = invoice.documentDate.ToShortDateString();
@@ -357,7 +361,7 @@ namespace invoiceIntegration.helper
                     newDespatch.DataFields.FieldByName("SOURCE_WH").Value = despatch.wareHouseCode;
                     newDespatch.DataFields.FieldByName("SOURCE_COST_GRP").Value = despatch.wareHouseCode;
                     newDespatch.DataFields.FieldByName("DEPARTMENT").Value = helper.getDepartment();
-                    newDespatch.DataFields.FieldByName("DIVISON").Value = helper.getDivision();
+                    newDespatch.DataFields.FieldByName("DIVISION").Value = helper.getDivision();
                     newDespatch.DataFields.FieldByName("SHIPPING_AGENT").Value = shipAgentCode;
                     newDespatch.DataFields.FieldByName("SHIP_DATE").Value = despatch.date.AddDays(2).ToString("dd.MM.yyyy");
                     newDespatch.DataFields.FieldByName("SHIP_TIME").Value = helper.Hour(despatch.date.AddDays(2)).ToString();
@@ -418,7 +422,6 @@ namespace invoiceIntegration.helper
                                 newWaybillLines[i].FieldByName("BARCODE").Value = detail.barcode;
                                 if (despatch.type == (int)InvoiceType.SELLING_RETURN || despatch.type == (int)InvoiceType.SELLING || despatch.type == (int)InvoiceType.SELLING_SERVICE) // satış , satış iade ve verilen hizmet ise satış fiyatı üzerinden çalışsın denildi
                                 {
-
                                     newWaybillLines[i].FieldByName("PRCLISTTYPE").Value = 2;
                                 }
                                 else
