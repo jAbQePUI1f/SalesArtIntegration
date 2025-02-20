@@ -11,7 +11,6 @@ namespace invoiceIntegration
 {
     public partial class frmMain : MetroForm
     {
-
         public frmMain()
         {
             InitializeComponent();
@@ -167,13 +166,13 @@ namespace invoiceIntegration
                 }
                 else
                 {
-                    MessageBox.Show("Logoya Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
+                    MessageBox.Show("Logo Bağlantı Problemi Yaşandı, Faturalar Aktarılamadı.", "Logo Bağlantı Hatası", MessageBoxButtons.OK);
                 }
                 btnSendToLogo.Enabled = true;
             }
             else
             {
-                MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seçim", MessageBoxButtons.OK);
+                MessageBox.Show("Fatura Seçmelisiniz..", "Fatura Seç", MessageBoxButtons.OK);
                 btnSendToLogo.Enabled = true;
             }
         }
@@ -275,13 +274,16 @@ namespace invoiceIntegration
         }
         private void menüToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Ana Ekrana geçiş yapıyorsunuz..", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult dialogResult = MessageBox.Show("Ana Ekrana geçiş yapıyorsunuz. Emin misiniz?", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (dialogResult == DialogResult.Yes)
             {
                 frmSplashScreen splsh = new frmSplashScreen();
                 this.Hide();
                 splsh.Show();
             }
+            else if (dialogResult == DialogResult.No) 
+            {
+                MessageBox.Show("Mevcut ekrandan devam ediliyor..", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

@@ -34,7 +34,6 @@ namespace invoiceIntegration
             this.progressBar = new MetroFramework.Controls.MetroProgressBar();
             this.lblLoading = new MetroFramework.Controls.MetroLabel();
             this.invoiceTimer = new System.Windows.Forms.Timer(this.components);
-            this.metroPanel1 = new MetroFramework.Controls.MetroPanel();
             this.progressBarLbl = new System.Windows.Forms.Label();
             this.lblLoading2 = new MetroFramework.Controls.MetroLabel();
             this.invoiceBtn = new MaterialSkin.Controls.MaterialButton();
@@ -44,6 +43,7 @@ namespace invoiceIntegration
             this.label1 = new System.Windows.Forms.Label();
             this.waybillTimer = new System.Windows.Forms.Timer(this.components);
             this.collectionTimer = new System.Windows.Forms.Timer(this.components);
+            this.metroPanel1 = new MetroFramework.Controls.MetroPanel();
             this.SuspendLayout();
             // 
             // progressBar
@@ -68,22 +68,6 @@ namespace invoiceIntegration
             this.invoiceTimer.Enabled = true;
             this.invoiceTimer.Tick += new System.EventHandler(this.timerSplashScreen_Tick);
             // 
-            // metroPanel1
-            // 
-            this.metroPanel1.BackColor = System.Drawing.Color.White;
-            this.metroPanel1.BackgroundImage = global::SalesArtIntegration.Properties.Resources.logo;
-            this.metroPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.metroPanel1.HorizontalScrollbarBarColor = true;
-            this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
-            this.metroPanel1.HorizontalScrollbarSize = 10;
-            this.metroPanel1.Location = new System.Drawing.Point(142, 123);
-            this.metroPanel1.Name = "metroPanel1";
-            this.metroPanel1.Size = new System.Drawing.Size(255, 52);
-            this.metroPanel1.TabIndex = 0;
-            this.metroPanel1.VerticalScrollbarBarColor = true;
-            this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
-            this.metroPanel1.VerticalScrollbarSize = 10;
-            // 
             // progressBarLbl
             // 
             this.progressBarLbl.AutoSize = true;
@@ -97,6 +81,7 @@ namespace invoiceIntegration
             // lblLoading2
             // 
             this.lblLoading2.AutoSize = true;
+            this.lblLoading2.BackColor = System.Drawing.Color.WhiteSmoke;
             this.lblLoading2.FontWeight = MetroFramework.MetroLabelWeight.Bold;
             this.lblLoading2.Location = new System.Drawing.Point(215, 361);
             this.lblLoading2.Name = "lblLoading2";
@@ -172,7 +157,7 @@ namespace invoiceIntegration
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label2.Location = new System.Drawing.Point(6, 462);
+            this.label2.Location = new System.Drawing.Point(6, 443);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(234, 13);
             this.label2.TabIndex = 9;
@@ -183,7 +168,7 @@ namespace invoiceIntegration
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label1.Location = new System.Drawing.Point(501, 462);
+            this.label1.Location = new System.Drawing.Point(501, 443);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 10;
@@ -199,13 +184,30 @@ namespace invoiceIntegration
             this.collectionTimer.Enabled = true;
             this.collectionTimer.Tick += new System.EventHandler(this.collectionTimer_Tick);
             // 
+            // metroPanel1
+            // 
+            this.metroPanel1.BackColor = System.Drawing.Color.White;
+            this.metroPanel1.BackgroundImage = global::SalesArtIntegration.Properties.Resources.logo_1920;
+            this.metroPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.metroPanel1.HorizontalScrollbarBarColor = true;
+            this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
+            this.metroPanel1.HorizontalScrollbarSize = 10;
+            this.metroPanel1.Location = new System.Drawing.Point(142, 132);
+            this.metroPanel1.Name = "metroPanel1";
+            this.metroPanel1.Size = new System.Drawing.Size(255, 45);
+            this.metroPanel1.TabIndex = 0;
+            this.metroPanel1.VerticalScrollbarBarColor = true;
+            this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
+            this.metroPanel1.VerticalScrollbarSize = 10;
+            this.metroPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.metroPanel1_MouseClick);
+            // 
             // frmSplashScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(566, 485);
+            this.ClientSize = new System.Drawing.Size(566, 470);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.collectionBtn);

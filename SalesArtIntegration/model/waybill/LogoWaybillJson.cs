@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace invoiceIntegration.model.waybill
 {
@@ -34,6 +31,6 @@ namespace invoiceIntegration.model.waybill
         public string salesmanCode { get; set; }
         public List<WaybillDetailJson> details { get; set; }
         //public string customerTradingGroup { get; set; }
-        public string distributorBranchCode { get; set; }
+        //public string distributorBranchCode { get; set; }
     }
 }

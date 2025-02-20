@@ -297,7 +297,7 @@
             this.lblEndDate.AutoSize = true;
             this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblEndDate.Location = new System.Drawing.Point(477, 5);
+            this.lblEndDate.Location = new System.Drawing.Point(494, 5);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(61, 15);
             this.lblEndDate.TabIndex = 31;
@@ -306,25 +306,32 @@
             // startDate
             // 
             this.startDate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.startDate.DisplayFocus = true;
             this.startDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.startDate.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.startDate.FontWeight = MetroFramework.MetroDateTimeWeight.Bold;
+            this.startDate.ImeMode = System.Windows.Forms.ImeMode.On;
             this.startDate.Location = new System.Drawing.Point(292, 26);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(179, 25);
+            this.startDate.Size = new System.Drawing.Size(183, 25);
             this.startDate.TabIndex = 32;
             this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.startDate.UseStyleColors = true;
             // 
             // endDate
             // 
             this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.endDate.DisplayFocus = true;
             this.endDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.endDate.Location = new System.Drawing.Point(477, 27);
+            this.endDate.FontWeight = MetroFramework.MetroDateTimeWeight.Bold;
+            this.endDate.ImeMode = System.Windows.Forms.ImeMode.On;
+            this.endDate.Location = new System.Drawing.Point(496, 27);
             this.endDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(170, 25);
+            this.endDate.Size = new System.Drawing.Size(187, 25);
             this.endDate.TabIndex = 33;
             this.endDate.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.endDate.UseStyleColors = true;
             // 
             // btnXML
             // 
@@ -361,7 +368,7 @@
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(463, 66);
+            this.btnSendToLogo.Location = new System.Drawing.Point(500, 66);
             this.btnSendToLogo.Name = "btnSendToLogo";
             this.btnSendToLogo.Size = new System.Drawing.Size(183, 43);
             this.btnSendToLogo.TabIndex = 37;
@@ -442,8 +449,10 @@
             // frmMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
             this.ClientSize = new System.Drawing.Size(1216, 626);
+            this.ControlBox = false;
             this.Controls.Add(this.btnLastLog);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.chkSelectAll);
@@ -478,8 +487,6 @@
         private MetroFramework.Controls.MetroButton btnGetInvoices;
         private MetroFramework.Controls.MetroLabel lblStartDate;
         private MetroFramework.Controls.MetroLabel lblEndDate;
-        private MetroFramework.Controls.MetroDateTime startDate;
-        private MetroFramework.Controls.MetroDateTime endDate;
         private MetroFramework.Controls.MetroButton btnXML;
         private MetroFramework.Controls.MetroButton btnLastLog;
         private MetroFramework.Controls.MetroButton btnSendOrderToLogo;
@@ -499,7 +506,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
-        private System.Windows.Forms.ToolStripMenuItem hakkındaToolStripMenuItem;
     }
 }
 
