@@ -171,7 +171,8 @@ namespace invoiceIntegration.helper
                                     newInvoiceLines[i].FieldByName("DESCRIPTION").Value = detail.name;
                                     newInvoiceLines[i].FieldByName("SOURCEINDEX").Value = invoice.wareHouseCode;
                                     newInvoiceLines[i].FieldByName("SOURCECOSTGRP").Value = invoice.wareHouseCode;
-                                    newInvoiceLines[i].FieldByName("AFFECT_RISK").Value = 1;
+                                    newInvoiceLines[i].FieldByName("AFFECT_RISK").Value = affectRisk;
+                                    newInvoiceLines[i].FieldByName("EARCHIVEDETR_SENDMOD").Value = (accepteInv == 1) ? 1 : 2;
                                     if (campaignLineNo.Length > 0)
                                     {
                                         Lines newCampaignInfoLine = newInvoiceLines[i].FieldByName("CAMPAIGN_INFOS").Lines;

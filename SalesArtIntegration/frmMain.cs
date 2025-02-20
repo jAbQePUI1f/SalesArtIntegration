@@ -106,7 +106,7 @@ namespace invoiceIntegration
             }
             catch (Exception)
             {
-                MessageBox.Show("Logo ile bağlantı kurulamıyor. Lütfen IT Departmanı ile iletişime geçiniz...", "Bağlantı Sorunu", MessageBoxButtons.OK);
+                MessageBox.Show("Logo Objects ile bağlantı kurulamıyor. Lütfen firmanızın Bilgi İşlem Departmanı ile iletişime geçiniz.", "Bağlantı Sorunu", MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
             helper.LogFile("Login Kontolü Bitti", "-", "-", "-", "-");
         }
@@ -284,6 +284,10 @@ namespace invoiceIntegration
             else if (dialogResult == DialogResult.No) 
             {
                 MessageBox.Show("Mevcut ekrandan devam ediliyor..", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void hakkındaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

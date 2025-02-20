@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.btnLogDelete = new MetroFramework.Controls.MetroButton();
             this.SuspendLayout();
             // 
             // listBox1
@@ -42,12 +43,23 @@
             this.listBox1.Size = new System.Drawing.Size(934, 337);
             this.listBox1.TabIndex = 0;
             // 
+            // btnLogDelete
+            // 
+            this.btnLogDelete.Location = new System.Drawing.Point(810, 26);
+            this.btnLogDelete.Name = "btnLogDelete";
+            this.btnLogDelete.Size = new System.Drawing.Size(144, 28);
+            this.btnLogDelete.TabIndex = 0;
+            this.btnLogDelete.Text = "Temizle";
+            this.btnLogDelete.UseSelectable = true;
+            this.btnLogDelete.Click += new System.EventHandler(this.btnLogDelete_Click);
+            // 
             // frmViewLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ClientSize = new System.Drawing.Size(974, 417);
+            this.Controls.Add(this.btnLogDelete);
             this.Controls.Add(this.listBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmViewLog";
@@ -60,5 +72,6 @@
         #endregion
 
         private System.Windows.Forms.ListBox listBox1;
+        private MetroFramework.Controls.MetroButton btnLogDelete;
     }
 }

@@ -10,7 +10,7 @@ using static invoiceIntegration.frmMain;
 namespace invoiceIntegration
 {
     public class SelectionHelper
-    {      
+    {
         public List<LogoInvoice> GetSelectedInvoices(DataGridView dataGridInvoice, GenericResponse<List<LogoInvoiceJson>> jsonInvoices)
         {
             List<LogoInvoice> invoices = new List<LogoInvoice>();
@@ -19,8 +19,24 @@ namespace invoiceIntegration
                 if (Convert.ToBoolean(row.Cells["chk"].Value))
                 {
                     string number = row.Cells["number"].Value.ToString();
+                    if (string.IsNullOrEmpty(number))
+                    {
+                        MessageBox.Show("Hata: Satırda fatura numarası bulunamadı.");
+                        continue;
+                    }
+
                     LogoInvoiceJson selectedInvoice = jsonInvoices.data.FirstOrDefault(inv => inv.number == number);
+                    if (selectedInvoice == null)
+                    {
+                        MessageBox.Show($"Hata: Fatura numarası bulunamadı: {number}");
+                        continue;
+                    }
+
+
+                    //LogoInvoiceJson selectedInvoice = jsonInvoices.data.FirstOrDefault(inv => inv.number == number);
                     LogoInvoice invoice = new LogoInvoice();
+
+
                     invoice.type = (int)selectedInvoice.invoiceType;
                     invoice.number = selectedInvoice.number;
                     invoice.documentNumber = selectedInvoice.documentNumber;
@@ -46,10 +62,11 @@ namespace invoiceIntegration
                     List<InvoiceDetail> invoiceDetailDiscountDetails = new List<InvoiceDetail>();
                     foreach (var selectedInvoiceDetail in selectedInvoice.details)
                     {
-                        InvoiceDetail invDetail = new InvoiceDetail();
+
 
                         if (selectedInvoiceDetail.lineType == "NORMAL")
                         {
+                            InvoiceDetail invDetail = new InvoiceDetail();
                             invDetail.type = 0;
                             invDetail.code = selectedInvoiceDetail.code;
                             invDetail.quantity = selectedInvoiceDetail.quantity;
@@ -64,50 +81,71 @@ namespace invoiceIntegration
                             invDetail.barcode = selectedInvoiceDetail.barcode;
                             invDetail.invoiceDetailLineOrder = selectedInvoiceDetail.invoiceDetailLineOrder;
                             invDetail.grossTotal = selectedInvoiceDetail.grossTotal;
-
+                            invoiceDetails.Add(invDetail);
                             foreach (var discount in selectedInvoiceDetail.campaignRewards)
                             {
-                               
-                                    InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
-                                    invDetailDiscountDetail.type = 2;
-                                    invDetailDiscountDetail.rate = discount.rate;
-                                    invDetailDiscountDetail.discountTotal = discount.discountTotal;
-                                    invDetailDiscountDetail.price = invDetail.price;
-                                    invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
-                                    invDetailDiscountDetail.name = discount.name;
-                                    invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
-                                
 
+                                InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
+                                invDetailDiscountDetail.type = 2;
+                                invDetailDiscountDetail.rate = discount.rate;
+                                invDetailDiscountDetail.discountTotal = discount.discountTotal;
+                                invDetailDiscountDetail.price = invDetail.price;
+                                invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
+                                invDetailDiscountDetail.name = discount.name;
+                                invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
+                                invoiceDetails.Add(invDetailDiscountDetail);
                             }
+
+
+                            //if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
+                            //{
+                            //    foreach (var invoiceDetailDiscountDetail in invoiceDetailDiscountDetails)
+                            //    {
+                            //        invoiceDetails.Add(invoiceDetailDiscountDetail);
+                            //    }
+                            //}
 
                         }
                         else if (selectedInvoiceDetail.lineType == "PROMOTION")
                         {
                             foreach (var discount in selectedInvoiceDetail.campaignRewards)
                             {
-                               
-                                    InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
-                                    invDetailDiscountDetail.type = 1;
-                                    invDetailDiscountDetail.rate = 100;
-                                    //invDetailDiscountDetail.discountTotal = discount.discountTotal;
-                                    //invDetailDiscountDetail.price = invDetail.price;
-                                    //invDetailDiscountDetail.grossTotal = invDetail.grossTotal;
-                                    invDetailDiscountDetail.name = discount.name;
-                                    invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
-                              
+
+                                InvoiceDetail invDetailDiscountDetail = new InvoiceDetail();
+                                invDetailDiscountDetail.type = 1;
+                                invDetailDiscountDetail.rate = 100;
+                                invDetailDiscountDetail.discountTotal = discount.discountTotal;
+                                invDetailDiscountDetail.code = selectedInvoiceDetail.code;
+                                invDetailDiscountDetail.quantity = selectedInvoiceDetail.quantity;
+                                invDetailDiscountDetail.price = selectedInvoiceDetail.price;
+                                invDetailDiscountDetail.unitCode = selectedInvoiceDetail.unitCode;
+                                invDetailDiscountDetail.vatRate = selectedInvoiceDetail.vatRate;
+                                invDetailDiscountDetail.vatAmount = selectedInvoiceDetail.vatAmount;
+                                invDetailDiscountDetail.grossTotal = selectedInvoiceDetail.grossTotal;
+                                invDetailDiscountDetail.netTotal= selectedInvoiceDetail.netTotal;
+                                invDetailDiscountDetail.barcode = selectedInvoiceDetail.barcode;
+                                invDetailDiscountDetail.name = discount.name;
+                                invoiceDetailDiscountDetails.Add(invDetailDiscountDetail);
+                                invoiceDetails.Add(invDetailDiscountDetail);
 
                             }
+                            //if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
+                            //{
+                            //    foreach (var invoiceDetailDiscountDetail in invoiceDetailDiscountDetails)
+                            //    {
+                            //        invoiceDetails.Add(invoiceDetailDiscountDetail);
+                            //    }
+                            //}
                         }
-                       
-                        
-                        invoiceDetails.Add(invDetail);
-                        if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
-                        {
-                            foreach (var invoiceDetailDiscountDetail in invoiceDetailDiscountDetails)
-                            {
-                                invoiceDetails.Add(invoiceDetailDiscountDetail);
-                            }
-                        }
+
+                        //invoiceDetails.Add(invDetail);
+                        //if (invoiceDetailDiscountDetails.Count > 0)// discountlar da bir detay olarak eklendi ve bu detaylar invoice detail e eklendi
+                        //{
+                        //    foreach (var invoiceDetailDiscountDetail in invoiceDetailDiscountDetails)
+                        //    {
+                        //        invoiceDetails.Add(invoiceDetailDiscountDetail);
+                        //    }
+                        //}
                     }
                     invoice.details = invoiceDetails;
                     invoices.Add(invoice);
@@ -202,7 +240,7 @@ namespace invoiceIntegration
                     string number = row.Cells["number"].Value.ToString();
                     Order selectedOrder = jsonOrders.data.orders.FirstOrDefault(inv => inv.receiptNumber == number);
                     Order order = new Order();
-                    order.type =(int) InvoiceType.SELLING_RETURN;
+                    order.type = (int)InvoiceType.SELLING_RETURN;
                     order.receiptNumber = selectedOrder.receiptNumber;
                     order.warehouse = selectedOrder.warehouse;
                     order.customer = selectedOrder.customer;
