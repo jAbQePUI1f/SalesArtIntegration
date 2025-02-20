@@ -50,7 +50,7 @@ namespace invoiceIntegration
             // 
             this.progressBar.Location = new System.Drawing.Point(142, 212);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(255, 22);
+            this.progressBar.Size = new System.Drawing.Size(230, 22);
             this.progressBar.TabIndex = 1;
             // 
             // lblLoading
@@ -70,15 +70,15 @@ namespace invoiceIntegration
             // 
             // metroPanel1
             // 
-            this.metroPanel1.BackColor = System.Drawing.Color.White;
+            this.metroPanel1.BackColor = System.Drawing.Color.Transparent;
             this.metroPanel1.BackgroundImage = global::SalesArtIntegration.Properties.Resources.logo;
-            this.metroPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.metroPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.metroPanel1.HorizontalScrollbarBarColor = true;
             this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel1.HorizontalScrollbarSize = 10;
             this.metroPanel1.Location = new System.Drawing.Point(142, 123);
             this.metroPanel1.Name = "metroPanel1";
-            this.metroPanel1.Size = new System.Drawing.Size(255, 52);
+            this.metroPanel1.Size = new System.Drawing.Size(230, 55);
             this.metroPanel1.TabIndex = 0;
             this.metroPanel1.VerticalScrollbarBarColor = true;
             this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
@@ -88,7 +88,7 @@ namespace invoiceIntegration
             // 
             this.progressBarLbl.AutoSize = true;
             this.progressBarLbl.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.progressBarLbl.Location = new System.Drawing.Point(403, 221);
+            this.progressBarLbl.Location = new System.Drawing.Point(378, 218);
             this.progressBarLbl.Name = "progressBarLbl";
             this.progressBarLbl.Size = new System.Drawing.Size(17, 13);
             this.progressBarLbl.TabIndex = 4;
@@ -187,7 +187,7 @@ namespace invoiceIntegration
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 13);
             this.label1.TabIndex = 10;
-            this.label1.Text = "V . 1 . 7 . 5";
+            this.label1.Text = "V . 2 . 0 . 9";
             // 
             // waybillTimer
             // 
@@ -235,8 +235,6 @@ namespace invoiceIntegration
         }
 
         #endregion
-
-        private MetroFramework.Controls.MetroPanel metroPanel1;
         private MetroFramework.Controls.MetroProgressBar progressBar;
         private MetroFramework.Controls.MetroLabel lblLoading;
         private System.Windows.Forms.Timer invoiceTimer;
@@ -249,5 +247,6 @@ namespace invoiceIntegration
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer waybillTimer;
         private System.Windows.Forms.Timer collectionTimer;
+        protected MetroFramework.Controls.MetroPanel metroPanel1;
     }
 }

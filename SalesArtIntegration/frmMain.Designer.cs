@@ -67,8 +67,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.anaMenüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hakkındaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.materialCard1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -90,7 +90,7 @@
             // 
             this.lblLogoConnectionInfo.AutoSize = true;
             this.lblLogoConnectionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(987, 48);
+            this.lblLogoConnectionInfo.Location = new System.Drawing.Point(998, 48);
             this.lblLogoConnectionInfo.Name = "lblLogoConnectionInfo";
             this.lblLogoConnectionInfo.Size = new System.Drawing.Size(20, 15);
             this.lblLogoConnectionInfo.TabIndex = 11;
@@ -255,7 +255,7 @@
             "Sağlam Alım İade Faturaları"});
             this.cmbInvoice.Location = new System.Drawing.Point(6, 27);
             this.cmbInvoice.Name = "cmbInvoice";
-            this.cmbInvoice.Size = new System.Drawing.Size(173, 25);
+            this.cmbInvoice.Size = new System.Drawing.Size(199, 25);
             this.cmbInvoice.TabIndex = 24;
             this.cmbInvoice.UseSelectable = true;
             this.cmbInvoice.SelectedIndexChanged += new System.EventHandler(this.cmbInvoice_SelectedIndexChanged);
@@ -275,9 +275,9 @@
             // 
             this.btnGetInvoices.Location = new System.Drawing.Point(6, 66);
             this.btnGetInvoices.Name = "btnGetInvoices";
-            this.btnGetInvoices.Size = new System.Drawing.Size(173, 43);
+            this.btnGetInvoices.Size = new System.Drawing.Size(199, 43);
             this.btnGetInvoices.TabIndex = 26;
-            this.btnGetInvoices.Text = "Getir";
+            this.btnGetInvoices.Text = "Belgeleri Listele";
             this.btnGetInvoices.UseSelectable = true;
             this.btnGetInvoices.Click += new System.EventHandler(this.btnGetInvoices_Click);
             // 
@@ -297,7 +297,7 @@
             this.lblEndDate.AutoSize = true;
             this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblEndDate.Location = new System.Drawing.Point(477, 5);
+            this.lblEndDate.Location = new System.Drawing.Point(505, 5);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(61, 15);
             this.lblEndDate.TabIndex = 31;
@@ -306,12 +306,15 @@
             // startDate
             // 
             this.startDate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.startDate.DisplayFocus = true;
             this.startDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.startDate.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.startDate.ImeMode = System.Windows.Forms.ImeMode.On;
             this.startDate.Location = new System.Drawing.Point(292, 26);
+            this.startDate.MaxDate = new System.DateTime(2030, 12, 31, 0, 0, 0, 0);
+            this.startDate.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(179, 25);
+            this.startDate.Size = new System.Drawing.Size(191, 25);
             this.startDate.TabIndex = 32;
             this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
@@ -319,10 +322,13 @@
             // 
             this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.endDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.endDate.Location = new System.Drawing.Point(477, 27);
+            this.endDate.ImeMode = System.Windows.Forms.ImeMode.On;
+            this.endDate.Location = new System.Drawing.Point(505, 27);
+            this.endDate.MaxDate = new System.DateTime(2030, 12, 31, 0, 0, 0, 0);
+            this.endDate.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
             this.endDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(170, 25);
+            this.endDate.Size = new System.Drawing.Size(192, 25);
             this.endDate.TabIndex = 33;
             this.endDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
@@ -361,9 +367,9 @@
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(463, 66);
+            this.btnSendToLogo.Location = new System.Drawing.Point(505, 66);
             this.btnSendToLogo.Name = "btnSendToLogo";
-            this.btnSendToLogo.Size = new System.Drawing.Size(183, 43);
+            this.btnSendToLogo.Size = new System.Drawing.Size(192, 43);
             this.btnSendToLogo.TabIndex = 37;
             this.btnSendToLogo.Text = "Aktarım Başlat";
             this.btnSendToLogo.UseSelectable = true;
@@ -421,9 +427,16 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // hakkındaToolStripMenuItem
+            // 
+            this.hakkındaToolStripMenuItem.Name = "hakkındaToolStripMenuItem";
+            this.hakkındaToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.hakkındaToolStripMenuItem.Text = "Hakkında";
+            this.hakkındaToolStripMenuItem.Click += new System.EventHandler(this.hakkındaToolStripMenuItem_Click);
             // 
             // menüToolStripMenuItem
             // 
@@ -432,12 +445,6 @@
             this.menüToolStripMenuItem.Text = "Ana Ekran";
             this.menüToolStripMenuItem.ToolTipText = "Ana Ekrana yönlendireleceksiniz..";
             this.menüToolStripMenuItem.Click += new System.EventHandler(this.menüToolStripMenuItem_Click);
-            // 
-            // hakkındaToolStripMenuItem
-            // 
-            this.hakkındaToolStripMenuItem.Name = "hakkındaToolStripMenuItem";
-            this.hakkındaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.hakkındaToolStripMenuItem.Text = "Hakkında";
             // 
             // frmMain
             // 
