@@ -1,5 +1,4 @@
-﻿
-using invoiceIntegration.model;
+﻿using invoiceIntegration.model;
 using invoiceIntegration.model.order;
 using invoiceIntegration.model.waybill;
 using System;
@@ -56,7 +55,7 @@ namespace invoiceIntegration
                     invoice.paymentCode = selectedInvoice.paymentCode;
                     invoice.note = selectedInvoice.note;
                     invoice.salesmanCode = selectedInvoice.salesmanCode;
-                    invoice.distributorBranchCode = selectedInvoice.distributorBranchCode;
+                    //invoice.distributorBranchCode = selectedInvoice.distributorBranchCode;
                     invoice.customerBranchCode = selectedInvoice.customerBranchCode;
                     invoice.customerBranchName = selectedInvoice.customerBranchName;
                     List<InvoiceDetail> invoiceDetails = new List<model.InvoiceDetail>();
@@ -181,7 +180,7 @@ namespace invoiceIntegration
                     waybill.paymentCode = selectedWaybill.paymentCode;
                     waybill.note = selectedWaybill.note;
                     waybill.salesmanCode = selectedWaybill.salesmanCode;
-                    waybill.distributorBranchCode = selectedWaybill.distributorBranchCode;
+                    //waybill.distributorBranchCode = selectedWaybill.distributorBranchCode;
                     waybill.customerBranchCode = selectedWaybill.customerBranchCode;
                     waybill.customerBranchName = selectedWaybill.customerBranchName;
                     List<WaybillDetail> waybillDetails = new List<WaybillDetail>();

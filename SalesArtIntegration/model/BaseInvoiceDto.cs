@@ -6,8 +6,6 @@
         public string remoteInvoiceNumber { get; set; }
         public string invoiceNumber { get; set; }
         public string message { get; set; }
-
-
         public BaseInvoiceDto(int _code, string _remoteInvoiceNumber, string _invoiceNumber, string _message)
         {
             code = _code;
@@ -15,7 +13,6 @@
             invoiceNumber = _invoiceNumber;
             message = _message;
         }
-
         public BaseInvoiceDto()
         {
 

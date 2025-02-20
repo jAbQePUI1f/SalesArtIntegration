@@ -317,10 +317,12 @@
             this.startDate.Size = new System.Drawing.Size(191, 25);
             this.startDate.TabIndex = 32;
             this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.startDate.UseStyleColors = true;
             // 
             // endDate
             // 
             this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.endDate.DisplayFocus = true;
             this.endDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
             this.endDate.ImeMode = System.Windows.Forms.ImeMode.On;
             this.endDate.Location = new System.Drawing.Point(505, 27);
@@ -331,6 +333,7 @@
             this.endDate.Size = new System.Drawing.Size(192, 25);
             this.endDate.TabIndex = 33;
             this.endDate.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.endDate.UseStyleColors = true;
             // 
             // btnXML
             // 
@@ -449,8 +452,10 @@
             // frmMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
             this.ClientSize = new System.Drawing.Size(1216, 626);
+            this.ControlBox = false;
             this.Controls.Add(this.btnLastLog);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.chkSelectAll);
@@ -485,8 +490,6 @@
         private MetroFramework.Controls.MetroButton btnGetInvoices;
         private MetroFramework.Controls.MetroLabel lblStartDate;
         private MetroFramework.Controls.MetroLabel lblEndDate;
-        private MetroFramework.Controls.MetroDateTime startDate;
-        private MetroFramework.Controls.MetroDateTime endDate;
         private MetroFramework.Controls.MetroButton btnXML;
         private MetroFramework.Controls.MetroButton btnLastLog;
         private MetroFramework.Controls.MetroButton btnSendOrderToLogo;
@@ -506,7 +509,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column16;
-        private System.Windows.Forms.ToolStripMenuItem hakkındaToolStripMenuItem;
     }
 }
 

@@ -303,7 +303,7 @@ namespace invoiceIntegration.repository
                 sqlCmd.CommandType = CommandType.Text;
                 sqlCmd.CommandText = Qry;
                 sqlCmd.Connection = conn;
-
+                helper.LogFile("Qry", "", "", "", Qry);
                 conn.Open();
 
                 SqlDataReader dr = sqlCmd.ExecuteReader();
