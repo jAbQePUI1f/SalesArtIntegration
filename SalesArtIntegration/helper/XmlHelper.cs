@@ -1,7 +1,6 @@
 ﻿using invoiceIntegration.config;
 using invoiceIntegration.helper;
 using invoiceIntegration.model;
-using invoiceIntegration.model.Collection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -242,42 +241,44 @@ namespace invoiceIntegration
                             AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                         }
                     }
-                    else {
-                        AddNode(output, outputTransaction, "TYPE", "1");
-                        AddNode(output, outputTransaction, "BILLED", "1");
-                        AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
-                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                        AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
-                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                        AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
-                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
-                        {
-                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
-                        }
-                    }
+                }
+                else if (invoice.details[i].type == 1)//Promosyon 
+                {
+                    AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                    AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                    AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                    AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                    AddNode(output, outputTransaction, "BILLED", "1");
+                    AddNode(output, outputTransaction, "DISCOUNT_RATE", Convert.ToDouble(Math.Round(invoice.details[i].rate, 2)).ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                    AddNode(output, outputTransaction, "DESCRIPTION", invoice.details[i].name);
+                    AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                    AddNode(output, outputTransaction, "SOURCECOSTGRP", invoice.wareHouseCode);
+
                 }
                 else
                 {
-                    if (invoice.details[i].type !=1)
+                   
+                    AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
+                    AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
+                    AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
+                    AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "BILLED", "1");
+                    AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
+                    AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
+                    AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
+                    AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
+                    AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
+                    AddNode(output, outputTransaction, "AFFECT_RISK", "1");
+                    // efaturalarda istiyor olabilri
+                    // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
+                    if (invoice.type == (int)InvoiceType.SELLING_RETURN)
                     {
-                        AddNode(output, outputTransaction, "TYPE", invoice.details[i].type.ToString());
-                        AddNode(output, outputTransaction, "MASTER_CODE", invoice.details[i].code);
-                        AddNode(output, outputTransaction, "QUANTITY", invoice.details[i].quantity.ToString());
-                        AddNode(output, outputTransaction, "PRICE", Math.Round(invoice.details[i].price, 2).ToString().Replace(",", "."));
-                        AddNode(output, outputTransaction, "TOTAL", Math.Round(invoice.details[i].grossTotal, 2).ToString().Replace(",", "."));
-                        AddNode(output, outputTransaction, "BILLED", "1");
-                        AddNode(output, outputTransaction, "DISPATCH_NUMBER", invoice.number);
-                        AddNode(output, outputTransaction, "VAT_RATE", invoice.details[i].vatRate.ToString().Replace(",", "."));
-                        AddNode(output, outputTransaction, "SOURCEINDEX", invoice.wareHouseCode);
-                        AddNode(output, outputTransaction, "PAYMENT_CODE", invoice.paymentCode);
-                        AddNode(output, outputTransaction, "UNIT_CODE", helper.getUnit(invoice.details[i].unitCode));
-                        AddNode(output, outputTransaction, "AFFECT_RISK", "1");
-                        // efaturalarda istiyor olabilri
-                        // AddNode(output, outputTransaction, "UNIT_GLOBAL_CODE", "NIU");
-                        if (invoice.type == (int)InvoiceType.SELLING_RETURN)
-                        {
-                            AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
-                        }
+                        AddNode(output, outputTransaction, "RET_COST_TYPE", "1");
                     }
                 }
             }
@@ -399,7 +400,7 @@ namespace invoiceIntegration
 
         //    List<LogoCollectionModel> borcDekontList = new List<LogoCollectionModel>();
         //    List<LogoCollectionModelDetail> borcDekontDetail = new List<LogoCollectionModelDetail>();
-            
+
         //    otherPaymentDetail.Clear();
         //    cashPaymentDetail.Clear();
         //    creditPaymentDetail.Clear();
@@ -417,7 +418,7 @@ namespace invoiceIntegration
         //    borcDekontList.Clear();
         //    borcDekontDetail.Clear();
 
-            
+
         //    foreach (var item in logoCollections)
         //    {
         //        otherPaymentDetail.Clear();
@@ -610,9 +611,9 @@ namespace invoiceIntegration
         //                AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
         //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
 
-                       
+
         //                    AddNode(output, outputCHQPNTransaction, "CREDIT_FLAG", "1");
-                        
+
 
         //                AddNode(output, outputCHQPNTransaction, "SERIAL_NR", "99999999999999");
         //            }
@@ -725,31 +726,31 @@ namespace invoiceIntegration
 
         //                AddNode(output, outputSDDbop, "NUMBER", item.collectionModelHeader.Number.ToString());
         //                if (item.collectionModelHeader.CustomerName != null) AddNode(output, outputSDDbop, "MASTER_TITLE", item.collectionModelHeader.CustomerName.ToString());
-               
+
         //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
         //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "RC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
         //                if (paymentDetail.Amount != null) AddNode(output, outputSDDbop, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
 
         //                    outputAtachmentArp = output.CreateNode(XmlNodeType.Element, "ATTACHMENT_ARP", "");
         //                    outputSDDbop.AppendChild(outputAtachmentArp);
-                        
+
 
         //                outputCHQPNTransaction = output.CreateNode(XmlNodeType.Element, "TRANSACTION", "");
         //                outputAtachmentArp.AppendChild(outputCHQPNTransaction);
 
         //                if (item.collectionModelHeader.CustomerCode != null) AddNode(output, outputCHQPNTransaction, "ARP_CODE", item.collectionModelHeader.CustomerCode);
         //                if (item.collectionModelHeader.Number != null) AddNode(output, outputCHQPNTransaction, "TRANNO", item.collectionModelHeader.Number);
-                       
-                
+
+
         //               AddNode(output, outputCHQPNTransaction, "DESCRIPTION", item.collectionModelHeader.Desc+" - " + paymentDetail.PaymentTypeName);
-                        
+
         //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "CREDIT", paymentDetail.Amount.ToString().Replace(",", "."));
         //                if (paymentDetail.Amount != null) AddNode(output, outputCHQPNTransaction, "TC_AMOUNT", paymentDetail.Amount.ToString().Replace(",", "."));
         //                //Common.AddNode(output, outputCHQPNTransaction, "TC_XRATE", "1");
 
-                      
+
         //                    AddNode(output, outputCHQPNTransaction, "AFFECT_RISK", "1");
-                        
+
         //            }
         //        }
         //        string fileName = "kasaHareketi_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xml";

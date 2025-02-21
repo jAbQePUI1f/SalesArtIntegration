@@ -67,8 +67,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.anaMenüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hakkındaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridInvoice)).BeginInit();
             this.materialCard1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -253,9 +253,9 @@
             "Alım Faturaları",
             "Hasarılı Alım İade Faturaları",
             "Sağlam Alım İade Faturaları"});
-            this.cmbInvoice.Location = new System.Drawing.Point(6, 27);
+            this.cmbInvoice.Location = new System.Drawing.Point(6, 25);
             this.cmbInvoice.Name = "cmbInvoice";
-            this.cmbInvoice.Size = new System.Drawing.Size(173, 25);
+            this.cmbInvoice.Size = new System.Drawing.Size(182, 25);
             this.cmbInvoice.TabIndex = 24;
             this.cmbInvoice.UseSelectable = true;
             this.cmbInvoice.SelectedIndexChanged += new System.EventHandler(this.cmbInvoice_SelectedIndexChanged);
@@ -265,7 +265,7 @@
             this.lblInvoice.AutoSize = true;
             this.lblInvoice.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblInvoice.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblInvoice.Location = new System.Drawing.Point(6, 6);
+            this.lblInvoice.Location = new System.Drawing.Point(6, 4);
             this.lblInvoice.Name = "lblInvoice";
             this.lblInvoice.Size = new System.Drawing.Size(63, 15);
             this.lblInvoice.TabIndex = 25;
@@ -275,9 +275,9 @@
             // 
             this.btnGetInvoices.Location = new System.Drawing.Point(6, 66);
             this.btnGetInvoices.Name = "btnGetInvoices";
-            this.btnGetInvoices.Size = new System.Drawing.Size(173, 43);
+            this.btnGetInvoices.Size = new System.Drawing.Size(182, 43);
             this.btnGetInvoices.TabIndex = 26;
-            this.btnGetInvoices.Text = "Getir";
+            this.btnGetInvoices.Text = "Listele";
             this.btnGetInvoices.UseSelectable = true;
             this.btnGetInvoices.Click += new System.EventHandler(this.btnGetInvoices_Click);
             // 
@@ -286,7 +286,7 @@
             this.lblStartDate.AutoSize = true;
             this.lblStartDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblStartDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblStartDate.Location = new System.Drawing.Point(292, 5);
+            this.lblStartDate.Location = new System.Drawing.Point(292, 4);
             this.lblStartDate.Name = "lblStartDate";
             this.lblStartDate.Size = new System.Drawing.Size(89, 15);
             this.lblStartDate.TabIndex = 30;
@@ -297,11 +297,12 @@
             this.lblEndDate.AutoSize = true;
             this.lblEndDate.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblEndDate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lblEndDate.Location = new System.Drawing.Point(477, 5);
+            this.lblEndDate.Location = new System.Drawing.Point(504, 4);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(61, 15);
             this.lblEndDate.TabIndex = 31;
             this.lblEndDate.Text = "Bitiş Tarihi";
+            this.lblEndDate.Click += new System.EventHandler(this.lblEndDate_Click);
             // 
             // startDate
             // 
@@ -311,7 +312,7 @@
             this.startDate.Location = new System.Drawing.Point(292, 26);
             this.startDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(179, 25);
+            this.startDate.Size = new System.Drawing.Size(185, 25);
             this.startDate.TabIndex = 32;
             this.startDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
@@ -319,10 +320,10 @@
             // 
             this.endDate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.endDate.FontSize = MetroFramework.MetroDateTimeSize.Small;
-            this.endDate.Location = new System.Drawing.Point(477, 27);
+            this.endDate.Location = new System.Drawing.Point(504, 26);
             this.endDate.MinimumSize = new System.Drawing.Size(0, 25);
             this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(170, 25);
+            this.endDate.Size = new System.Drawing.Size(183, 25);
             this.endDate.TabIndex = 33;
             this.endDate.Theme = MetroFramework.MetroThemeStyle.Light;
             // 
@@ -361,7 +362,7 @@
             // 
             // btnSendToLogo
             // 
-            this.btnSendToLogo.Location = new System.Drawing.Point(463, 66);
+            this.btnSendToLogo.Location = new System.Drawing.Point(504, 66);
             this.btnSendToLogo.Name = "btnSendToLogo";
             this.btnSendToLogo.Size = new System.Drawing.Size(183, 43);
             this.btnSendToLogo.TabIndex = 37;
@@ -425,6 +426,12 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // hakkındaToolStripMenuItem
+            // 
+            this.hakkındaToolStripMenuItem.Name = "hakkındaToolStripMenuItem";
+            this.hakkındaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hakkındaToolStripMenuItem.Text = "Hakkında";
+            // 
             // menüToolStripMenuItem
             // 
             this.menüToolStripMenuItem.Name = "menüToolStripMenuItem";
@@ -432,12 +439,6 @@
             this.menüToolStripMenuItem.Text = "Ana Ekran";
             this.menüToolStripMenuItem.ToolTipText = "Ana Ekrana yönlendireleceksiniz..";
             this.menüToolStripMenuItem.Click += new System.EventHandler(this.menüToolStripMenuItem_Click);
-            // 
-            // hakkındaToolStripMenuItem
-            // 
-            this.hakkındaToolStripMenuItem.Name = "hakkındaToolStripMenuItem";
-            this.hakkındaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.hakkındaToolStripMenuItem.Text = "Hakkında";
             // 
             // frmMain
             // 

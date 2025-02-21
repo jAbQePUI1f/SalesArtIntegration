@@ -214,20 +214,13 @@ namespace invoiceIntegration
                 this.Hide();
             }
         }
-
         private void frmSplashScreen_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
         }
-
         private void frmSplashScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -42,5 +42,32 @@ namespace invoiceIntegration
                 MessageBox.Show("Log Dosyası Bulunamadı", "Log Bilgisi", MessageBoxButtons.OK);
             }
         }
+
+        private void logDelete_Click(object sender, EventArgs e)
+        {
+            string logPath = Path.Combine(Application.StartupPath, "logfile.txt");
+
+            try
+            {
+                if (File.Exists(logPath))
+                {
+                    File.WriteAllText(logPath, string.Empty); // Log dosyasını temizle
+
+                    // DataSource’u sıfırla ve yeniden ata
+                    listBox1.DataSource = null;
+                    listBox1.DataSource = new List<string>(); // Boş bir liste ata
+
+                    MessageBox.Show("Log başarıyla temizlendi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Log dosyası bulunamadı.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Log temizlenirken bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

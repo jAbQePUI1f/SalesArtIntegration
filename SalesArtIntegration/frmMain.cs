@@ -283,5 +283,10 @@ namespace invoiceIntegration
                 splsh.Show();
             }
         }
+
+        private void lblEndDate_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
